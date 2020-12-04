@@ -1,75 +1,103 @@
-import React from "react";
+import React, { Component } from "react";
 import { Container, Input, Button, Title, Label } from "./style";
 import firebase from "../data/Firebase";
+import history from "../history";
 
-export default class Login extends React.Component {
-    constructor(props){
-        super(props);
-            this.state = { email : '', pass : '', shopping: "bhshopping" };
-            this.handleChange = this.handleChange.bind(this);
-    }
-
-    componentDidMount() {
+class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { email: "", pass: "", shopping: "bhshopping" };
+    this.handleChange = this.handleChange.bind(this);
+  }
+  componentDidMount = () => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        const currentUser = firebase.auth().currentUser
+        localStorage.setItem("user", JSON.stringify(user));
+        history.push("/dashboard/");
+      } else {
+        localStorage.removeItem("user");
       }
+    });
+  };
 
   login = () => {
     const shopping = this.state.shopping;
+    const email = this.state.email;
+    const pass = this.state.pass;
+
     firebase
       .auth()
-      .signInWithEmailAndPassword(this.state.email, this.state.pass)
-      .then(function emailPassProfile() {
-        const user = firebase.auth().currentUser;
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(function () {
         firebase
-          .database()
-          .ref("/usershopping/"+shopping+ "/"+ user.uid)
-          .update({
-            lastLogin: Date.now(),
+          .auth()
+          .signInWithEmailAndPassword(email, pass)
+          .then(function emailPassProfile() {
+            const user = firebase.auth().currentUser;
+            firebase
+              .database()
+              .ref("/usershopping/" + shopping + "/" + user.uid)
+              .update({
+                lastLogin: Date.now(),
+              });
+            history.push("/dashboard");
+            console.log(JSON.stringify(user))
+          })
+          .catch((error) => {
+            let errorCode = error.code;
+            let errorMessage = error.message;
+            if (errorCode === "auth/weak-password") {
+              alert("Senha Fraca!");
+            } else {
+              alert(errorMessage);
+            }
           });
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        alert("BEM VINDO");
       })
       .catch((error) => {
         let errorCode = error.code;
         let errorMessage = error.message;
-        if (errorCode === "auth/weak-password") {
-          alert("Senha Fraca!");
-        } else {
-          alert(errorMessage);
-        }
+        alert(errorCode + ": " + errorMessage);
       });
   };
 
   cadastro = () => {
     const shopping = this.state.shopping;
+    const email = this.state.email;
+    const pass = this.state.pass;
     firebase
       .auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.pass)
-      .then(function emailPassProfile() {
-        const user = firebase.auth().currentUser;
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(function () {
         firebase
-          .database()
-          .ref("/usershopping/"+shopping+ "/" + user.uid)
-          .set({
-            loginType: "Email e Senha",
-            email: user.email,
-            shopping: shopping,
-            createAt: Date.now(),
+          .auth()
+          .createUserWithEmailAndPassword(email, pass)
+          .then(function emailPassProfile() {
+            const user = firebase.auth().currentUser;
+            firebase
+              .database()
+              .ref("/usershopping/" + shopping + "/" + user.uid)
+              .set({
+                loginType: "Email e Senha",
+                email: user.email,
+                shopping: shopping,
+                createAt: Date.now(),
+              });
+          })
+          .catch((error) => {
+            let errorCode = error.code;
+            let errorMessage = error.message;
+            if (errorCode === "auth/weak-password") {
+              alert("Senha Fraca!");
+            } else {
+              alert(errorMessage);
+            }
           });
-        alert("Cadastro realizado com sucesso" );
-      })
-      .catch((error) => {
-        let errorCode = error.code;
-        let errorMessage = error.message;
-        if (errorCode === "auth/weak-password") {
-          alert("Senha Fraca!");
-        } else {
-          alert(errorMessage);
-        }
       });
   };
-  
+
   handleChange(event) {
-    this.setState({[event.target.name]: event.target.value});
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   render() {
@@ -77,8 +105,13 @@ export default class Login extends React.Component {
       <Container>
         <Title>Seja bem vindo, faça login para continuar </Title>
         <Label>Shopping</Label>
-        
-        <Input type="email" placeholder={'Shopping'} disabled value={this.state.shopping} />
+
+        <Input
+          type="email"
+          placeholder={"Shopping"}
+          disabled
+          value={this.state.shopping}
+        />
         <Input
           type="email"
           name="email"
@@ -99,3 +132,4 @@ export default class Login extends React.Component {
     );
   }
 }
+export default Login;

@@ -1,13 +1,14 @@
 import React from "react";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { Router, Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Login from "./login/index";
-import isauth from "./auth";
+import Dashboard from "./dashboard/index"
+import history from "../src/history"
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
-    render={(props) =>
-      isauth() ? (
+    render={props =>
+      localStorage.getItem('user') ? (
         <Component {...props} />
       ) : (
         <Redirect
@@ -19,16 +20,16 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 );
 
 const Routes = () => (
-  <BrowserRouter>
+  <Router history={history}>
     <Switch>
-      <Route exact path="/" component={() => <h1>Shopy Cash</h1>} />
-      <Route exact path="/login" component={Login} />
+      <Route exact path="/login" component={withRouter(Login)} />
       <PrivateRoute
         exact
-        path="/dashboard"
-        component={() => <h1>Dashboard Shopycash</h1>}
+        path="/dashboard"  
+        component={withRouter(Dashboard)}
       />
+      <Route exact path="/" component={() => <h1>Shopy Cash</h1>} />
     </Switch>
-  </BrowserRouter>
+  </Router>
 );
 export default Routes;
