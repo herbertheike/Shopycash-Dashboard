@@ -12,11 +12,12 @@ class Login extends Component {
   componentDidMount = () => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        const currentUser = firebase.auth().currentUser
-        localStorage.setItem("user", JSON.stringify(user));
-        history.push("/dashboard/");
+              localStorage.setItem("@token",user.getIdToken(true));
+              localStorage.setItem("@idshopping", '5fc57fdaa17de33248fd3674')
+              console.log(user.getIdToken(true))
+        history.push("/dashboard");
       } else {
-        localStorage.removeItem("user");
+        localStorage.removeItem("@token");
       }
     });
   };
@@ -25,7 +26,6 @@ class Login extends Component {
     const shopping = this.state.shopping;
     const email = this.state.email;
     const pass = this.state.pass;
-
     firebase
       .auth()
       .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
@@ -35,14 +35,16 @@ class Login extends Component {
           .signInWithEmailAndPassword(email, pass)
           .then(function emailPassProfile() {
             const user = firebase.auth().currentUser;
+              localStorage.setItem("@token",user.getIdToken(true));
+              localStorage.setItem("@idshopping", '5fc57fdaa17de33248fd3674')
             firebase
               .database()
-              .ref("/usershopping/" + shopping + "/" + user.uid)
+              .ref(shopping+"/user/" + user.uid)
               .update({
                 lastLogin: Date.now(),
               });
-            history.push("/dashboard");
-            console.log(JSON.stringify(user))
+              history.push("/dashboard");
+              console.log()
           })
           .catch((error) => {
             let errorCode = error.code;
@@ -76,13 +78,16 @@ class Login extends Component {
             const user = firebase.auth().currentUser;
             firebase
               .database()
-              .ref("/usershopping/" + shopping + "/" + user.uid)
+              .ref(shopping+"/user/" + user.uid)
               .set({
                 loginType: "Email e Senha",
                 email: user.email,
                 shopping: shopping,
                 createAt: Date.now(),
-              });
+              });;
+              localStorage.setItem("@token",user.refreshToken );
+              localStorage.setItem("@idshopping", '5fc57fdaa17de33248fd3674')
+              history.push("/dashboard");
           })
           .catch((error) => {
             let errorCode = error.code;
