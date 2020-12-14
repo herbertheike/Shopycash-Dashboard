@@ -1,11 +1,17 @@
 import React from "react";
-import { Container, Input, Button, Title, Label, InputFile, ButtonLogout } from "./style";
+import {
+  Container,
+  Input,
+  Button,
+  Title,
+  Label,
+  InputFile,
+  ButtonLogout,
+} from "./style";
 import firebase from "../data/Firebase";
 import history from "../history";
 import Sidebar from "react-sidebar";
 import Header from "../components/header";
-
-
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -18,63 +24,69 @@ class Dashboard extends React.Component {
       message: "",
       messageloja: "",
       segmentolist: [],
-          nomefantasia : "",
-          razaosocial: "",
-          shopping:"",
-          segmento: [],
-          cnpj: "",
-          telefone: "",
-          email:"",
-          site:"",
-          responsavel:"",
-          logo:"",
-          capa: ""
-        }    
-      }
+      nomefantasia: "",
+      razaosocial: "",
+      shopping: "",
+      segmento: [],
+      cnpj: "",
+      telefone: "",
+      email: "",
+      site: "",
+      responsavel: "",
+      logo: "",
+      capa: "",
+      ischecked: false
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleChecked = this.handleChecked.bind(this);
+  }
 
   componentDidMount() {
-    fetch("http://192.168.15.69:3001/shopping/" + this.state._id, { headers: { Authorization: "Bearer " + localStorage.getItem("@token") },})
+    fetch("http://192.168.15.69:3001/shopping/" + this.state._id, {
+      headers: { Authorization: "Bearer " + localStorage.getItem("@token") },
+    })
       .then((res) => res.json())
       .then((result) =>
         this.setState({ shoppingarray: result, message: result.message })
       )
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }), []);
-      this.listsegmento()
+    this.listsegmento();
   }
-  
-  listsegmento(){
-    fetch("http://192.168.15.69:3001/segmento/" , { headers: { Authorization: "Bearer " + localStorage.getItem("@token") }})
+
+  listsegmento() {
+    fetch("http://192.168.15.69:3001/segmento/", {
+      headers: { Authorization: "Bearer " + localStorage.getItem("@token") },
+    })
       .then((res) => res.json())
-      .then((result) =>
-        this.setState({segmentolist:result})
-      )
+      .then((result) => this.setState({ segmentolist: result }))
       .catch((error) => console.log(error))
-      .finally(() => this.setState({ isLoaded: false }), [])
+      .finally(() => this.setState({ isLoaded: false }), []);
   }
- 
 
   cadastrarLoja() {
     // Simple POST request with a JSON body using fetch
     const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ "nomefantasia" : this.state.nomefantasia,
-                              "razaosocial": this.state.razaosocial,
-                              "shopping":this.state.shopping,
-                              "segmento": this.state.segmento,
-                              "cnpj": this.state.cnpj,
-                              "telefone": this.state.telefone,
-                              "email":this.state.email,
-                              "site":this.state.site,
-                              "responsavel":this.state.responsavel,
-                              "logo":this.state.logo,
-                              "capa": this.state.capa})
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nomefantasia: this.state.nomefantasia,
+        razaosocial: this.state.razaosocial,
+        shopping: this.state.shopping,
+        segmento: this.state.segmento,
+        cnpj: this.state.cnpj,
+        telefone: this.state.telefone,
+        email: this.state.email,
+        site: this.state.site,
+        responsavel: this.state.responsavel,
+        logo: this.state.logo,
+        capa: this.state.capa,
+      }),
     };
-    fetch('http://192.168.15.69:3001/loja', requestOptions)
-        .then(response => response.json())
-        .then(data => this.setState({ messageloja: "Loja adicionada" }));
-}
+    fetch("http://192.168.15.69:3001/loja", requestOptions)
+      .then((response) => response.json())
+      .then((data) => this.setState({ messageloja: "Loja adicionada" }));
+  }
 
   logout() {
     firebase
@@ -87,9 +99,22 @@ class Dashboard extends React.Component {
       .catch(function (error) {});
   }
 
+
+  
+  handleChange(event) {
+    this.setState({[event.target.name]: event.target.value});
+  }
+  handleChecked(event) {
+      if(event.target.checked){
+        this.setState({segmento:[...this.state.segmento, event.target.value]})
+        //newarr.push([i, event.target.value])
+      }
+      console.log([this.state.segmento])
+  }
+
   render() {
-    console.log(this.state.segmentolist)
-    const { shoppingarray, segmentolist } = this.state;
+    console.log(this.state.segmentolist);
+    const { shoppingarray, segmentolist , } = this.state;
     return (
       <Sidebar
         sidebar={
@@ -106,6 +131,8 @@ class Dashboard extends React.Component {
                 <a href="#">Lojas</a>
               </li>
             </ul>
+                {this.state.message}
+                {localStorage.getItem("@token")}<br />
             <ButtonLogout onClick={this.logout}> SAIR </ButtonLogout>
           </div>
         }
@@ -115,7 +142,7 @@ class Dashboard extends React.Component {
         }}
       >
         <Header />
-        <table>
+        <table style={{fontFamily: "Arial", padding:10}}>
           {shoppingarray.map((item) => (
             <tbody key={item.id}>
               <tr>
@@ -128,111 +155,106 @@ class Dashboard extends React.Component {
             </tbody>
           ))}
         </table>
-        {this.state.message}
-        {localStorage.getItem("@token")}
-        <Container>
-          {shoppingarray.map((item) => (
-            <form
-              style={{
-                marginLeft: 20,
-                alignItems: "flex-start",
-                justifyContent: "space-around",
-                background: "white",
-                width: '80%',
-                fontFamily: "Georgia",
-              }}
-            >
+        <Container style={{width:600}}>
+        <Title>Cadastro de lojas </Title>
+            
               <Input
-                value={this.state.nomefantasia}
-                style={{width:'80%'}}
+                style={{ width: '100%' }}
                 type="text"
                 placeholder="Nome Fantasia"
-                name="Nome Fantasia"
-                required= 'true' 
-              />
-              <Input
-              value={this.state.razaosocial}
-              style={{width:'80%'}}
-                type="text"
-                placeholder="Razão social"
-                name="Razão social"
-                required= 'true' 
-              />
-              <Input
-              value={this.state.cnpj}
-              style={{width:'40%'}}
-                type="number"
-                placeholder="CNPJ"
-                name="CNPJ"
-                required= 'true' 
+                required="true"
+                name="nomefantasia"
+                value={this.state.nomefantasia}
+                onChange={this.handleChange}
               />
               
               <Input
-              value={this.state.telefone}
-              style={{width:'40%'}}
+                value={this.state.razaosocial}
+                style={{ width: '100%' }}
+                type="text"
+                placeholder="Razão social"
+                name="razaosocial"
+                required="true"
+                onChange={this.handleChange}
+              />
+              <Input
+                value={this.state.cnpj}
+                style={{  width: '50%'}}
+                type="number"
+                placeholder="CNPJ"
+                name="cnpj"
+                required="true"
+                onChange={this.handleChange}
+              />
+
+              <Input
+                value={this.state.telefone}
+                style={{ width: '40%' }}
                 type="tel"
                 placeholder="Telefone"
-                name="Telefone"
-                required= 'true' 
+                name="telefone"
+                required="true"
+                onChange={this.handleChange}
               />
               <Input
-              value={this.state.email}
-              style={{width:'40%'}}
+                value={this.state.email}
+                style={{ width: "40%" }}
                 type="email"
                 placeholder="Email"
-                name="Email"
-                required= 'true' 
+                name="email"
+                required="true"
+                onChange={this.handleChange}
               />
               <Input
-              value={this.state.site}
-              style={{width:'40%'}}
-              type="url" placeholder="Site" 
-              name="Site" />
+                value={this.state.site}
+                style={{ width: "20%" }}
+                type="url"
+                placeholder="Site"
+                name="site"
+                onChange={this.handleChange}
+              />
               <Input
-              value={this.state.responsavel}
-              style={{width:'40%'}}
+                value={this.state.responsavel}
+                style={{ width: "20%" }}
                 type="text"
                 placeholder="Responsavel"
-                name="Responsavel"
-                required= 'true' 
+                name="responsavel"
+                required="true"
+                onChange={this.handleChange}
               />
-
+              <Label>Segmentos</Label>
+              {segmentolist.map((seg, index) => {
+                    return (
+                      <div key={seg._id} style={{ display: 'inline-block', width:'12em', fontFamily: "Arial"}}>
+                          <div >
+                            <input id={index} type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}/>
+                            <span class="label-text">{seg.nome}</span>
+                          </div>
+                      </div>
+                    );
+                  })}
+                  <br />
               <InputFile
-              value={this.state.logo}
-              style={{width:'60%'}}
+                value={this.state.logo}
+                style={{ width: "60%" }}
                 type="file"
                 placeholder="Logo"
-                name="Logo"
+                name="logo"
+                onChange={this.handleChange}
               />
               <InputFile
-              value={this.state.capa}
-              style={{width:'60%'}}
+                value={this.state.capa}
+                style={{ width: "60%" }}
                 type="file"
                 placeholder="Capa"
-                name="Capa"
+                name="capa"
+                onChange={this.handleChange}
               />
-              <table>
-        <tbody>
-          {segmentolist.map((seg) =>{
-            return(
-              <tr key={seg._id}>
-                <td>
-                    <div>
-                            <input type="checkbox" value={seg.nome} 
-                            /> <span class="label-text">{seg.nome}</span>
-                    </div>
-                </td>
-            </tr>
-            )
-          })}
-          
-        </tbody>
-      </table>
-
+                    <hr/>
               <Button type="submit"> Cadastrar</Button>
-              <Input /*hidden data*/ hidden disabled value={item.nome} />
-            </form>
-          ))}
+              {shoppingarray.map((item) => {
+                return (<Input /*hidden data*/ hidden disabled value={item.nome} />)})}
+
         </Container>
       </Sidebar>
     );

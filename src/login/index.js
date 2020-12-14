@@ -6,7 +6,7 @@ import history from "../history";
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { email: "", pass: "", shopping: "bhshopping" };
+    this.state = { email: "", pass: "", shopping: "" };
     this.handleChange = this.handleChange.bind(this);
   }
   componentDidMount = () => {
