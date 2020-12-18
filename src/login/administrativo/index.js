@@ -1,29 +1,27 @@
 import React, { Component } from "react";
 import { Container, Input, Button, Title, Label } from "./style";
-import firebase from "../data/Firebase";
-import history from "../history";
+import firebase from "../../data/Firebase";
+import history from "../../history";
 
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { email: "", pass: "", shopping: "" };
+    this.state = { email: "", pass: ""};
     this.handleChange = this.handleChange.bind(this);
   }
   componentDidMount = () => {
-    firebase.auth().onAuthStateChanged((user) => {
+   /* firebase.auth().onAuthStateChanged((user) => {
       if (user) {
               localStorage.setItem("@token",user.getIdToken(true));
-              localStorage.setItem("@idshopping", '5fc57fdaa17de33248fd3674')
               console.log(user.getIdToken(true))
         history.push("/dashboard");
       } else {
         localStorage.removeItem("@token");
       }
-    });
+    });*/
   };
 
-  login = () => {
-    const shopping = this.state.shopping;
+  /*login = () => {
     const email = this.state.email;
     const pass = this.state.pass;
     firebase
@@ -36,7 +34,6 @@ class Login extends Component {
           .then(function emailPassProfile() {
             const user = firebase.auth().currentUser;
               localStorage.setItem("@token",user.getIdToken(true));
-              localStorage.setItem("@idshopping", '5fc57fdaa17de33248fd3674')
             firebase
               .database()
               .ref(shopping+"/user/" + user.uid)
@@ -60,7 +57,7 @@ class Login extends Component {
         let errorCode = error.code;
         let errorMessage = error.message;
         alert(errorCode + ": " + errorMessage);
-      });
+      }); 
   };
 
   cadastro = () => {
@@ -100,6 +97,22 @@ class Login extends Component {
           });
       });
   };
+*/
+
+/*login = () => {
+  const email = this.state.email;
+  const pass = this.state.pass;
+  const [email, pass] = Buffer.from(hash, "base64").toString().split(":");
+
+  const data  = fetch("http://192.168.15.68:3001/administrativo/login", {
+        method: 'GET',
+        headers: new Headers({'Authorization': 'Basic'})
+      }).then((response) =>response.json());
+      console.log(data)
+    }*/
+
+
+
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
@@ -109,14 +122,8 @@ class Login extends Component {
     return (
       <Container>
         <Title>Seja bem vindo, faça login para continuar </Title>
-        <Label>Shopping</Label>
+        <Label>Administrativo Shopycash</Label>
 
-        <Input
-          type="email"
-          placeholder={"Shopping"}
-          disabled
-          value={this.state.shopping}
-        />
         <Input
           type="email"
           name="email"
@@ -132,7 +139,7 @@ class Login extends Component {
           onChange={this.handleChange}
         />
         <Button onClick={this.login}> Entrar </Button>
-        <Button onClick={this.cadastro}> cadastro </Button>
+        <Button onClick={this.cadastro}> Solicitar novo Cadastro </Button>
       </Container>
     );
   }

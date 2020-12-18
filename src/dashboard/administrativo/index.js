@@ -8,10 +8,10 @@ import {
   InputFile,
   ButtonLogout,
 } from "./style";
-import firebase from "../data/Firebase";
-import history from "../history";
+import firebase from "../../data/Firebase";
+import history from "../../history";
 import Sidebar from "react-sidebar";
-import Header from "../components/header";
+import Header from "../../components/header";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -179,7 +179,7 @@ class Dashboard extends React.Component {
               />
               <Input
                 value={this.state.cnpj}
-                style={{  width: '50%'}}
+                style={{  width: '30%'}}
                 type="number"
                 placeholder="CNPJ"
                 name="cnpj"
@@ -189,7 +189,7 @@ class Dashboard extends React.Component {
 
               <Input
                 value={this.state.telefone}
-                style={{ width: '40%' }}
+                style={{ width: '20%' }}
                 type="tel"
                 placeholder="Telefone"
                 name="telefone"
@@ -198,7 +198,7 @@ class Dashboard extends React.Component {
               />
               <Input
                 value={this.state.email}
-                style={{ width: "40%" }}
+                style={{ width: "30%" }}
                 type="email"
                 placeholder="Email"
                 name="email"
@@ -207,7 +207,7 @@ class Dashboard extends React.Component {
               />
               <Input
                 value={this.state.site}
-                style={{ width: "20%" }}
+                style={{ width: "30%" }}
                 type="url"
                 placeholder="Site"
                 name="site"
@@ -215,7 +215,7 @@ class Dashboard extends React.Component {
               />
               <Input
                 value={this.state.responsavel}
-                style={{ width: "20%" }}
+                style={{ width: "30%" }}
                 type="text"
                 placeholder="Responsavel"
                 name="responsavel"
@@ -225,7 +225,7 @@ class Dashboard extends React.Component {
               <Label>Segmentos</Label>
               {segmentolist.map((seg, index) => {
                     return (
-                      <div key={seg._id} style={{ display: 'inline-block', width:'12em', fontFamily: "Arial"}}>
+                      <div key={seg._id} style={{ display: 'block', width:'12em', fontFamily: "Arial"}}>
                           <div >
                             <input id={index} type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}/>
                             <span class="label-text">{seg.nome}</span>
@@ -249,6 +249,7 @@ class Dashboard extends React.Component {
                 placeholder="Capa"
                 name="capa"
                 onChange={this.handleChange}
+
               />
                     <hr/>
               <Button type="submit"> Cadastrar</Button>

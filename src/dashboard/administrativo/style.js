@@ -29,7 +29,7 @@ export const InputFile = styled.input`
     border: none;
     background: rgba(246,102,19, 0.2);
     border-radius: 3px;
-    margin: 5px;
+    margin-left: 5px;
     &:hover{
         background: rgba(80,79,162, 0.2);
         color: #000
