@@ -2,13 +2,13 @@ import React from "react";
 import { Router, Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Login from "./login/administrativo/index";
 import Dashboard from "./dashboard/administrativo/index"
-import history from "../src/history"
+import history from "./history"
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props =>
-      localStorage.getItem("token") ? (
+      localStorage.getItem('@token') ? (
         <Component {...props} />
       ) : (
         <Redirect

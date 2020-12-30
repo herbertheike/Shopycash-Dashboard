@@ -1,4 +1,4 @@
-import firebase from "./data/Firebase.js";
+import firebase from "./data/Firebase";
 
 
 const isauth = () => {

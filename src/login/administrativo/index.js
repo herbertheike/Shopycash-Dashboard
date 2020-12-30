@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Container, Input, Button, Title, Label } from "./style";
 import firebase from "../../data/Firebase";
 import history from "../../history";
+import base64 from 'base-64'
 
 class Login extends Component {
   constructor(props) {
@@ -10,15 +11,7 @@ class Login extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
   componentDidMount = () => {
-   /* firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-              localStorage.setItem("@token",user.getIdToken(true));
-              console.log(user.getIdToken(true))
-        history.push("/dashboard");
-      } else {
-        localStorage.removeItem("@token");
-      }
-    });*/
+
   };
 
   /*login = () => {
@@ -98,21 +91,24 @@ class Login extends Component {
       });
   };
 */
-
-/*login = () => {
+ login = async() => {
   const email = this.state.email;
   const pass = this.state.pass;
-  const [email, pass] = Buffer.from(hash, "base64").toString().split(":");
+  const credentials = btoa(email + ":" + pass);
+  
+  console.log(credentials)
 
-  const data  = fetch("http://192.168.15.68:3001/administrativo/login", {
+  await fetch("http://localhost:3001/administrativo/login", {
         method: 'GET',
-        headers: new Headers({'Authorization': 'Basic'})
-      }).then((response) =>response.json());
-      console.log(data)
-    }*/
+        headers: {
+          Authorization: "Basic " +credentials,
+      }}).then((response) =>response.json())
+        .then((result) => localStorage.setItem('@token',result.token))
+        .catch((error) => console.log(error));
 
 
-
+        history.push("/administrativo/dashboard");
+    }
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
@@ -139,7 +135,6 @@ class Login extends Component {
           onChange={this.handleChange}
         />
         <Button onClick={this.login}> Entrar </Button>
-        <Button onClick={this.cadastro}> Solicitar novo Cadastro </Button>
       </Container>
     );
   }
