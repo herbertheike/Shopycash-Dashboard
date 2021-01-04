@@ -28,7 +28,7 @@ class Dashboard extends React.Component {
       message: "",
       messageloja: "",
       ischecked: false,
-      id:null,
+      _id: "",
       nome: "",
       endereco: "",
       cnpj: "",
@@ -84,28 +84,12 @@ class Dashboard extends React.Component {
       siteedit:site,
       responsaveledit:responsavel,
       shoppingslugedit: shoppingslug});
-    console.log('SHOPPING--> ' +this.state.shoppingslugedit)
-    const shoppingslugedit = this.state.shoppingslugedit;
-   /* await fetch("http://localhost:3001/shopping/"+shoppingslugedit)
-      .then((res) => res.json())
-      .then((result) => this.setState({
-        nomeedit: JSON.stringify(result.shopping.shopping),
-        enderecoedit: result.endereco,
-        cnpjedit: result.cnpj,
-        telefoneedit: result.telefone,
-        emailedit: result.email,
-        siteedit: result.site,
-        responsaveledit: result.responsavel,
-        shoppingslugedit: result.shopping.shoppingslug,
-       }, console.log(result)))
-      .catch((error) => console.log(error))
-      .finally(() => this.setState({ isLoaded: false }));*/
   }
   openModalDelete = async (item)=> {
-    await this.setState({isModalDelOpen:true,
-      id:item})
-    const id = this.state.id;
-    console.log(id)
+    this.setState({
+      isModalDelOpen:true})
+      const id = item;
+      this.setState({_id: id}, () =>console.log(this.state._id))
   }
   afterOpenModal() {
     // references are now sync'd and can be accessed.
@@ -117,19 +101,21 @@ class Dashboard extends React.Component {
   closeDelModal(){
     this.setState({isModalDelOpen:false});
   }
-  deleteShopping = () => {
-    const id = this.state.id;
-     fetch("http://localhost:3001/administrativo/delete/"+id, {
+  deleteShopping =  () => {
+
+    const _id = this.state._id;
+    console.log(_id, 'new id')
+     fetch("http://localhost:3001/administrativo/delete/"+this.state._id, {
       method: "DELETE",
       headers: {
-        Accept: "Origin, X-Requested-With, Content-Type, Accept, Authorization",
-       'Access-Control-Allow-Methods': ' DELETE',
-       "Access-Control-Allow-Origin":"*",
+       Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("@token"),
       }})
-    .then((res) => res.json(console.log(res)))
+    .then((res) => res.json(localStorage.setItem("@message", JSON.stringify(res))))
     .catch((error) => console.log(error))
     .finally(() => this.setState({ isLoaded: false }));
+    
   }
 
 
@@ -164,7 +150,7 @@ class Dashboard extends React.Component {
   updateShopping = async () =>{
     
     const shoppingslugedit = this.state.shoppingslugedit;
-    
+    console.log('SHOPPING--> '+ shoppingslugedit)
         await fetch("http://localhost:3001/administrativo/update/"+shoppingslugedit, {
       method: "POST",
       headers: {
@@ -350,7 +336,6 @@ class Dashboard extends React.Component {
           onAfterOpen={this.afterOpenModal}
           onRequestClose={this.closeModal}
           style={this.state.customStyles}
-          contentLabel="Example Modal"
         >
  
           <div>
@@ -445,11 +430,10 @@ class Dashboard extends React.Component {
           onAfterOpen={this.afterOpenModal}
           onRequestClose={this.closeDelModal}
           style={this.state.customStyles}
-          contentLabel="Example Modal"
         ><div>
-            {this.state.id}
+            {this.state._id}
             <form>
-         <DeleteBt onclick={this.deleteShopping}>DELETE</DeleteBt>
+         <DeleteBt onclick={() =>this.deleteShopping()}>DELETE</DeleteBt>
          </form>
          </div>
          <button onClick={this.closeDelModal}>close</button>
