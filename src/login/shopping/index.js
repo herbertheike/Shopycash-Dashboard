@@ -7,7 +7,7 @@ import base64 from 'base-64'
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { email: "", pass: ""};
+    this.state = { email: "", pass: "", slug: ""};
     this.handleChange = this.handleChange.bind(this);
   }
   componentDidMount = () => {
@@ -91,14 +91,17 @@ class Login extends Component {
       });
   };
 */
+
  login = async() => {
   const email = this.state.email;
   const pass = this.state.pass;
-  const credentials = btoa(email + ":" + pass);
+  const slug = this.state.slug;
+  
+  const credentials = btoa(email + ":" + pass + ":" + slug);
   
   console.log(credentials)
 
-  await fetch("https://api-shopycash1.herokuapp.com/api/login", {
+  await fetch("http://localhost:3001/shopping/login", {
         method: 'GET',
         headers: {
           Authorization: "Basic " +credentials,
@@ -107,7 +110,7 @@ class Login extends Component {
         .catch((error) => console.log(error));
 
 
-        history.push("/administrativo/dashboard");
+        history.push("/administrativo/dashboard/");
     }
 
   handleChange(event) {
@@ -118,8 +121,14 @@ class Login extends Component {
     return (
       <Container>
         <Title>Seja bem vindo, faça login para continuar </Title>
-        <Label>Administrativo Shopycash</Label>
-
+        <Label>Acesso shopping</Label>
+        <Input
+          type="text"
+          name="slug"
+          placeholder="Informe seu usuario"
+          value={this.state.slug}
+          onChange={this.handleChange}
+        />
         <Input
           type="email"
           name="email"

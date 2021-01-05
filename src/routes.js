@@ -29,8 +29,15 @@ const Routes = () => (
         component={withRouter(Dashboard)}
       />
       <Route exact path="/" component={() => <div><h1>Shopy Cash</h1>
-      <p><a href="http://localhost:3000/administrativo/login">Painel Administrativo</a></p></div>
+      <p><a href="http://localhost:3000/administrativo/login">Painel Administrativo</a></p>
+      <p><a href="http://localhost:3000/shopping/login">Painel Shopping</a></p></div>
       } />
+    <Route exact path="/shopping/login" component={withRouter(Login)} />
+      <PrivateRoute
+        exact
+        path="/shopping/dashboard"  
+        component={withRouter(Dashboard)}
+      />
     </Switch>
   </Router>
 );

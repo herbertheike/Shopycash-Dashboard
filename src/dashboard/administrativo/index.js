@@ -68,7 +68,7 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    fetch("http://localhost:3001/shopping")
+    fetch("https://api-shopycash1.herokuapp.com/shopping")
       .then((res) => res.json())
       .then((result) => this.setState({ shoppingarray: result }))
       .catch((error) => console.log(error))
@@ -105,7 +105,7 @@ class Dashboard extends React.Component {
 
     const _id = this.state._id;
     console.log(_id, 'new id')
-     fetch("http://localhost:3001/administrativo/delete/"+this.state._id, {
+     fetch("https://api-shopycash1.herokuapp.com/administrativo/delete/"+this.state._id, {
       method: "DELETE",
       headers: {
        Accept: "application/json",
@@ -119,11 +119,12 @@ class Dashboard extends React.Component {
   }
 
 
-  cadastrarShopping = () => {
+  cadastrarShopping = async () => {
     // Simple POST request with a JSON body using fetch
-    fetch("http://localhost:3001/administrativo", {
+    await fetch("https://api-shopycash1.herokuapp.com/administrativo", {
       method: "POST",
       headers: {
+        
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("@token"),
@@ -145,13 +146,15 @@ class Dashboard extends React.Component {
         localStorage.setItem("@message", error);
         console.log(error);
       });
+
+      window.location.reload();
   };
 
   updateShopping = async () =>{
     
     const shoppingslugedit = this.state.shoppingslugedit;
     console.log('SHOPPING--> '+ shoppingslugedit)
-        await fetch("http://localhost:3001/administrativo/update/"+shoppingslugedit, {
+        await fetch("https://api-shopycash1.herokuapp.com/administrativo/update/"+shoppingslugedit, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -175,6 +178,8 @@ class Dashboard extends React.Component {
         localStorage.setItem("@message", error);
         console.log(error);
       });
+
+      window.location.reload();
   };
 
   logout() {
@@ -200,7 +205,7 @@ class Dashboard extends React.Component {
       <DashboardLayout>
         <Section>
           <Title>Cadastro de Shoppings</Title>
-<form>
+
           <Input
             style={{ width: "100%" }}
             type="text"
@@ -281,7 +286,7 @@ class Dashboard extends React.Component {
           <Button value="Submit" onClick={this.cadastrarShopping}>
             Cadastrar
           </Button>
-          </form>
+
         </Section>
         <Section>
           <Label>Shoppings</Label>
@@ -339,7 +344,7 @@ class Dashboard extends React.Component {
         >
  
           <div>
-          <form>
+
             {this.state.shoppingslugedit}
           <Input
             style={{ width: "100%" }}
@@ -421,7 +426,6 @@ class Dashboard extends React.Component {
           <Button value="Submit" onClick={this.updateShopping}>
             Alterar
           </Button>
-          </form>
           </div>
           <button onClick={this.closeModal}>close</button>
         </Modal>
@@ -432,9 +436,9 @@ class Dashboard extends React.Component {
           style={this.state.customStyles}
         ><div>
             {this.state._id}
-            <form>
+
          <DeleteBt onclick={() =>this.deleteShopping()}>DELETE</DeleteBt>
-         </form>
+
          </div>
          <button onClick={this.closeDelModal}>close</button>
           </Modal>
