@@ -1,7 +1,9 @@
 import React from "react";
 import { Router, Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Login from "./login/administrativo/index";
+import ShLogin from "./login/shopping/index";
 import Dashboard from "./dashboard/administrativo/index"
+import ShDashboard from "./dashboard/shopping/index"
 import history from "./history"
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -32,11 +34,11 @@ const Routes = () => (
       <p><a href="http://localhost:3000/administrativo/login">Painel Administrativo</a></p>
       <p><a href="http://localhost:3000/shopping/login">Painel Shopping</a></p></div>
       } />
-    <Route exact path="/shopping/login" component={withRouter(Login)} />
+    <Route exact path="/shopping/login" component={withRouter(ShLogin)} />
       <PrivateRoute
         exact
-        path="/shopping/dashboard"  
-        component={withRouter(Dashboard)}
+        path={"/shopping/"+localStorage.getItem("@slug")+"/dashboard" } 
+        component={withRouter(ShDashboard)}
       />
     </Switch>
   </Router>

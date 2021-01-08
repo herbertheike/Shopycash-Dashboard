@@ -18,7 +18,7 @@ import history from "../../history";
 import { DashboardLayout } from "../../components/Layout";
 import Icon from "awesome-react-icons";
 
-class Dashboard extends React.Component {
+class SbDashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,11 +46,6 @@ class Dashboard extends React.Component {
       siteedit: "",
       responsaveledit: "",
       shoppingslugedit: "",
-
-      nomeuser: "",
-      emailuser: "",
-      passuser: "",
-      userrole: "shopping",
 
       shoppingarray: [],
       isModalOpen: false,
@@ -125,9 +120,11 @@ class Dashboard extends React.Component {
 
 
   cadastrarShopping = async () => {
-      await fetch("https://api-shopycash1.herokuapp.com/administrativo", {
+    // Simple POST request with a JSON body using fetch
+    await fetch("https://api-shopycash1.herokuapp.com/administrativo", {
       method: "POST",
       headers: {
+        
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("@token"),
@@ -143,14 +140,14 @@ class Dashboard extends React.Component {
         shoppingslug: this.state.shoppingslug,
       }),
     })
-      .then((res) => res.json())
+      .then((res) => res.json(console.log(JSON.stringify(res))))
       .then((res) => localStorage.setItem("@message", JSON.stringify(res)))
       .catch((error) => {
         localStorage.setItem("@message", error);
         console.log(error);
       });
-      this.cadastrausuario();
 
+      window.location.reload();
   };
 
   updateShopping = async () =>{
@@ -175,7 +172,7 @@ class Dashboard extends React.Component {
             shoppingslug: this.state.shoppingslugedit,
           }),
         })
-      .then((res) => res.json())
+      .then((res) => res.json(console.log(JSON.stringify(res))))
       .then((res) => localStorage.setItem("@message", JSON.stringify(res)))
       .catch((error) => {
         localStorage.setItem("@message", error);
@@ -184,36 +181,6 @@ class Dashboard extends React.Component {
 
       window.location.reload();
   };
-
-/*-----------------------usuario shopping-------------------*/
-cadastrausuario = async () => {
-
-    await fetch("https://api-shopycash1.herokuapp.com/api/shopping/cadastro", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("@token"),
-    },
-    body: JSON.stringify({
-      nome: this.state.nomeuser,
-      email: this.state.emailuser,
-      pass: this.state.passuser,
-      userRole: this.state.userrole,
-      shoppingslug: this.state.shoppingslug,
-    }),
-  })
-    .then((res) => res.json())
-    .then((res) => localStorage.setItem("@message", JSON.stringify(res)))
-    .catch((error) => {
-      localStorage.setItem("@message", error);
-      console.log(error);
-    });
-    window.location.reload();
-
-}
-
-
 
   logout() {
     try {
@@ -237,8 +204,8 @@ cadastrausuario = async () => {
     return (
       <DashboardLayout>
         <Section>
-          <Title>Cadastro de Shoppings</Title>
-
+          <Title>Cadastro de Lojas</Title>
+          {localStorage.getItem("@user")} - {localStorage.getItem("@email")}
           <Input
             style={{ width: "100%" }}
             type="text"
@@ -314,56 +281,8 @@ cadastrausuario = async () => {
             required="true"
             onChange={this.handleChange}
           />
-          <hr />
-          <Title>Cadstro do usuariod do shopping: {this.state.nome}</Title>
-          
-          <Input
-            value={this.state.nomeuser}
-            style={{ width: "24%" }}
-            type="text"
-            placeholder="Nome do usuario"
-            name="nomeuser"
-            required="true"
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.emailuser}
-            style={{ width: "24%" }}
-            type="email"
-            placeholder="Email do usuario"
-            name="emailuser"
-            required="true"
-            onChange={this.handleChange}
-          />
 
-          <Input
-            value={this.state.passuser}
-            style={{ width: "24%" }}
-            type="text"
-            placeholder="Senha do usuario"
-            name="passuser"
-            required="true"
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.userrole}
-            style={{ width: "24%" }}
-            type="text"
-            placeholder="role"
-            name="userrole"
-            required="true"
-            disabled
-          />
-          <Input
-            value={this.state.shoppingslug}
-            style={{ width: "24%" }}
-            type="text"
-            placeholder="role"
-            name="shoppingslug"
-            required="true"
-            disabled
-          />
-          
+          <hr />
           <Button value="Submit" onClick={this.cadastrarShopping}>
             Cadastrar
           </Button>
@@ -565,4 +484,4 @@ cadastrausuario = async () => {
     this.handleChecked = this.handleChecked.bind(this);
      this.listsegmento();
 */
-export default Dashboard;
+export default SbDashboard;

@@ -7,7 +7,7 @@ import base64 from 'base-64'
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { email: "", pass: "", slug: ""};
+    this.state = { email: "", pass: "", nome: "", slug: ""};
     this.handleChange = this.handleChange.bind(this);
   }
   componentDidMount = () => {
@@ -95,22 +95,26 @@ class Login extends Component {
  login = async() => {
   const email = this.state.email;
   const pass = this.state.pass;
-  const slug = this.state.slug;
   
-  const credentials = btoa(email + ":" + pass + ":" + slug);
+  const credentials = btoa(email + ":" + pass);
   
   console.log(credentials)
 
-  await fetch("http://localhost:3001/shopping/login", {
+  await fetch("http://localhost:3001/api/shopping/login", {
         method: 'GET',
         headers: {
           Authorization: "Basic " +credentials,
       }}).then((response) =>response.json())
-        .then((result) => localStorage.setItem('@token',result.token))
+        .then((result) => this.setState({slug: result.user.shoppingslug ,nome:result.user.nome, token: result.token}))
         .catch((error) => console.log(error));
-
-
-        history.push("/administrativo/dashboard/");
+        console.log(this.state.user)
+          localStorage.setItem("@token", this.state.token);
+          localStorage.setItem("@nome", this.state.nome);
+          localStorage.setItem("@slug", this.state.slug);
+          localStorage.setItem("@email", email)
+        
+        history.push("/shopping/"+localStorage.getItem("@slug")+"/dashboard/");
+    ;
     }
 
   handleChange(event) {
@@ -122,13 +126,6 @@ class Login extends Component {
       <Container>
         <Title>Seja bem vindo, faça login para continuar </Title>
         <Label>Acesso shopping</Label>
-        <Input
-          type="text"
-          name="slug"
-          placeholder="Informe seu usuario"
-          value={this.state.slug}
-          onChange={this.handleChange}
-        />
         <Input
           type="email"
           name="email"
