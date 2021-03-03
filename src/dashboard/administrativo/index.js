@@ -63,7 +63,9 @@ class Dashboard extends React.Component {
           bottom                : 'auto',
           marginRight           : '-50%',
           transform             : 'translate(-50%, -50%)'
-        }
+        },
+        latitude:0,
+        longitude:0
       }
     };
     this.handleChange = this.handleChange.bind(this);
@@ -73,7 +75,7 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    fetch("https://api-shopycash1.herokuapp.com/shopping")
+    fetch("https://api-shopycash1.herokuapp.com/indexsh")
       .then((res) => res.json())
       .then((result) => this.setState({ shoppingarray: result }))
       .catch((error) => console.log(error))
@@ -94,7 +96,8 @@ class Dashboard extends React.Component {
     this.setState({
       isModalDelOpen:true})
       const id = item;
-      this.setState({_id: id}, () =>console.log(this.state._id))
+      //console.log(item+' esse é o item\n'+ id+ 'esse é o id')
+      this.setState({_id: id})
   }
   afterOpenModal() {
     // references are now sync'd and can be accessed.
@@ -106,12 +109,12 @@ class Dashboard extends React.Component {
   closeDelModal(){
     this.setState({isModalDelOpen:false});
   }
-  deleteShopping =  () => {
 
-    const _id = this.state._id;
+  deleteShopping = async (item) => {
+    const _id = item;
     console.log(_id, 'new id')
-     fetch("https://api-shopycash1.herokuapp.com/administrativo/delete/"+this.state._id, {
-      method: "DELETE",
+     await fetch("https://api-shopycash1.herokuapp.com/delete/"+_id, {
+      method: "GET",
       headers: {
        Accept: "application/json",
         "Content-Type": "application/json",
@@ -121,11 +124,13 @@ class Dashboard extends React.Component {
     .catch((error) => console.log(error))
     .finally(() => this.setState({ isLoaded: false }));
     
+    //window.location.reload();
+    
   }
 
 
   cadastrarShopping = async () => {
-      await fetch("https://api-shopycash1.herokuapp.com/administrativo", {
+      await fetch("https://api-shopycash1.herokuapp.com/insert/"+this.state.shoppingslug, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -154,10 +159,9 @@ class Dashboard extends React.Component {
   };
 
   updateShopping = async () =>{
-    
     const shoppingslugedit = this.state.shoppingslugedit;
     console.log('SHOPPING--> '+ shoppingslugedit)
-        await fetch("https://api-shopycash1.herokuapp.com/administrativo/update/"+shoppingslugedit, {
+      await fetch("https://api-shopycash1.herokuapp.com/update/"+shoppingslugedit, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -212,8 +216,6 @@ cadastrausuario = async () => {
     window.location.reload();
 
 }
-
-
 
   logout() {
     try {
@@ -315,7 +317,7 @@ cadastrausuario = async () => {
             onChange={this.handleChange}
           />
           <hr />
-          <Title>Cadstro do usuariod do shopping: {this.state.nome}</Title>
+          <Title>Cadastro do usuario do shopping: {this.state.nome}</Title>
           
           <Input
             value={this.state.nomeuser}
@@ -388,27 +390,27 @@ cadastrausuario = async () => {
             {shoppingarray.map((item) => {
               return (
                 <tbody style={{fontFamily:'Helvetica', fontSize:'12px', textAlign: 'center'}}
-                  key={item.shopping._id}>
+                  key={item._id}>
                   <tr style={{borderWidth:'1px',height:'50px'}} >
-                    <td style={{borderWidth:'1px'}}>{item.shopping.nome}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.endereco}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.cnpj}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.telefone}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.email}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.site}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.responsavel}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.shoppingslug}</td>
+                    <td style={{borderWidth:'1px'}}>{item.nome}</td>
+                    <td style={{borderWidth:'1px'}}>{item.endereco}</td>
+                    <td style={{borderWidth:'1px'}}>{item.cnpj}</td>
+                    <td style={{borderWidth:'1px'}}>{item.telefone}</td>
+                    <td style={{borderWidth:'1px'}}>{item.email}</td>
+                    <td style={{borderWidth:'1px'}}>{item.site}</td>
+                    <td style={{borderWidth:'1px'}}>{item.responsavel}</td>
+                    <td style={{borderWidth:'1px'}}>{item.shoppingslug}</td>
                     <td style={{borderWidth:'1px'}}>
                       <EditBt onClick={() => this.openModal(
-                        item.shopping.nome,
-                        item.shopping.endereco,
-                        item.shopping.cnpj,
-                        item.shopping.telefone,
-                        item.shopping.email,
-                        item.shopping.site,
-                        item.shopping.responsavel,
-                        item.shopping.shoppingslug)}><Icon name='edit-pencil-simple' />EDITAR</EditBt>
-                      <DeleteBt onClick={() => this.openModalDelete(item.shopping._id)}><Icon name="x"/>EXCLUIR</DeleteBt>
+                        item.nome,
+                        item.endereco,
+                        item.cnpj,
+                        item.telefone,
+                        item.email,
+                        item.site,
+                        item.responsavel,
+                        item.shoppingslug)}><Icon name='edit-pencil-simple' />EDITAR</EditBt>
+                      <DeleteBt onClick={() => this.deleteShopping(item._id)}><Icon name="x"/>EXCLUIR</DeleteBt>
                       </td>
                   </tr>
                 </tbody>
@@ -518,7 +520,7 @@ cadastrausuario = async () => {
         ><div>
             {this.state._id}
 
-         <DeleteBt onclick={() =>this.deleteShopping()}>DELETE</DeleteBt>
+         <Button value="Submit" onclick={() => this.deleteShopping()}>DELETE</Button>
 
          </div>
          <button onClick={this.closeDelModal}>close</button>
