@@ -124,7 +124,7 @@ class Dashboard extends React.Component {
     .catch((error) => console.log(error))
     .finally(() => this.setState({ isLoaded: false }));
     
-    //window.location.reload();
+    window.location.reload();
     
   }
 
@@ -240,7 +240,7 @@ cadastrausuario = async () => {
       <DashboardLayout>
         <Section>
           <Title>Cadastro de Shoppings</Title>
-
+          <Section>
           <Input
             style={{ width: "100%" }}
             type="text"
@@ -260,10 +260,22 @@ cadastrausuario = async () => {
             required="true"
             onChange={this.handleChange}
           />
-
+          </Section>
+          <Section>
+            <Input
+            value={this.state.email}
+            style={{ width: "50%" }}
+            type="email"
+            placeholder="Email"
+            name="email"
+            required="true"
+            onChange={this.handleChange}
+          />
+          </Section>
+          <Section>
           <Input
             value={this.state.cnpj}
-            style={{ width: "25%" }}
+            style={{ width: "24.5%" }}
             type="number"
             placeholder="CNPJ"
             name="cnpj"
@@ -279,16 +291,8 @@ cadastrausuario = async () => {
             required="true"
             onChange={this.handleChange}
           />
-
-          <Input
-            value={this.state.email}
-            style={{ width: "48.51%" }}
-            type="email"
-            placeholder="Email"
-            name="email"
-            required="true"
-            onChange={this.handleChange}
-          />
+</Section>
+<Section>
           <Input
             value={this.state.site}
             style={{ width: "50%" }}
@@ -297,10 +301,11 @@ cadastrausuario = async () => {
             name="site"
             onChange={this.handleChange}
           />
-
+</Section>
+<Section>
           <Input
             value={this.state.responsavel}
-            style={{ width: "24%" }}
+            style={{ width: "24.5%" }}
             type="text"
             placeholder="Responsavel"
             name="responsavel"
@@ -309,13 +314,14 @@ cadastrausuario = async () => {
           />
           <Input
             value={this.state.shoppingslug}
-            style={{ width: "24%" }}
+            style={{ width: "25%" }}
             type="text"
             placeholder="Shoppign slug"
             name="shoppingslug"
             required="true"
             onChange={this.handleChange}
           />
+          </Section>
           <hr />
           <Title>Cadastro do usuario do shopping: {this.state.nome}</Title>
           
@@ -365,10 +371,11 @@ cadastrausuario = async () => {
             required="true"
             disabled
           />
-          
+          <Section>
           <Button value="Submit" onClick={this.cadastrarShopping}>
             Cadastrar
           </Button>
+          </Section>
 
         </Section>
         <Section>
