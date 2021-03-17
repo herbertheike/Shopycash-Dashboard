@@ -34,7 +34,7 @@ const Routes = () => (
       <p><a href="http://localhost:3000/administrativo/login">Painel Administrativo</a></p>
       <p><a href="http://localhost:3000/shopping/login">Painel Shopping</a></p></div>
       } />
-    <Route exact path="/shopping/login" component={withRouter(ShLogin)} />
+    <Route exact path={"/shopping/login"} component={withRouter(ShLogin)} />
       <PrivateRoute
         exact
         path={"/shopping/"+localStorage.getItem("@slug")+"/dashboard" } 

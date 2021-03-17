@@ -7,7 +7,7 @@ import base64 from 'base-64'
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { email: "", pass: "", nome: "", slug: ""};
+    this.state = { email: "", pass: "", nome: "", slug: "", shid:"", result:"", array:[]};
     this.handleChange = this.handleChange.bind(this);
   }
   componentDidMount = () => {
@@ -100,18 +100,18 @@ class Login extends Component {
   
   console.log(credentials)
 
-  await fetch("http://localhost:3001/api/shopping/login", {
+  await fetch("https://api-shopycash1.herokuapp.com/api/shopping/login", {
         method: 'GET',
         headers: {
           Authorization: "Basic " +credentials,
       }}).then((response) =>response.json())
-        .then((result) => this.setState({slug: result.user.shoppingslug ,nome:result.user.nome, token: result.token}))
+        .then((response) => this.setState({shid:response.user.shopping_id, nome:response.user.nome, token: response.token}))
         .catch((error) => console.log(error));
-        console.log(this.state.user)
           localStorage.setItem("@token", this.state.token);
           localStorage.setItem("@nome", this.state.nome);
           localStorage.setItem("@slug", this.state.slug);
           localStorage.setItem("@email", email)
+          localStorage.setItem("@shoppingid", this.state.shid)
         
         history.push("/shopping/"+localStorage.getItem("@slug")+"/dashboard/");
     ;
@@ -127,6 +127,13 @@ class Login extends Component {
         <Title>Seja bem vindo, faça login para continuar </Title>
         <Label>Acesso shopping</Label>
         <Input
+          type="text"
+          name="slug"
+          placeholder="Informe seu shopping"
+          value={this.state.slug}
+          onChange={this.handleChange}
+        />
+        <Input
           type="email"
           name="email"
           placeholder="Informe seu email"
@@ -140,6 +147,7 @@ class Login extends Component {
           value={this.state.pass}
           onChange={this.handleChange}
         />
+        
         <Button onClick={this.login}> Entrar </Button>
       </Container>
     );

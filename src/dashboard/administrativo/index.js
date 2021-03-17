@@ -37,6 +37,8 @@ class Dashboard extends React.Component {
       site: "",
       responsavel: "",
       shoppingslug: "",
+
+      insertid:"",
       
       nomeedit: "",
       enderecoedit: "",
@@ -149,7 +151,7 @@ class Dashboard extends React.Component {
       }),
     })
       .then((res) => res.json())
-      .then((res) => localStorage.setItem("@message", JSON.stringify(res)))
+      .then((res) => localStorage.setItem("@shres", res._id))
       .catch((error) => {
         localStorage.setItem("@message", error);
         console.log(error);
@@ -205,10 +207,11 @@ cadastrausuario = async () => {
       pass: this.state.passuser,
       userRole: this.state.userrole,
       shoppingslug: this.state.shoppingslug,
+      shopping_id: localStorage.getItem("@shres")
     }),
   })
     .then((res) => res.json())
-    .then((res) => localStorage.setItem("@message", JSON.stringify(res)))
+    .then((res) => localStorage.setItem("@messageuser", JSON.stringify(res)))
     .catch((error) => {
       localStorage.setItem("@message", error);
       console.log(error);
@@ -314,7 +317,7 @@ cadastrausuario = async () => {
           />
           <Input
             value={this.state.shoppingslug}
-            style={{ width: "25%" }}
+            style={{ width: "25 %" }}
             type="text"
             placeholder="Shoppign slug"
             name="shoppingslug"

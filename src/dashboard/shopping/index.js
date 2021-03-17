@@ -29,25 +29,28 @@ class SbDashboard extends React.Component {
       messageloja: "",
       ischecked: false,
       _id: "",
-      nome: "",
-      endereco: "",
+      nomefantasia: "",
+      razaosocial: "",
+      shopping: "",
       cnpj: "",
-      telefone: "",
       email: "",
       site: "",
+      telefone: "",
       responsavel: "",
-      shoppingslug: "",
+      lojaslug: "",
+      shoppingid:localStorage.getItem("@shoppingid"),
       
-      nomeedit: "",
-      enderecoedit: "",
+      nomefantasiaedit: "",
+      razaosocialedit: "",
+      shoppingedit:"",
       cnpjedit: "",
-      telefoneedit: "",
       emailedit: "",
       siteedit: "",
+      telefoneedit: "",
       responsaveledit: "",
-      shoppingslugedit: "",
+      lojaslugedit: "",
 
-      shoppingarray: [],
+      lojaarray: [],
       isModalOpen: false,
       isModalDelOpen:false,
       customStyles:{
@@ -68,14 +71,14 @@ class SbDashboard extends React.Component {
   }
 
   componentDidMount() {
-    fetch("https://api-shopycash1.herokuapp.com/shopping")
+    fetch("https://api-shopycash1.herokuapp.com/indexby/shopping/"+localStorage.getItem("@shoppingid"))
       .then((res) => res.json())
-      .then((result) => this.setState({ shoppingarray: result }))
+      .then((result) => this.setState({ lojaarray: result }))
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }), []);
   }
   openModal= async (nome, endereco, cnpj, telefone,email, site, responsavel, shoppingslug)=> {
-    this.setState({isModalOpen:true,
+    this.setState({isModalOpen:true, 
       nomeedit: nome,
       enderecoedit:endereco,
       cnpjedit:cnpj,
@@ -101,76 +104,78 @@ class SbDashboard extends React.Component {
   closeDelModal(){
     this.setState({isModalDelOpen:false});
   }
-  deleteShopping =  () => {
+  deleteloja =  (item) => {
 
-    const _id = this.state._id;
+    const _id = item;
     console.log(_id, 'new id')
-     fetch("https://api-shopycash1.herokuapp.com/administrativo/delete/"+this.state._id, {
-      method: "DELETE",
+     fetch("https://api-shopycash1.herokuapp.com/deletestore/"+_id, {
+      method: "GET",
       headers: {
        Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("@token"),
       }})
-    .then((res) => res.json(localStorage.setItem("@message", JSON.stringify(res))))
+    .then((res) => res.json(localStorage.setItem("@delmessage", JSON.stringify(res))))
     .catch((error) => console.log(error))
     .finally(() => this.setState({ isLoaded: false }));
     
   }
 
 
-  cadastrarShopping = async () => {
+  cadastrarloja = async () => {
     // Simple POST request with a JSON body using fetch
-    await fetch("https://api-shopycash1.herokuapp.com/administrativo", {
+    await fetch("https://api-shopycash1.herokuapp.com/insernewstore/"+localStorage.getItem("@slug"), {
       method: "POST",
       headers: {
-        
-        Accept: "application/json",
+        "Accept": "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("@token"),
       },
       body: JSON.stringify({
-        nome: this.state.nome,
-        endereco: this.state.endereco,
+        nomefantasia: this.state.nomefantasia,
+        razaosocial: this.state.razaosocial,
+        shopping: this.state.shopping,
         cnpj: this.state.cnpj,
-        telefone: this.state.telefone,
         email: this.state.email,
         site: this.state.site,
+        telefone: this.state.telefone,
         responsavel: this.state.responsavel,
-        shoppingslug: this.state.shoppingslug,
+        lojaslug: this.state.lojaslug,
+        shopping_id: this.state.shoppingid,
       }),
     })
-      .then((res) => res.json(console.log(JSON.stringify(res))))
-      .then((res) => localStorage.setItem("@message", JSON.stringify(res)))
+      .then((res)=>res.json())
+      .then((res) => localStorage.setItem("@message", res))
       .catch((error) => {
-        localStorage.setItem("@message", error);
+        localStorage.setItem("@error", error);
         console.log(error);
       });
 
       window.location.reload();
   };
 
-  updateShopping = async () =>{
+  updateloja = async () =>{
     
-    const shoppingslugedit = this.state.shoppingslugedit;
-    console.log('SHOPPING--> '+ shoppingslugedit)
-        await fetch("https://api-shopycash1.herokuapp.com/administrativo/update/"+shoppingslugedit, {
+    const lojaslugedit = this.state.lojaslugedit;
+    console.log('SHOPPING--> '+ lojaslugedit)
+        await fetch("https://api-shopycash1.herokuapp.com/updatestore/"+lojaslugedit, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("@token"),
       },
-          body: JSON.stringify({
-            nome: this.state.nomeedit,
-            endereco: this.state.enderecoedit,
-            cnpj: this.state.cnpjedit,
-            telefone: this.state.telefoneedit,
-            email: this.state.emailedit,
-            site: this.state.siteedit,
-            responsavel: this.state.responsaveledit,
-            shoppingslug: this.state.shoppingslugedit,
-          }),
+      body: JSON.stringify({
+        nomefantasia: this.state.nomefantasia,
+        razaosocial: this.state.razaosocial,
+        shopping: this.state.shopping,
+        cnpj: this.state.cnpj,
+        email: this.state.email,
+        site: this.state.site,
+        telefone: this.state.telefone,
+        responsavel: this.state.responsavel,
+        lojaslug: this.state.lojaslug,
+      }),
         })
       .then((res) => res.json(console.log(JSON.stringify(res))))
       .then((res) => localStorage.setItem("@message", JSON.stringify(res)))
@@ -200,7 +205,7 @@ class SbDashboard extends React.Component {
   };
 
   render() {
-    const { shoppingarray } = this.state;
+    const { lojaarray } = this.state;
     return (
       <DashboardLayout>
         <Section>
@@ -209,19 +214,28 @@ class SbDashboard extends React.Component {
           <Input
             style={{ width: "100%" }}
             type="text"
-            placeholder="Shopping"
+            placeholder="Nome Fantasia"
             required="true"
-            name="nome"
-            value={this.state.nome}
+            name="nomefantasia"
+            value={this.state.nomefantasia}
+            onChange={this.handleChange}
+          />
+          <Input
+            style={{ width: "100%" }}
+            type="text"
+            placeholder="Razão Social"
+            required="true"
+            name="razaosocial"
+            value={this.state.razaosocial}
             onChange={this.handleChange}
           />
 
           <Input
-            value={this.state.endereco}
+            value={this.state.shopping}
             style={{ width: "100%" }}
             type="text"
-            placeholder="Endereço"
-            name="endereco"
+            placeholder="Shopping"
+            name="shopping"
             required="true"
             onChange={this.handleChange}
           />
@@ -235,15 +249,7 @@ class SbDashboard extends React.Component {
             required="true"
             onChange={this.handleChange}
           />
-          <Input
-            value={this.state.telefone}
-            style={{ width: "25%" }}
-            type="tel"
-            placeholder="Telefone"
-            name="telefone"
-            required="true"
-            onChange={this.handleChange}
-          />
+          
 
           <Input
             value={this.state.email}
@@ -262,6 +268,15 @@ class SbDashboard extends React.Component {
             name="site"
             onChange={this.handleChange}
           />
+          <Input
+            value={this.state.telefone}
+            style={{ width: "25%" }}
+            type="tel"
+            placeholder="Telefone"
+            name="telefone"
+            required="true"
+            onChange={this.handleChange}
+          />
 
           <Input
             value={this.state.responsavel}
@@ -273,17 +288,17 @@ class SbDashboard extends React.Component {
             onChange={this.handleChange}
           />
           <Input
-            value={this.state.shoppingslug}
+            value={this.state.lojaslug}
             style={{ width: "24%" }}
             type="text"
-            placeholder="Shoppign slug"
-            name="shoppingslug"
+            placeholder="Loja Slug"
+            name="lojaslug"
             required="true"
             onChange={this.handleChange}
           />
 
           <hr />
-          <Button value="Submit" onClick={this.cadastrarShopping}>
+          <Button value="Submit" onClick={this.cadastrarloja}>
             Cadastrar
           </Button>
 
@@ -294,40 +309,43 @@ class SbDashboard extends React.Component {
             <thead style={{ backgroundColor:'rgba(254,145,29,0.5)'}}>
               <tr>
                 <th>NOME</th>
-                <th>ENDEREÇO</th>
+                <th>RAZÃO SOCIAL</th>
+                <th>SHOPPING</th>
                 <th>CNPJ</th>
-                <th>TELEFONE</th>
                 <th>EMAIL</th>
                 <th>SITE</th>
+                <th>TELEFONE</th>
                 <th>RESPONSAVEL</th>
                 <th>SLUG</th>
                 <th>AÇÕES</th>
               </tr>
             </thead>
-            {shoppingarray.map((item) => {
+            {lojaarray.map((item) => {
               return (
                 <tbody style={{fontFamily:'Helvetica', fontSize:'12px', textAlign: 'center'}}
-                  key={item.shopping._id}>
+                  key={item._id}>
                   <tr style={{borderWidth:'1px',height:'50px'}} >
-                    <td style={{borderWidth:'1px'}}>{item.shopping.nome}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.endereco}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.cnpj}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.telefone}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.email}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.site}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.responsavel}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping.shoppingslug}</td>
-                    <td style={{borderWidth:'1px'}}>
+                    <td style={{borderWidth:'1px'}}>{item.nomefantasia}</td>
+                    <td style={{borderWidth:'1px'}}>{item.razaosocial}</td>
+                    <td style={{borderWidth:'1px'}}>{item.shopping}</td>
+                    <td style={{borderWidth:'1px'}}>{item.cnpj}</td>
+                    <td style={{borderWidth:'1px'}}>{item.email}</td>
+                    <td style={{borderWidth:'1px'}}>{item.site}</td>
+                    <td style={{borderWidth:'1px'}}>{item.telefone}</td>
+                    <td style={{borderWidth:'1px'}}>{item.responsavel}</td>
+                    <td style={{borderWidth:'1px'}}>{item.slug}</td>
+                    <td style={{borderWidth:'1px', alignItems:'center'}}>
                       <EditBt onClick={() => this.openModal(
-                        item.shopping.nome,
-                        item.shopping.endereco,
-                        item.shopping.cnpj,
-                        item.shopping.telefone,
-                        item.shopping.email,
-                        item.shopping.site,
-                        item.shopping.responsavel,
-                        item.shopping.shoppingslug)}><Icon name='edit-pencil-simple' />EDITAR</EditBt>
-                      <DeleteBt onClick={() => this.openModalDelete(item.shopping._id)}><Icon name="x"/>EXCLUIR</DeleteBt>
+                        item.nomefantasia,
+                        item.razaosocial,
+                        item.shopping,
+                        item.cnpj,
+                        item.email,
+                        item.site,
+                        item.telefone,
+                        item.responsavel,
+                        item.slug)}><Icon name='edit-pencil-simple' />EDITAR</EditBt>
+                      <DeleteBt onClick={() => this.openModalDelete(item._id)}><Icon name="x"/>EXCLUIR</DeleteBt>
                       </td>
                   </tr>
                 </tbody>
@@ -423,7 +441,7 @@ class SbDashboard extends React.Component {
           />
 
           <hr />
-          <Button value="Submit" onClick={this.updateShopping}>
+          <Button value="Submit" onClick={this.updateloja}>
             Alterar
           </Button>
           </div>
@@ -437,7 +455,7 @@ class SbDashboard extends React.Component {
         ><div>
             {this.state._id}
 
-         <DeleteBt onclick={() =>this.deleteShopping()}>DELETE</DeleteBt>
+         <DeleteBt onclick={() =>this.deleteloja()}>DELETE</DeleteBt>
 
          </div>
          <button onClick={this.closeDelModal}>close</button>
