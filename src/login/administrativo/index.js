@@ -101,9 +101,9 @@ class Login extends Component {
   await fetch("https://api-shopycash1.herokuapp.com/api/login", {
         method: 'GET',
         headers: {
-          Authorization: "Basic " +credentials,
+          Authorization: "Basic "+credentials,
       }}).then((response) =>response.json())
-        .then((result) => localStorage.setItem('@token',result.token))
+        .then((response) => localStorage.setItem('@token',response.token))
         .catch((error) => console.log(error));
 
 

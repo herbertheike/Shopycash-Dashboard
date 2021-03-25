@@ -22,28 +22,31 @@ export const Input = styled.input`
   color: #000;
   align-items: flex-start;
   justify-content: center;
-  background: rgba(254, 145, 29, 0.2);
+  background: rgba(94, 170, 168, 0.2);
   border-radius: 5px;
   &:hover {
-    background: rgba(254, 145, 29, 0.5);
+    background: rgba(94, 170, 168, 0.5);
     color: #000;
   }
   &:focus {
-    background: rgba(254, 145, 29, 0.5);
+    background: rgba(94, 170, 168, 0.5);
     color: #000;
     border: none;
   }
+  &::placeholder {
+    textOverflow: 'ellipsis !important',
+    color: 'blue'
 `;
 export const InputFile = styled.input`
   width: 400px;
   padding: 10px;
   align-items: center;
   border: none;
-  background: rgba(246, 102, 19, 0.2);
-  border-radius: 3px;
+  background: rgba(94, 170, 168, 0.2);
+  border-radius: 5px;
   margin-left: 5px;
   &:hover {
-    background: rgba(80, 79, 162, 0.2);
+    background: rgba(94, 170, 168, 0.5);
     color: #000;
   }
 `;

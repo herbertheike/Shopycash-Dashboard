@@ -17,6 +17,7 @@ import {
 import history from "../../history";
 import { DashboardLayout } from "../../components/Layout";
 import Icon from "awesome-react-icons";
+import Geocode from "react-geocode";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -37,6 +38,7 @@ class Dashboard extends React.Component {
       site: "",
       responsavel: "",
       shoppingslug: "",
+      
 
       insertid:"",
       
@@ -77,6 +79,7 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
+    Geocode.setApiKey('AIzaSyBSKF5Edf4EO1jFwQNR6y4YTWO3kvZ3afg')
     fetch("https://api-shopycash1.herokuapp.com/indexsh")
       .then((res) => res.json())
       .then((result) => this.setState({ shoppingarray: result }))
@@ -132,6 +135,17 @@ class Dashboard extends React.Component {
 
 
   cadastrarShopping = async () => {
+   await Geocode.fromAddress(this.state.endereco)
+        .then((response)=>{
+          const {lat, long} = response.results[0].geometry.location;
+          console.log(lat, long);
+          localStorage.setItem("lat",lat)
+          this.setState({latitude:lat, longitude:long})
+        },
+        (error)=>{
+          console.log(error);
+        }
+    );
       await fetch("https://api-shopycash1.herokuapp.com/insert/"+this.state.shoppingslug, {
       method: "POST",
       headers: {
@@ -147,6 +161,8 @@ class Dashboard extends React.Component {
         email: this.state.email,
         site: this.state.site,
         responsavel: this.state.responsavel,
+        latitude: this.state.latitude,
+        long: this.state.longitude,
         shoppingslug: this.state.shoppingslug,
       }),
     })
@@ -216,7 +232,7 @@ cadastrausuario = async () => {
       localStorage.setItem("@message", error);
       console.log(error);
     });
-    window.location.reload();
+    //window.location.reload();
 
 }
 
@@ -529,7 +545,6 @@ cadastrausuario = async () => {
           style={this.state.customStyles}
         ><div>
             {this.state._id}
-
          <Button value="Submit" onclick={() => this.deleteShopping()}>DELETE</Button>
 
          </div>
