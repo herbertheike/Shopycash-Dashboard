@@ -51,6 +51,11 @@ export const Sidebar = () => {
               {
                 title: 'Cadastro',
                 itemId: '/administrativo/dashboard',
+                elemBefore: () => <Icon name="book" />,
+              },
+              {
+                title: 'Usuarios',
+                itemId: '/administrativo/dashboard',
                 elemBefore: () => <Icon name="users" />,
               },
             ]}
@@ -63,7 +68,7 @@ export const Sidebar = () => {
               {
                 title: "Sair",
                 itemId: "/",
-                elemBefore: () => <Icon name="activity" />
+                elemBefore: () => <Icon name="log-out" />
               }
             ]}
             onSelect={logout}

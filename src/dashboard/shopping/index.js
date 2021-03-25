@@ -400,10 +400,11 @@ class SbDashboard extends React.Component {
             required="true"
             onChange={this.handleChange}
           />
-          <Section style={{padding:0}}>
-            <Label style={{padding:10, display:'block'}} for="logo">Selecione um logo</Label>
+          <div style={{padding:0,display:'flex', flexDirection:'row', justifyContent:'right'}}>
+           <div style={{flexDirection:'column',  padding:10}}>
+           <Label style={{padding:10,display:'block'}} for="logo">Selecione um logo</Label>
               <InputFile
-                style={{ width: "50%" }}
+                style={{ width: "100%"}}
                 Label="LOGO"
                 type="file"
                 name="logo"
@@ -412,12 +413,12 @@ class SbDashboard extends React.Component {
                 required="true"
                 onChange={this.onLogoChange}
               />
-              <img src={this.state.logobase64} style={{paddingTop:10, width:200,height: 200,overflow: "hidden",borderRadius: "50%"}}/>
-          </Section>
-          <Section style={{padding:0}}>
+              <img src={this.state.logobase64} style={{borderWidht:1,paddingTop:10, width:250,height: 250,overflow: "hidden",borderRadius: "50%"}}/>
+              </div>
+              <div style={{flexDirection:'column',  padding:10}}>
             <Label style={{padding:10, display:'block'}}for="capa">Selecione uma capa</Label>
               <InputFile
-                style={{ width: "50%" }}
+                style={{ width: "100%" }}
                 label="CAPA"
                 type="file"
                 name="capa"
@@ -426,22 +427,22 @@ class SbDashboard extends React.Component {
                 required="true"
                 onChange={this.onCapaChange}
               />
-              <img src={this.state.capabase64} style={{height:200, overflow: "hidden", paddingTop:10}}/>
-          </Section>
-          <Section>
+              <img src={this.state.capabase64} style={{borderWidht:1,height:250, overflow: "hidden", paddingTop:10}}/>
+              </div>
+          </div>
+          <div>
             <Label>Segmentos</Label>
                 {this.state.segmentolist.map((seg, index) => {
                       return (
-                        <div key={seg._id} style={{ display: 'block', width:'12em', fontFamily: "Arial"}}>
-                            <div >
-                              <input id={index} type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}/>
-                              <span class="label-text">{seg.nome}</span>
-                            </div>
+                        <div>
+                              <input id={index} type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
+                              style={{padding:10}}/>
+                              <span style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
                         </div>
                       );
                     })}
                     <br />
-          </Section>
+          </div>
           <hr />
           <Button value="Submit" onClick={this.cadastrarloja}>
             Cadastrar
