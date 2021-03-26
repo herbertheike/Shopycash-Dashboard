@@ -289,7 +289,6 @@ class SbDashboard extends React.Component {
         }
 
           handleChecked(event) {
-            let newarr = [...this.state.segmento];
             let newcheck = '';
             if(this.state.segmento.length<=0 && event.target.checked){
               newcheck = event.target.value
@@ -307,9 +306,9 @@ class SbDashboard extends React.Component {
     return (
       <DashboardLayout>
         <Section>
-        {this.state.shdata.map((item)=>{
+        {this.state.shdata.map((item, index)=>{
           return(
-          <Title>
+          <Title key={item.shopping._id}>
             Cadastro de Lojas - {item.shopping.shopping}
           </Title>
           )
@@ -319,7 +318,7 @@ class SbDashboard extends React.Component {
             style={{ width: "99%" }}
             type="text"
             placeholder="Nome Fantasia"
-            required="true"
+            required={true}
             name="nomefantasia"
             value={this.state.nomefantasia}
             onChange={this.handleChange}
@@ -328,7 +327,7 @@ class SbDashboard extends React.Component {
             style={{ width: "99%" }}
             type="text"
             placeholder="Razão Social"
-            required="true"
+            required={true}
             name="razaosocial"
             value={this.state.razaosocial}
             onChange={this.handleChange}
@@ -340,7 +339,7 @@ class SbDashboard extends React.Component {
             type="text"
             placeholder="Shopping"
             name="shopping"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
 
@@ -350,7 +349,7 @@ class SbDashboard extends React.Component {
             type="number"
             placeholder="CNPJ"
             name="cnpj"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
           
@@ -361,7 +360,7 @@ class SbDashboard extends React.Component {
             type="email"
             placeholder="Email"
             name="email"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
           <Input
@@ -378,7 +377,7 @@ class SbDashboard extends React.Component {
             type="tel"
             placeholder="Telefone"
             name="telefone"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
 
@@ -388,7 +387,7 @@ class SbDashboard extends React.Component {
             type="text"
             placeholder="Responsavel"
             name="responsavel"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
           <Input
@@ -397,12 +396,12 @@ class SbDashboard extends React.Component {
             type="text"
             placeholder="Loja Slug"
             name="lojaslug"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
           <div style={{padding:0,display:'flex', flexDirection:'row', justifyContent:'right'}}>
            <div style={{flexDirection:'column',  padding:10}}>
-           <Label style={{padding:10,display:'block'}} for="logo">Selecione um logo</Label>
+           <Label style={{padding:10,display:'block'}} htmlFor="logo">Selecione um logo</Label>
               <InputFile
                 style={{ width: "100%"}}
                 Label="LOGO"
@@ -410,13 +409,13 @@ class SbDashboard extends React.Component {
                 name="logo"
                 id="logo"
                 accept=".jpeg, .png, .jpg"
-                required="true"
+                required={true}
                 onChange={this.onLogoChange}
               />
-              <img src={this.state.logobase64} style={{borderWidht:1,paddingTop:10, width:250,height: 250,overflow: "hidden",borderRadius: "50%"}}/>
+              <img alt="logo" src={this.state.logobase64} style={{borderWidht:1,paddingTop:10, width:250,height: 250,overflow: "hidden",borderRadius: "50%"}}/>
               </div>
               <div style={{flexDirection:'column',  padding:10}}>
-            <Label style={{padding:10, display:'block'}}for="capa">Selecione uma capa</Label>
+            <Label style={{padding:10, display:'block'}}htmlFor="capa">Selecione uma capa</Label>
               <InputFile
                 style={{ width: "100%" }}
                 label="CAPA"
@@ -424,10 +423,10 @@ class SbDashboard extends React.Component {
                 name="capa"
                 id="capa"
                 accept=".jpeg, .png, .jpg"
-                required="true"
+                required={true}
                 onChange={this.onCapaChange}
               />
-              <img src={this.state.capabase64} style={{borderWidht:1,height:250, overflow: "hidden", paddingTop:10}}/>
+              <img alt="capa" src={this.state.capabase64} style={{borderWidht:1,height:250, overflow: "hidden", paddingTop:10}}/>
               </div>
           </div>
           <div>
@@ -435,9 +434,9 @@ class SbDashboard extends React.Component {
                 {this.state.segmentolist.map((seg, index) => {
                       return (
                         <div>
-                              <input id={index} type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
+                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
                               style={{padding:10}}/>
-                              <span style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
+                              <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
                         </div>
                       );
                     })}
@@ -465,12 +464,12 @@ class SbDashboard extends React.Component {
                 <th>AÇÕES</th>
               </tr>
             </thead>
-            {lojaarray.map((item) => {
+            {lojaarray.map((item, index) => {
               return (
                 <tbody style={{fontFamily:'Helvetica', fontSize:'12px', textAlign: 'center'}}
                   key={item._id}>
-                  <tr style={{borderWidth:'1px',height:'50px'}} >
-                    <td style={{borderWidth:'1px'}}>{item.nomefantasia}</td>
+                  <tr key={item._id} style={{borderWidth:'1px',height:'50px'}} >
+                    <td  centerstyle={{borderWidth:'1px'}}>{item.nomefantasia}</td>
                     <td style={{borderWidth:'1px'}}>{item.razaosocial}</td>
                     <td style={{borderWidth:'1px'}}>{item.shopping}</td>
                     <td style={{borderWidth:'1px'}}>{item.cnpj}</td>
@@ -513,7 +512,7 @@ class SbDashboard extends React.Component {
             style={{ width: "100%" }}
             type="text"
             placeholder="Shopping"
-            required="true"
+            required={true}
             name="nomeedit"
             value={this.state.nomeedit}
             onChange={this.handleChange}
@@ -525,7 +524,7 @@ class SbDashboard extends React.Component {
             type="text"
             placeholder="Endereço"
             name="enderecoedit"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
 
@@ -535,7 +534,7 @@ class SbDashboard extends React.Component {
             type="number"
             placeholder="CNPJ"
             name="cnpjedit"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
           <Input
@@ -544,7 +543,7 @@ class SbDashboard extends React.Component {
             type="tel"
             placeholder="Telefone"
             name="telefoneedit"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
 
@@ -554,7 +553,7 @@ class SbDashboard extends React.Component {
             type="email"
             placeholder="Email"
             name="emailedit"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
           <Input
@@ -572,7 +571,7 @@ class SbDashboard extends React.Component {
             type="text"
             placeholder="Responsavel"
             name="responsaveledit"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
           <Input
@@ -581,7 +580,7 @@ class SbDashboard extends React.Component {
             type="text"
             placeholder="Shoppign slug"
             name="shoppingslugedit"
-            required="true"
+            required={true}
             onChange={this.handleChange}
           />
 

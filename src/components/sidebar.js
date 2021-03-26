@@ -50,12 +50,12 @@ export const Sidebar = () => {
               },
               {
                 title: 'Cadastro',
-                itemId: '/administrativo/dashboard',
+                itemId: '/administrativo/cadastro',
                 elemBefore: () => <Icon name="book" />,
               },
               {
                 title: 'Usuarios',
-                itemId: '/administrativo/dashboard',
+                itemId: '/administrativo/usuarios',
                 elemBefore: () => <Icon name="users" />,
               },
             ]}

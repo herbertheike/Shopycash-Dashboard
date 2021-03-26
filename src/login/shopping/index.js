@@ -7,7 +7,7 @@ import base64 from 'base-64'
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { email: "", pass: "", nome: "", slug: "", shid:"", result:"", array:[]};
+    this.state = {satus:"",email: null, pass: null, nome: "", slug: null,slugresp:"", shid:"", result:"", array:[]};
     this.handleChange = this.handleChange.bind(this);
   }
   componentDidMount = () => {
@@ -93,9 +93,11 @@ class Login extends Component {
 */
 
  login = async() => {
+   if(this.state.slug===null){
+     alert("Insira o Shopping");
+   }
   const email = this.state.email;
   const pass = this.state.pass;
-  
   const credentials = btoa(email + ":" + pass);
   
   console.log(credentials)
@@ -104,17 +106,27 @@ class Login extends Component {
         method: 'GET',
         headers: {
           Authorization: "Basic " +credentials,
-      }}).then((response) =>response.json())
-        .then((response) => this.setState({shid:response.user.shopping_id, nome:response.user.nome, token: response.token}))
+      }}).then((response) =>response.json(this.setState({status:response.status})))
+        .then((response) => 
+        this.setState({shid:response.user.shopping_id, nome:response.user.nome,slugresp:response.user.shoppingslug, token: response.token})
+        )
         .catch((error) => console.log(error));
-          localStorage.setItem("@token", this.state.token);
-          localStorage.setItem("@nome", this.state.nome);
-          localStorage.setItem("@slug", this.state.slug);
-          localStorage.setItem("@email", email)
-          localStorage.setItem("@shoppingid", this.state.shid)
-        
-        history.push("/shopping/"+localStorage.getItem("@slug")+"/dashboard/");
-    ;
+      console.log(this.state.status)
+        if(this.state.status === 401){
+           alert("Usuario ou senha não conferem, verifique os dados e tente novamente") 
+        }else if (this.state.status === 200 && this.state.slugresp === this.state.slug){
+
+            localStorage.setItem("@token", this.state.token);
+            localStorage.setItem("@nome", this.state.nome);
+            localStorage.setItem("@slug", this.state.slug);
+            localStorage.setItem("@email", email)
+            localStorage.setItem("@shoppingid", this.state.shid)
+          
+          history.push("/shopping/"+localStorage.getItem("@slug")+"/dashboard/");
+          }else{
+            alert("O usuario não pertence ao shopping, verifique e tente novamente")
+
+          }
     }
 
   handleChange(event) {
@@ -131,6 +143,7 @@ class Login extends Component {
           name="slug"
           placeholder="Informe seu shopping"
           value={this.state.slug}
+          required={true}
           onChange={this.handleChange}
         />
         <Input
@@ -147,7 +160,6 @@ class Login extends Component {
           value={this.state.pass}
           onChange={this.handleChange}
         />
-        
         <Button onClick={this.login}> Entrar </Button>
       </Container>
     );

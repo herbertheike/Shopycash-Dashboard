@@ -1,14 +1,10 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import Modal from 'react-modal';
 import {
   Section,
-  Container,
   Input,
   Button,
   Title,
-  InputFile,
-  ButtonLogout,
   Label,
   EditBt,
   DeleteBt
@@ -161,7 +157,7 @@ class Dashboard extends React.Component {
         email: this.state.email,
         site: this.state.site,
         responsavel: this.state.responsavel,
-        latitude: this.state.latitude,
+        lat: this.state.latitude,
         long: this.state.longitude,
         shoppingslug: this.state.shoppingslug,
       }),
@@ -413,10 +409,10 @@ cadastrausuario = async () => {
                 <th>AÇÕES</th>
               </tr>
             </thead>
-            {shoppingarray.map((item) => {
+            {shoppingarray.map((item, index) => {
               return (
                 <tbody style={{fontFamily:'Helvetica', fontSize:'12px', textAlign: 'center'}}
-                  key={item._id}>
+                  key={index}>
                   <tr style={{borderWidth:'1px',height:'50px'}} >
                     <td style={{borderWidth:'1px'}}>{item.nome}</td>
                     <td style={{borderWidth:'1px'}}>{item.endereco}</td>
