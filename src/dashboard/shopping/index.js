@@ -13,6 +13,7 @@ import {
 import history from "../../history";
 import { DashboardLayout } from "../../components/Layout";
 import Icon from "awesome-react-icons";
+import noimage from "../../imgsrc/logopad.jpg"
 
 
 class SbDashboard extends React.Component {
@@ -34,13 +35,16 @@ class SbDashboard extends React.Component {
       site: "",
       telefone: "",
       responsavel: "",
+      shoppingslug:localStorage.getItem("@slug"),
       lojaslug: "",
+      lojaid:"",
       shoppingid:localStorage.getItem("@shoppingid"),
       imageURL:'',
       logobase64:null,
       capabase64:null,
       segmento:[],
       segmentolist:[],
+      userrole: "loja",
       
       nomefantasiaedit: "",
       razaosocialedit: "",
@@ -51,7 +55,7 @@ class SbDashboard extends React.Component {
       telefoneedit: "",
       responsaveledit: "",
       lojaslugedit: "",
-
+      
       shdata:[],
       lojaarray: [],
       isModalOpen: false,
@@ -173,13 +177,14 @@ class SbDashboard extends React.Component {
       },
       body: payload,
     })
-      .then((res) => localStorage.setItem("@message", JSON.stringify(res)))
+      .then((res) => res.json())
+      .then((res) => this.setState({lojaid: res.data._id}))
       .catch((error) => {
         localStorage.setItem("@error", error);
         console.log(error);
       });
-
-      window.location.reload();
+      this.cadastrausuario();
+      //
       
   };
 
@@ -300,6 +305,41 @@ class SbDashboard extends React.Component {
             console.log(this.state.segmento.length)
         }
           
+/*-----------------------usuario loja-------------------*/
+cadastrausuario = async () => {
+
+  const payload = JSON.stringify({
+    nome: this.state.nomeuser,
+    email: this.state.emailuser,
+    pass: this.state.passuser,
+    userRole: this.state.userrole,
+    shoppingslug: this.state.shoppingslug,
+    lojaslug:this.state.lojaslug,
+    shoppingid: this.state.shoppingid,
+    lojaid: this.state.lojaid
+  })
+
+  console.log(payload)
+
+  await fetch("https://api-shopycash1.herokuapp.com/api/loja/cadastro", {
+  method: "POST",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + localStorage.getItem("@token"),
+  },
+  body: payload,
+})
+  .then((res) => res.json())
+  .then((res) => localStorage.setItem("@messageuser", JSON.stringify(res)))
+  .catch((error) => {
+    localStorage.setItem("@message", error);
+    console.log(error);
+  });
+
+  window.location.reload(); 
+}
+
 
   render() {
     const { lojaarray } = this.state;
@@ -399,23 +439,26 @@ class SbDashboard extends React.Component {
             required={true}
             onChange={this.handleChange}
           />
-          <div style={{padding:0,display:'flex', flexDirection:'row', justifyContent:'right'}}>
-           <div style={{flexDirection:'column',  padding:10}}>
-           <Label style={{padding:10,display:'block'}} htmlFor="logo">Selecione um logo</Label>
-              <InputFile
-                style={{ width: "100%"}}
-                Label="LOGO"
-                type="file"
-                name="logo"
-                id="logo"
-                accept=".jpeg, .png, .jpg"
-                required={true}
-                onChange={this.onLogoChange}
-              />
-              <img alt="logo" src={this.state.logobase64} style={{borderWidht:1,paddingTop:10, width:250,height: 250,overflow: "hidden",borderRadius: "50%"}}/>
-              </div>
+          <div style={{padding:0,display:'flex', flexDirection:'row', justifyContent:"right"}}>
+           <div style={{flexDirection:'column', justifyContent:'center',alignItems:'center', padding:10}}>
+            <Label style={{padding:10,display:'block'}} htmlFor="logo">Selecione um logo</Label>
+            <div style={{display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column'}}> 
+                <InputFile
+                  style={{ width: "100%"}}
+                  Label="LOGO"
+                  type="file"
+                  name="logo"
+                  id="logo"
+                  accept=".jpeg, .png, .jpg .gif"
+                  required={true}
+                  onChange={this.onLogoChange}
+                />
+                <img alt="logo" src={this.state.logobase64 == null ? noimage : this.state.logobase64} style={{borderWidht:1,paddingTop:10, width:250,height: 250,overflow: "hidden",borderRadius: "50%", justifyContent:'center'}}/>
+               </div>
+                </div>
               <div style={{flexDirection:'column',  padding:10}}>
-            <Label style={{padding:10, display:'block'}}htmlFor="capa">Selecione uma capa</Label>
+            <Label style={{padding:10, display:'block'}} htmlFor="capa">Selecione uma capa</Label>
+            <div style={{display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column'}}>
               <InputFile
                 style={{ width: "100%" }}
                 label="CAPA"
@@ -426,7 +469,8 @@ class SbDashboard extends React.Component {
                 required={true}
                 onChange={this.onCapaChange}
               />
-              <img alt="capa" src={this.state.capabase64} style={{borderWidht:1,height:250, overflow: "hidden", paddingTop:10}}/>
+              <img alt="capa" src={this.state.capabase64 == null ? noimage : this.state.capabase64} style={{borderWidht:1,height:250, overflow: "hidden", paddingTop:10}}/>
+              </div>
               </div>
           </div>
           <div>
@@ -443,12 +487,60 @@ class SbDashboard extends React.Component {
                     <br />
           </div>
           <hr />
+          <Title>Cadastro do usuario do shopping: {this.state.nome}</Title>
+          <Input
+            value={this.state.nomeuser}
+            style={{ width: "24%" }}
+            type="text"
+            placeholder="Nome do usuario"
+            name="nomeuser"
+            required="true"
+            onChange={this.handleChange}
+          />
+          <Input
+            value={this.state.emailuser}
+            style={{ width: "24%" }}
+            type="email"
+            placeholder="Email do usuario"
+            name="emailuser"
+            required="true"
+            onChange={this.handleChange}
+          />
+
+          <Input
+            value={this.state.passuser}
+            style={{ width: "24%" }}
+            type="text"
+            placeholder="Senha do usuario"
+            name="passuser"
+            required="true"
+            onChange={this.handleChange}
+          />
+          <Input
+            value={this.state.userrole}
+            style={{ width: "24%" }}
+            type="text"
+            placeholder="role"
+            name="userrole"
+            required="true"
+            disabled
+          />
+          
+          <Input
+            value={this.state.lojaslug}
+            style={{ width: "24%" }}
+            type="text"
+            placeholder="role"
+            name="lojaslug"
+            required="true"
+            disabled
+          />
           <Button value="Submit" onClick={this.cadastrarloja}>
             Cadastrar
           </Button>
         </Section>
         <Section>
-          <Label>Shoppings</Label>
+          <Label>Lojas</Label>
           <table style={{borderWidth:'1px', width:'100%'}}>
             <thead style={{ backgroundColor:'rgba(94, 170, 168, 0.5)'}}>
               <tr>
@@ -611,39 +703,4 @@ class SbDashboard extends React.Component {
   }
 }
 
-/*
-<Label>Segmentos</Label>
-              {segmentolist.map((seg, index) => {
-                    return (
-                      <div key={seg._id} style={{ display: 'block', width:'12em', fontFamily: "Arial"}}>
-                          <div >
-                            <input id={index} type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}/>
-                            <span class="label-text">{seg.nome}</span>
-                          </div>
-                      </div>
-                    );
-                  })}
-                  <br />
-
-
-  listsegmento() {
-    fetch("http://192.168.15.69:3001/segmento/", {
-      headers: { Authorization: "Bearer " + localStorage.getItem("@token") },
-    })
-      .then((res) => res.json())
-      .then((result) => this.setState({ segmentolist: result }))
-      .catch((error) => console.log(error))
-      .finally(() => this.setState({ isLoaded: false }), []);
-  }
-
-    handleChecked(event) {
-      if(event.target.checked){
-        this.setState({segmento:[...this.state.segmento, event.target.value]})
-        //newarr.push([i, event.target.value])
-      }
-      console.log([this.state.segmento])
-  }
-    this.handleChecked = this.handleChecked.bind(this);
-     this.listsegmento();
-*/
 export default SbDashboard;

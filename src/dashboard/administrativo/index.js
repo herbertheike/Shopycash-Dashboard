@@ -228,8 +228,6 @@ cadastrausuario = async () => {
       localStorage.setItem("@message", error);
       console.log(error);
     });
-    //window.location.reload();
-
 }
 
   logout() {
