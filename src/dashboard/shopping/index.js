@@ -473,9 +473,10 @@ cadastrausuario = async () => {
               </div>
               </div>
           </div>
-          <div>
+          <div style={{display:'flex',flexDirection:'row', justifyContent:'space-around', padding:10}}>
             <Label>Segmentos</Label>
-                {this.state.segmentolist.map((seg, index) => {
+            <div style={{display:'flex',flexDirection:'column'}}>
+                {this.state.segmentolist.slice(0,7).map((seg, index) => {
                       return (
                         <div>
                               <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
@@ -484,13 +485,47 @@ cadastrausuario = async () => {
                         </div>
                       );
                     })}
+                    </div>
+                    <div style={{display:'flex',flexDirection:'column'}}>
+                {this.state.segmentolist.slice(7,14).map((seg, index) => {
+                      return (
+                        <div>
+                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
+                              style={{padding:10}}/>
+                              <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
+                        </div>
+                      );
+                    })}
+                    </div>
+                    <div style={{display:'flex',flexDirection:'column'}}>
+                {this.state.segmentolist.slice(14,21).map((seg, index) => {
+                      return (
+                        <div>
+                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
+                              style={{padding:10}}/>
+                              <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
+                        </div>
+                      );
+                    })}
+                    </div>
+                    <div style={{display:'flex',flexDirection:'column'}}>
+                {this.state.segmentolist.slice(21,28).map((seg, index) => {
+                      return (
+                        <div>
+                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
+                              style={{padding:10}}/>
+                              <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
+                        </div>
+                      );
+                    })}
+                    </div>
                     <br />
           </div>
           <hr />
           <Title>Cadastro do usuario do shopping: {this.state.nome}</Title>
           <Input
             value={this.state.nomeuser}
-            style={{ width: "24%" }}
+            style={{ width: "99%" }}
             type="text"
             placeholder="Nome do usuario"
             name="nomeuser"
@@ -499,7 +534,7 @@ cadastrausuario = async () => {
           />
           <Input
             value={this.state.emailuser}
-            style={{ width: "24%" }}
+            style={{ width: "99%" }}
             type="email"
             placeholder="Email do usuario"
             name="emailuser"
@@ -535,9 +570,11 @@ cadastrausuario = async () => {
             required="true"
             disabled
           />
+          <div>
           <Button value="Submit" onClick={this.cadastrarloja}>
             Cadastrar
           </Button>
+          </div>
         </Section>
         <Section>
           <Label>Lojas</Label>
