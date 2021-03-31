@@ -27,7 +27,6 @@ class MainPage extends React.Component {
             <Label>
             Painel Administrativo
             </Label>
-            
           </a>
         </Section>
         <Section >
@@ -42,7 +41,6 @@ class MainPage extends React.Component {
             <Label>
             Painel Lojista
             </Label>
-            
             </a>
         </Section>
       </Container>
