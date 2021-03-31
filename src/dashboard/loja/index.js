@@ -16,7 +16,7 @@ import Icon from "awesome-react-icons";
 import noimage from "../../imgsrc/logopad.jpg"
 
 
-class SbDashboard extends React.Component {
+class LjDashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -740,4 +740,4 @@ cadastrausuario = async () => {
   }
 }
 
-export default SbDashboard;
+export default LjDashboard;

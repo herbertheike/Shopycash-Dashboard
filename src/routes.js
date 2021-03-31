@@ -4,9 +4,12 @@ import Login from "./login/administrativo/index";
 import ShLogin from "./login/shopping/index";
 import Dashboard from "./dashboard/administrativo/index"
 import ShDashboard from "./dashboard/shopping/index"
+import LjDashboard from "./dashboard/loja/index"
+import LjLogin from "./login/loja/index"
+import MainPage from "./mainpages/index"
 import history from "./history"
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
+const PrivateRouteAdmin = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props =>
@@ -20,25 +23,56 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
     }
   />
 );
+const PrivateRouteShop = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      localStorage.getItem('@token') ? (
+        <Component {...props} />
+      ) : (
+        <Redirect
+          to={{ pathname: "/shopping/login", state: { from: props.location } }}
+        />
+      )
+    }
+  />
+);
+const PrivateRouteStore = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      localStorage.getItem('@token') ? (
+        <Component {...props} />
+      ) : (
+        <Redirect
+          to={{ pathname: "/store/login", state: { from: props.location } }}
+        />
+      )
+    }
+  />
+);
 
 const Routes = () => (
   <Router history={history}>
     <Switch>
+      <Route exact path="/" component={withRouter(MainPage)} />
       <Route exact path="/administrativo/login" component={withRouter(Login)} />
-      <PrivateRoute
+      <PrivateRouteAdmin
         exact
         path="/administrativo/dashboard"  
         component={withRouter(Dashboard)}
-      />
-      <Route exact path="/" component={() => <div><h1>Shopy Cash</h1>
-      <p><a href="http://localhost:3000/administrativo/login">Painel Administrativo</a></p>
-      <p><a href="http://localhost:3000/shopping/login">Painel Shopping</a></p></div>
-      } />
+      />  
     <Route exact path={"/shopping/login"} component={withRouter(ShLogin)} />
-      <PrivateRoute
+      <PrivateRouteShop
         exact
         path={"/shopping/"+localStorage.getItem("@slug")+"/dashboard" } 
         component={withRouter(ShDashboard)}
+      />
+    <Route exact path={"/store/login"} component={withRouter(LjLogin)} />
+    <PrivateRouteStore
+        exact
+        path={"/store/"+localStorage.getItem("@slug")+"/dashboard" } 
+        component={withRouter(LjDashboard)}
       />
     </Switch>
   </Router>

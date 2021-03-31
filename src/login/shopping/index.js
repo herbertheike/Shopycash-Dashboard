@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { Container, Input, Button, Title, Label } from "./style";
-import firebase from "../../data/Firebase";
+import { Container, Input, Button, Title, Label,Img } from "./style";
 import history from "../../history";
-import base64 from 'base-64'
+import logoshopycash from "../../imgsrc/logo.png"
 
 class Login extends Component {
   constructor(props) {
@@ -105,6 +104,8 @@ class Login extends Component {
   await fetch("https://api-shopycash1.herokuapp.com/api/shopping/login", {
         method: 'GET',
         headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
           Authorization: "Basic " +credentials,
       }}).then((response) =>response.json(this.setState({status:response.status})))
         .then((response) => 
@@ -136,8 +137,10 @@ class Login extends Component {
   render() {
     return (
       <Container>
+        <Img alt="logomarca shopycash" src={logoshopycash}/>
         <Title>Seja bem vindo, faça login para continuar </Title>
         <Label>Acesso shopping</Label>
+        <div style={{display:'flex', alignItems:'center',flexDirection:'column', padding:20}}>
         <Input
           type="text"
           name="slug"
@@ -161,6 +164,7 @@ class Login extends Component {
           onChange={this.handleChange}
         />
         <Button onClick={this.login}> Entrar </Button>
+        </div>
       </Container>
     );
   }

@@ -340,7 +340,7 @@ cadastrausuario = async () => {
           
           <Input
             value={this.state.nomeuser}
-            style={{ width: "24%" }}
+            style={{ width: "99%" }}
             type="text"
             placeholder="Nome do usuario"
             name="nomeuser"
@@ -349,7 +349,7 @@ cadastrausuario = async () => {
           />
           <Input
             value={this.state.emailuser}
-            style={{ width: "24%" }}
+            style={{ width: "49.5%" }}
             type="email"
             placeholder="Email do usuario"
             name="emailuser"
@@ -359,7 +359,7 @@ cadastrausuario = async () => {
 
           <Input
             value={this.state.passuser}
-            style={{ width: "24%" }}
+            style={{ width: "49%" }}
             type="text"
             placeholder="Senha do usuario"
             name="passuser"
@@ -368,7 +368,7 @@ cadastrausuario = async () => {
           />
           <Input
             value={this.state.userrole}
-            style={{ width: "24%" }}
+            style={{ width: "24.5%" }}
             type="text"
             placeholder="role"
             name="userrole"
@@ -377,9 +377,9 @@ cadastrausuario = async () => {
           />
           <Input
             value={this.state.shoppingslug}
-            style={{ width: "24%" }}
+            style={{ width: "24.5%" }}
             type="text"
-            placeholder="role"
+            placeholder="shoppingslug"
             name="shoppingslug"
             required="true"
             disabled
@@ -394,7 +394,7 @@ cadastrausuario = async () => {
         <Section>
           <Label>Shoppings</Label>
           <table style={{borderWidth:'1px', width:'100%'}}>
-            <thead style={{ backgroundColor:'rgba(254,145,29,0.5)'}}>
+            <thead style={{ backgroundColor:'rgba(94, 170, 168, 0.5)'}}>
               <tr>
                 <th>NOME</th>
                 <th>ENDEREÇO</th>

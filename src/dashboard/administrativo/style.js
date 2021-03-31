@@ -16,23 +16,26 @@ export const Container = styled.div`
   flex-direction: column;
 `;
 export const Input = styled.input`
-  padding: 10px;
-  height: 40px;
-  margin: 3px;
+padding: 10px;
+height: 40px;
+margin: 3px;
+color: #000;
+align-items: flex-start;
+justify-content: center;
+background: rgba(94, 170, 168, 0.2);
+border-radius: 5px;
+&:hover {
+  background: rgba(94, 170, 168, 0.5);
   color: #000;
-  align-items: flex-start;
-  justify-content: center;
-  background: rgba(254, 145, 29, 0.2);
-  border-radius: 5px;
-  &:hover {
-    background: rgba(254, 145, 29, 0.5);
-    color: #000;
-  }
-  &:focus {
-    background: rgba(254, 145, 29, 0.5);
-    color: #000;
-    border: none;
-  }
+}
+&:focus {
+  background: rgba(94, 170, 168, 0.5);
+  color: #000;
+  border: none;
+}
+&::placeholder {
+  textOverflow: 'ellipsis !important',
+  color: 'blue'
 `;
 export const InputFile = styled.input`
   width: 400px;

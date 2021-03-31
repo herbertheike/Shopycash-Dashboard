@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Container, Input, Button, Title, Label } from "./style";
+import { Container, Input, Button, Title, Label,Img } from "./style";
 import firebase from "../../data/Firebase";
 import history from "../../history";
 import base64 from 'base-64'
+import logoshopycash from "../../imgsrc/logo.png"
 
 class Login extends Component {
   constructor(props) {
@@ -117,9 +118,10 @@ class Login extends Component {
   render() {
     return (
       <Container>
+        <Img alt="logomarca shopycash" src={logoshopycash}/>
         <Title>Seja bem vindo, faça login para continuar </Title>
         <Label>Administrativo Shopycash</Label>
-
+        <div style={{display:'flex', alignItems:'center',flexDirection:'column', padding:20}}>
         <Input
           type="email"
           name="email"
@@ -135,6 +137,7 @@ class Login extends Component {
           onChange={this.handleChange}
         />
         <Button onClick={this.login}> Entrar </Button>
+        </div>
       </Container>
     );
   }
