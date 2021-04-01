@@ -229,14 +229,14 @@ cadastrausuario = async () => {
       console.log(error);
     });
 }
-
+/*
   logout() {
     try {
-      localStorage.removeItem("@token");
+      localStorage.clear();
       history.push("/");
     } catch (error) {}
   }
-
+*/
   handleChange = (event) => {
     const target = event.target;
     const value = target.value;

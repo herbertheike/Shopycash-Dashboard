@@ -11,7 +11,7 @@ export const Sidebar = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const logout = () => {
       try {
-        localStorage.removeItem("@token");
+        localStorage.clear();
         history.push("/");
       } catch (error) {
         

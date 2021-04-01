@@ -1,5 +1,6 @@
 import React from "react";
-import {Container, Label, Section, Title} from './style'
+import {Container, Label, Section, Title, Link, SubSection} from './style'
+import {BsTools, BsBuilding,BsFillBagFill} from 'react-icons/bs'
 //import history from "../../history";
 
 class MainPage extends React.Component {
@@ -22,26 +23,35 @@ class MainPage extends React.Component {
         }}
       >
         <Title>Sistema Shopy Cash</Title>
-        <Section >
-          <a href="http://localhost:3000/administrativo/login">
+        <Section>
+          <Link href="http://localhost:3000/administrativo/login">
+          <BsTools/>
+          <SubSection>
             <Label>
             Painel Administrativo
             </Label>
-          </a>
+            </SubSection>
+          </Link>
         </Section>
         <Section >
-          <a href="http://localhost:3000/shopping/login">
-              <Label>
-              Painel Shopping
-              </Label>
-            </a>
+          <Link href="http://localhost:3000/shopping/login">
+          <BsBuilding/>
+          <SubSection>
+            <Label>
+            Painel Shopping
+            </Label>
+            </SubSection>
+            </Link>
         </Section>
         <Section >
-          <a href="http://localhost:3000/store/login">
+          <Link href="http://localhost:3000/store/login">
+          <BsFillBagFill/>
+          <SubSection>
             <Label>
             Painel Lojista
             </Label>
-            </a>
+            </SubSection>
+            </Link>
         </Section>
       </Container>
     );

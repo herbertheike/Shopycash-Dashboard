@@ -220,15 +220,14 @@ class SbDashboard extends React.Component {
 
       window.location.reload();
   };
-
+/*
   logout() {
     try {
-      localStorage.removeItem("@token");
       localStorage.clear();
       history.push("/");
     } catch (error) {}
   }
-
+*/
   handleChange = (event) => {
     event.preventDefault();
     event.stopPropagation();
