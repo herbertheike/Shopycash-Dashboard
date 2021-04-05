@@ -46,7 +46,7 @@ class Login extends Component {
         this.setState({
           ljid: response.user.lojaid,
           nome: response.user.nome,
-          slugresp: response.user.shoppingslug,
+          slugresp: response.user.lojaslug,
           token: response.token,
         })
       )

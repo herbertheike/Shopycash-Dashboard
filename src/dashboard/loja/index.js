@@ -1,5 +1,5 @@
 import React from "react";
-import Modal from 'react-modal';
+import Modal from "react-modal";
 import {
   Section,
   Input,
@@ -8,13 +8,13 @@ import {
   Label,
   EditBt,
   DeleteBt,
-  InputFile
+  InputFile,
+  Img
 } from "./style";
 import history from "../../history";
 import { DashboardLayout } from "../../components/Layout";
 import Icon from "awesome-react-icons";
-import noimage from "../../imgsrc/logopad.jpg"
-
+import noimage from "../../imgsrc/logopad.jpg";
 
 class LjDashboard extends React.Component {
   constructor(props) {
@@ -26,50 +26,50 @@ class LjDashboard extends React.Component {
       message: "",
       messageloja: "",
       ischecked: false,
+
       _id: "",
-      nomefantasia: "",
-      razaosocial: "",
+      lojaid: localStorage.getItem("@lojaid"),
+      nome: "",
+      desc: "",
+      preco: "",
+      loja: "",
       shopping: "",
-      cnpj: "",
-      email: "",
-      site: "",
-      telefone: "",
-      responsavel: "",
-      shoppingslug:localStorage.getItem("@slug"),
-      lojaslug: "",
-      lojaid:"",
-      shoppingid:localStorage.getItem("@shoppingid"),
-      imageURL:'',
-      logobase64:null,
-      capabase64:null,
-      segmento:[],
-      segmentolist:[],
+      shoppingid: localStorage.getItem("@shoppingid"),
+      categoria: "",
+      ativo: "",
+      imagem: "",
+      imagem2: "",
+      estoque: "",
+
+      imageURL: "",
+      imagembase64: null,
+      imagem2base64: null,
+      categoriaslist: [],
       userrole: "loja",
-      
+
       nomefantasiaedit: "",
       razaosocialedit: "",
-      shoppingedit:"",
+      shoppingedit: "",
       cnpjedit: "",
       emailedit: "",
       siteedit: "",
       telefoneedit: "",
       responsaveledit: "",
       lojaslugedit: "",
-      
-      shdata:[],
-      lojaarray: [],
+
+      lojadata: [],
+      prodarray: [],
       isModalOpen: false,
-      isModalDelOpen:false,
-      customStyles:{
-        content : {
-          top                   : '50%',
-          left                  : '50%',
-          right                 : 'auto',
-          bottom                : 'auto',
-          marginRight           : '-50%',
-          transform             : 'translate(-50%, -50%)'
-        }
-      }
+      isModalDelOpen: false,
+      customStyles: {
+        content: {
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+        }}
     };
     this.handleChange = this.handleChange.bind(this);
     this.openModal = this.openModal.bind(this);
@@ -78,78 +78,91 @@ class LjDashboard extends React.Component {
     this.onLogoChange = this.onLogoChange.bind(this);
     this.onCapaChange = this.onCapaChange.bind(this);
     this.handleChecked = this.handleChecked.bind(this);
-          
-   // this.fileInput = React.createRef();
+
+    // this.fileInput = React.createRef();
     //this.handleUploadImage = this.handleUploadImage.bind(this);
   }
 
-
-
-  componentDidMount() {
-    this.listsegmento();
-    fetch("https://api-shopycash1.herokuapp.com/indexby/shopping/"+localStorage.getItem("@shoppingid"),{                                                                          
-    })
+  componentDidMount () {
+    this.listcategorias();
+    fetch(
+      "https://api-shopycash1.herokuapp.com/indexproductby/"
+      +localStorage.getItem("@lojaid")
+    )
       .then((res) => res.json())
-      .then((result) => this.setState({ lojaarray: result }))
+      .then((result) => this.setState({ prodarray: result }))
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }), []);
-
-
-     fetch("https://api-shopycash1.herokuapp.com/indexsh/"+localStorage.getItem("@slug"),{                                                                          
-    })
-      .then((res) => res.json())
-      .then((result) => this.setState({ shdata: result }))
-      .catch((error) => console.log(error))
-      .finally(() => this.setState({ isLoaded: false }), []);
-      console.log(this.state.shdata)      
+      
+      fetch("https://api-shopycash1.herokuapp.com/indexstoreby/"
+      +localStorage.getItem("@lojaid"),{                                                                          
+      })
+        .then((res) => res.json())
+        .then(function(result){
+          localStorage.setItem("@loja", result.nomefantasia)
+          localStorage.setItem("@shopping", result.shopping)
+        })
+        .catch((error) => console.log(error))
+        .finally(() => this.setState({ isLoaded: false }), []);
   }
-  openModal= async (nome, endereco, cnpj, telefone,email, site, responsavel, shoppingslug)=> {
-    this.setState({isModalOpen:true, 
-      nomeedit: nome,
-      enderecoedit:endereco,
-      cnpjedit:cnpj,
-      telefoneedit:telefone,
-      emailedit:email,
-      siteedit:site,
-      responsaveledit:responsavel,
-      shoppingslugedit: shoppingslug});
-  }
-  openModalDelete = async (item)=> {
+  openModal = async (
+    nome,
+    endereco,
+    cnpj,
+    telefone,
+    email,
+    site,
+    responsavel,
+    shoppingslug
+  ) => {
     this.setState({
-      isModalDelOpen:true})
-      const id = item;
-      this.setState({_id: id}, () =>console.log(this.state._id))
-  }
+      isModalOpen: true,
+      nomeedit: nome,
+      enderecoedit: endereco,
+      cnpjedit: cnpj,
+      telefoneedit: telefone,
+      emailedit: email,
+      siteedit: site,
+      responsaveledit: responsavel,
+      shoppingslugedit: shoppingslug,
+    });
+  };
+  openModalDelete = async (item) => {
+    this.setState({
+      isModalDelOpen: true,
+    });
+    const id = item;
+    this.setState({ _id: id }, () => console.log(this.state._id));
+  };
   afterOpenModal() {
     // references are now sync'd and can be accessed.
     //subtitle.style.color = '#f00';
   }
-  closeModal(){
-    this.setState({isModalOpen:false});
+  closeModal() {
+    this.setState({ isModalOpen: false });
   }
-  closeDelModal(){
-    this.setState({isModalDelOpen:false});
+  closeDelModal() {
+    this.setState({ isModalDelOpen: false });
   }
   deleteloja = async (item) => {
-
     const _id = item;
-    console.log(_id, 'new id')
-    await fetch("https://api-shopycash1.herokuapp.com/deletestore/"+_id, {
+    console.log(_id, "new id");
+    await fetch("https://api-shopycash1.herokuapp.com/deletestore/" + _id, {
       method: "GET",
       headers: {
-       Accept: "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("@token"),
-      }})
-    .then((res) => res.json(localStorage.setItem("@delmessage", JSON.stringify(res))))
-    .catch((error) => console.log(error))
-    .finally(() => this.setState({ isLoaded: false }));
+      },
+    })
+      .then((res) =>
+        res.json(localStorage.setItem("@delmessage", JSON.stringify(res)))
+      )
+      .catch((error) => console.log(error))
+      .finally(() => this.setState({ isLoaded: false }));
 
     window.location.reload();
-    
-  }
-
-
+  };
 
   cadastrarloja = async () => {
     const payload = JSON.stringify({
@@ -165,52 +178,57 @@ class LjDashboard extends React.Component {
       shopping_id: this.state.shoppingid,
       logo: this.state.logobase64,
       capa: this.state.capabase64,
-      segmento:this.state.segmento
-    })
-    
-    await fetch("https://api-shopycash1.herokuapp.com/insernewstore/"+localStorage.getItem("@slug"), {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("@token"),
-      },
-      body: payload,
-    })
+      segmento: this.state.segmento,
+    });
+
+    await fetch(
+      "https://api-shopycash1.herokuapp.com/insernewstore/" +
+      localStorage.getItem("@slug"),
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("@token"),
+        },
+        body: payload,
+      }
+    )
       .then((res) => res.json())
-      .then((res) => this.setState({lojaid: res.data._id}))
+      .then((res) => this.setState({ lojaid: res.data._id }))
       .catch((error) => {
         localStorage.setItem("@error", error);
         console.log(error);
       });
-      this.cadastrausuario();
-      //
-      
+    this.cadastrausuario();
+    //
   };
 
-  updateloja = async () =>{
-    
+  updateloja = async () => {
     const lojaslugedit = this.state.lojaslugedit;
-    console.log('SHOPPING--> '+ lojaslugedit)
-        await fetch("https://api-shopycash1.herokuapp.com/updatestore/"+lojaslugedit, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json, multipart/form-data",
-        Authorization: "Bearer " + localStorage.getItem("@token"),
-      },
-      body: JSON.stringify({
-        nomefantasia: this.state.nomefantasia,
-        razaosocial: this.state.razaosocial,
-        shopping: this.state.shopping,
-        cnpj: this.state.cnpj,
-        email: this.state.email,
-        site: this.state.site,
-        telefone: this.state.telefone,
-        responsavel: this.state.responsavel,
-        lojaslug: this.state.lojaslug,
-      }),
-        })
+    console.log("SHOPPING--> " + lojaslugedit);
+    await fetch(
+      "https://api-shopycash1.herokuapp.com/updatestore/" + lojaslugedit,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json, multipart/form-data",
+          Authorization: "Bearer " + localStorage.getItem("@token"),
+        },
+        body: JSON.stringify({
+          nomefantasia: this.state.nomefantasia,
+          razaosocial: this.state.razaosocial,
+          shopping: this.state.shopping,
+          cnpj: this.state.cnpj,
+          email: this.state.email,
+          site: this.state.site,
+          telefone: this.state.telefone,
+          responsavel: this.state.responsavel,
+          lojaslug: this.state.lojaslug,
+        }),
+      }
+    )
       .then((res) => res.json(console.log(JSON.stringify(res))))
       .then((res) => localStorage.setItem("@message", JSON.stringify(res)))
       .catch((error) => {
@@ -218,7 +236,7 @@ class LjDashboard extends React.Component {
         console.log(error);
       });
 
-      window.location.reload();
+    window.location.reload();
   };
 
   logout() {
@@ -226,7 +244,7 @@ class LjDashboard extends React.Component {
       localStorage.removeItem("@token");
       localStorage.clear();
       history.push("/");
-    } catch (error) {}
+    } catch (error) { }
   }
 
   handleChange = (event) => {
@@ -237,289 +255,380 @@ class LjDashboard extends React.Component {
     const value = target.value;
     const name = target.name;
 
-    if(type === 'file'){
-      this.setState({ [name]: event.target.files});
-    }else{
-    this.setState({
-      [name]: value,
-    });
-  }
+    if (type === "file") {
+      this.setState({ [name]: event.target.files });
+    } else {
+      this.setState({
+        [name]: value,
+      });
+    }
   };
 
-  onLogoChange (event) {
+  onImageChange(event) {
     event.preventDefault();
-    console.log("LOGO:\n", event.target.files[0])
+    console.log("Imagem1:\n", event.target.files[0]);
     let file = event.target.files[0];
-    let baseurl = '';
+    let baseurl = "";
 
-    if(file){
+    if (file) {
       const reader = new FileReader();
-     
+
       reader.readAsDataURL(file);
       reader.onload = () => {
         baseurl = reader.result;
-        console.log(baseurl)
-        this.setState({logobase64:baseurl})
+        console.log(baseurl);
+        this.setState({ imagembase64: baseurl });
         //this._handleReaderLogo.bind(this)};
-      }
-    }    
-  };
+      };
+    }
+  }
 
-  onCapaChange (event) {
+  onImage2Change(event) {
     event.preventDefault();
-    console.log("CAPA:\n", event.target.files[0])
+    console.log("CAPA:\n", event.target.files[0]);
     let file = event.target.files[0];
-    let baseurl = '';
+    let baseurl = "";
 
-    if(file){
+    if (file) {
       const reader = new FileReader();
-     
+
       reader.readAsDataURL(file);
       reader.onload = () => {
         baseurl = reader.result;
-        console.log(baseurl)
-        this.setState({capabase64:baseurl})
-      }
-    }  
+        console.log(baseurl);
+        this.setState({ imagem2base64: baseurl });
+      };
+    }
+  }
+
+  listcategorias() {
+    fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
+      .then((res) => res.json())
+      .then((result) => this.setState({ categoriaslist: result }))
+      .catch((error) => console.log(error))
+      .finally(() => this.setState({ isLoaded: false }), []);
+  }
+
+  handleChecked(event) {
+    console.log(event);
+    let newcheck = "";
+    if (this.state.categoriaslist.length <= 0 && event.target.checked) {
+      newcheck = event.target.value;
+      this.setState({ categoriaslist: [newcheck] });
+    } else if (this.state.categoriaslist.length > 0 && event.target.checked) {
+      newcheck = event.target.value;
+      this.setState({ categoriaslist: [...this.state.categoriaslist, newcheck] });
+    }
+    let array = [...this.state.categoriaslist]
+    let index = array.indexOf(event.target.value)
+    if(event.target.checked === false){
+      array.splice(index,1)
+      this.setState({categoriaslist:array})
+    }
+  }
+
+  /*-----------------------usuario loja-------------------*/
+  cadastrausuario = async () => {
+    const payload = JSON.stringify({
+      nome: this.state.nomeuser,
+      email: this.state.emailuser,
+      pass: this.state.passuser,
+      userRole: this.state.userrole,
+      shoppingslug: this.state.shoppingslug,
+      lojaslug: this.state.lojaslug,
+      shoppingid: this.state.shoppingid,
+      lojaid: this.state.lojaid,
+    });
+
+    console.log(payload);
+
+    await fetch("https://api-shopycash1.herokuapp.com/api/loja/cadastro", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("@token"),
+      },
+      body: payload,
+    })
+      .then((res) => res.json())
+      .then((res) => localStorage.setItem("@messageuser", JSON.stringify(res)))
+      .catch((error) => {
+        localStorage.setItem("@message", error);
+        console.log(error);
+      });
+
+    window.location.reload();
   };
 
-        listsegmento() {
-          fetch("https://api-shopycash1.herokuapp.com/segmento/", {
-            headers: { Authorization: "Bearer " + localStorage.getItem("@token") },
-          })
-            .then((res) => res.json())
-            .then((result) => this.setState({ segmentolist: result }))
-            .catch((error) => console.log(error))
-            .finally(() => this.setState({ isLoaded: false }), []);
-        }
-
-          handleChecked(event) {
-            let newcheck = '';
-            if(this.state.segmento.length<=0 && event.target.checked){
-              newcheck = event.target.value
-              this.setState({segmento:[newcheck]})
-            }else if(this.state.segmento.length>0 && event.target.checked){
-              newcheck = event.target.value
-              this.setState({segmento:[...this.state.segmento,newcheck]})
-            }
-            console.log(this.state.segmento.length)
-        }
-          
-/*-----------------------usuario loja-------------------*/
-cadastrausuario = async () => {
-
-  const payload = JSON.stringify({
-    nome: this.state.nomeuser,
-    email: this.state.emailuser,
-    pass: this.state.passuser,
-    userRole: this.state.userrole,
-    shoppingslug: this.state.shoppingslug,
-    lojaslug:this.state.lojaslug,
-    shoppingid: this.state.shoppingid,
-    lojaid: this.state.lojaid
-  })
-
-  console.log(payload)
-
-  await fetch("https://api-shopycash1.herokuapp.com/api/loja/cadastro", {
-  method: "POST",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + localStorage.getItem("@token"),
-  },
-  body: payload,
-})
-  .then((res) => res.json())
-  .then((res) => localStorage.setItem("@messageuser", JSON.stringify(res)))
-  .catch((error) => {
-    localStorage.setItem("@message", error);
-    console.log(error);
-  });
-
-  window.location.reload(); 
-}
-
-
-  render() {
-    const { lojaarray } = this.state;
-    return (
-      <DashboardLayout>
-        <Section>
-        {this.state.shdata.map((item, index)=>{
+  /**
+ * {this.state.ljdata.map((item, index)=>{
           return(
-          <Title key={item.shopping._id}>
-            Cadastro de Lojas - {item.shopping.shopping}
+          <Title key={item._id}>
+            Cadastro de Produtos - {item.nomefantasia}
           </Title>
           )
         })}
-        <span>Usuario Logado: {localStorage.getItem("@nome")} - {localStorage.getItem("@email")}</span>
+ */
+
+  render() {
+    const { prodarray } = this.state;
+    return (
+      <DashboardLayout>
+        <Section>
+          <Title>
+            Cadastro de Produtos - {localStorage.getItem("@loja")} - {localStorage.getItem("@shopping")}
+          </Title>
+          <span>
+            Usuario Logado: {localStorage.getItem("@nome")} -{" "}
+            {localStorage.getItem("@email")}
+          </span>
           <Input
             style={{ width: "99%" }}
             type="text"
-            placeholder="Nome Fantasia"
+            placeholder="Nome"
             required={true}
-            name="nomefantasia"
-            value={this.state.nomefantasia}
+            name="nome"
+            value={this.state.nome}
             onChange={this.handleChange}
           />
           <Input
             style={{ width: "99%" }}
             type="text"
-            placeholder="Razão Social"
+            placeholder="Descrição"
             required={true}
-            name="razaosocial"
-            value={this.state.razaosocial}
+            name="descricao"
+            value={this.state.desc}
+            onChange={this.handleChange}
+          />
+
+          <Input
+            value={this.state.preco}
+            style={{ width: "74%" }}
+            type="number"
+            placeholder="Preço"
+            name="preco"
+            required={true}
+            onChange={this.handleChange}
+          />
+
+          <Input
+            value={this.state.loja}
+            style={{ width: "24.5%" }}
+            type="text"
+            placeholder="Loja"
+            name="loja"
+            required={true}
             onChange={this.handleChange}
           />
 
           <Input
             value={this.state.shopping}
-            style={{ width: "74%" }}
+            style={{ width: "48.51%" }}
             type="text"
             placeholder="Shopping"
             name="shopping"
             required={true}
             onChange={this.handleChange}
           />
-
+          <Label>Estoque</Label>
           <Input
-            value={this.state.cnpj}
-            style={{ width: "24.5%" }}
+            value={this.state.estoque}
+            style={{ width: "7%" }}
             type="number"
-            placeholder="CNPJ"
-            name="cnpj"
+            name="estoque"
             required={true}
             onChange={this.handleChange}
           />
-          
-
-          <Input
-            value={this.state.email}
-            style={{ width: "48.51%" }}
-            type="email"
-            placeholder="Email"
-            name="email"
-            required={true}
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.site}
-            style={{ width: "50%" }}
-            type="url"
-            placeholder="Site"
-            name="site"
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.telefone}
-            style={{ width: "24%" }}
-            type="tel"
-            placeholder="Telefone"
-            name="telefone"
-            required={true}
-            onChange={this.handleChange}
-          />
-
-          <Input
-            value={this.state.responsavel}
-            style={{ width: "24%" }}
-            type="text"
-            placeholder="Responsavel"
-            name="responsavel"
-            required={true}
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.lojaslug}
-            style={{ width: "24%" }}
-            type="text"
-            placeholder="Loja Slug"
-            name="lojaslug"
-            required={true}
-            onChange={this.handleChange}
-          />
-          <div style={{padding:0,display:'flex', flexDirection:'row', justifyContent:"right"}}>
-           <div style={{flexDirection:'column', justifyContent:'center',alignItems:'center', padding:10}}>
-            <Label style={{padding:10,display:'block'}} htmlFor="logo">Selecione um logo</Label>
-            <div style={{display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column'}}> 
+          <div
+            style={{
+              padding: 0,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "right",
+            }}
+          >
+            <div
+              style={{
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 10,
+              }}
+            >
+              <Label style={{ padding: 10, display: "block" }} htmlFor="logo">
+                Imagem Principal
+              </Label>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
                 <InputFile
-                  style={{ width: "100%"}}
-                  Label="LOGO"
+                  style={{ width: "100%" }}
+                  Label="Imagem Principal"
                   type="file"
-                  name="logo"
-                  id="logo"
+                  name="imagem"
+                  id="imagem"
                   accept=".jpeg, .png, .jpg .gif"
                   required={true}
-                  onChange={this.onLogoChange}
+                  onChange={this.onImageChange}
                 />
-                <img alt="logo" src={this.state.logobase64 == null ? noimage : this.state.logobase64} style={{borderWidht:1,paddingTop:10, width:250,height: 250,overflow: "hidden",borderRadius: "50%", justifyContent:'center'}}/>
-               </div>
-                </div>
-              <div style={{flexDirection:'column',  padding:10}}>
-            <Label style={{padding:10, display:'block'}} htmlFor="capa">Selecione uma capa</Label>
-            <div style={{display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column'}}>
-              <InputFile
-                style={{ width: "100%" }}
-                label="CAPA"
-                type="file"
-                name="capa"
-                id="capa"
-                accept=".jpeg, .png, .jpg"
-                required={true}
-                onChange={this.onCapaChange}
-              />
-              <img alt="capa" src={this.state.capabase64 == null ? noimage : this.state.capabase64} style={{borderWidht:1,height:250, overflow: "hidden", paddingTop:10}}/>
+                <img
+                  alt="imagem1"
+                  src={
+                    this.state.imagembase64 == null
+                      ? noimage
+                      : this.state.imagembase64
+                  }
+                  style={{
+                    borderWidht: 1,
+                    paddingTop: 10,
+                    width: 250,
+                    height: 250,
+                    overflow: "hidden",
+                    borderRadius: "50%",
+                    justifyContent: "center",
+                  }}
+                />
               </div>
+            </div>
+            <div style={{ flexDirection: "column", padding: 10 }}>
+              <Label style={{ padding: 10, display: "block" }} htmlFor="capa">
+                Imagem Secundaria
+              </Label>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <InputFile
+                  style={{ width: "100%" }}
+                  label="Imagem Secundaria"
+                  type="file"
+                  name="capa"
+                  id="capa"
+                  accept=".jpeg, .png, .jpg"
+                  required={true}
+                  onChange={this.onImage2Change}
+                />
+                <img
+                  alt="imagem2"
+                  src={
+                    this.state.imagem2base64 == null
+                      ? noimage
+                      : this.state.imagem2base64
+                  }
+                  style={{
+                    borderWidht: 1,
+                    height: 250,
+                    overflow: "hidden",
+                    paddingTop: 10,
+                  }}
+                />
               </div>
+            </div>
           </div>
-          <div style={{display:'flex',flexDirection:'row', justifyContent:'space-around', padding:10}}>
-            <Label>Segmentos</Label>
-            <div style={{display:'flex',flexDirection:'column'}}>
-                {this.state.segmentolist.slice(0,7).map((seg, index) => {
-                      return (
-                        <div>
-                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
-                              style={{padding:10}}/>
-                              <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
-                        </div>
-                      );
-                    })}
-                    </div>
-                    <div style={{display:'flex',flexDirection:'column'}}>
-                {this.state.segmentolist.slice(7,14).map((seg, index) => {
-                      return (
-                        <div>
-                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
-                              style={{padding:10}}/>
-                              <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
-                        </div>
-                      );
-                    })}
-                    </div>
-                    <div style={{display:'flex',flexDirection:'column'}}>
-                {this.state.segmentolist.slice(14,21).map((seg, index) => {
-                      return (
-                        <div>
-                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
-                              style={{padding:10}}/>
-                              <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
-                        </div>
-                      );
-                    })}
-                    </div>
-                    <div style={{display:'flex',flexDirection:'column'}}>
-                {this.state.segmentolist.slice(21,28).map((seg, index) => {
-                      return (
-                        <div>
-                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
-                              style={{padding:10}}/>
-                              <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
-                        </div>
-                      );
-                    })}
-                    </div>
-                    <br />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-around",
+              padding: 10,
+            }}
+          >
+            <Label>Categorias</Label>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {this.state.categoriaslist.slice(0, 7).map((seg, index) => {
+                return (
+                  <div>
+                    <input
+                      type="checkbox"
+                      value={seg.nome}
+                      name="segmento"
+                      onChange={this.handleChecked}
+                      style={{ padding: 10 }}
+                    />
+                    <span
+                      key={seg._id}
+                      style={{ display: "inline-block", paddingLeft: 10 }}
+                    >
+                      {seg.nome}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {this.state.categoriaslist.slice(7, 14).map((seg, index) => {
+                return (
+                  <div>
+                    <input
+                      type="checkbox"
+                      value={seg.nome}
+                      name="segmento"
+                      onChange={this.handleChecked}
+                      style={{ padding: 10 }}
+                    />
+                    <span
+                      key={seg._id}
+                      style={{ display: "inline-block", paddingLeft: 10 }}
+                    >
+                      {seg.nome}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {this.state.categoriaslist.slice(14, 21).map((seg, index) => {
+                return (
+                  <div>
+                    <input
+                      type="checkbox"
+                      value={seg.nome}
+                      name="segmento"
+                      onChange={this.handleChecked}
+                      style={{ padding: 10 }}
+                    />
+                    <span
+                      key={seg._id}
+                      style={{ display: "inline-block", paddingLeft: 10 }}
+                    >
+                      {seg.nome}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {this.state.categoriaslist.slice(21, 28).map((seg, index) => {
+                return (
+                  <div>
+                    <input
+                      type="checkbox"
+                      value={seg.nome}
+                      name="segmento"
+                      onChange={this.handleChecked}
+                      style={{ padding: 10 }}
+                    />
+                    <span
+                      key={seg._id}
+                      style={{ display: "inline-block", paddingLeft: 10 }}
+                    >
+                      {seg.nome}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <br />
           </div>
           <hr />
           <Title>Cadastro do usuario da loja: {this.state.nomefantasia}</Title>
@@ -530,7 +639,7 @@ cadastrausuario = async () => {
             placeholder="Nome do usuario"
             name="nomeuser"
             required="true"
-            onChange={this.handleChange} 
+            onChange={this.handleChange}
           />
           <Input
             value={this.state.emailuser}
@@ -560,7 +669,7 @@ cadastrausuario = async () => {
             required="true"
             disabled
           />
-          
+
           <Input
             value={this.state.lojaslug}
             style={{ width: "24%" }}
@@ -571,44 +680,96 @@ cadastrausuario = async () => {
             disabled
           />
           <div>
-          <Button value="Submit" onClick={this.cadastrarloja}>
-            Cadastrar
-          </Button>
+            <Button value="Submit" onClick={this.cadastrarloja}>
+              Cadastrar
+            </Button>
           </div>
         </Section>
         <Section>
-          <Label>Lojas</Label>
-          <table style={{borderWidth:'1px', width:'100%'}}>
-            <thead style={{ backgroundColor:'rgba(94, 170, 168, 0.5)'}}>
-              <tr>
-                <th>NOME</th>
-                <th>RAZÃO SOCIAL</th>
-                <th>SHOPPING</th>
-                <th>CNPJ</th>
-                <th>EMAIL</th>
-                <th>SITE</th>
-                <th>TELEFONE</th>
-                <th>RESPONSAVEL</th>
-                <th>SLUG</th>
-                <th>AÇÕES</th>
-              </tr>
-            </thead>
-            {lojaarray.map((item, index) => {
-              return (
-                <tbody style={{fontFamily:'Helvetica', fontSize:'12px', textAlign: 'center'}}
-                  key={item._id}>
-                  <tr key={item._id} style={{borderWidth:'1px',height:'50px'}} >
-                    <td  centerstyle={{borderWidth:'1px'}}>{item.nomefantasia}</td>
-                    <td style={{borderWidth:'1px'}}>{item.razaosocial}</td>
-                    <td style={{borderWidth:'1px'}}>{item.shopping}</td>
-                    <td style={{borderWidth:'1px'}}>{item.cnpj}</td>
-                    <td style={{borderWidth:'1px'}}>{item.email}</td>
-                    <td style={{borderWidth:'1px'}}>{item.site}</td>
-                    <td style={{borderWidth:'1px'}}>{item.telefone}</td>
-                    <td style={{borderWidth:'1px'}}>{item.responsavel}</td>
-                    <td style={{borderWidth:'1px'}}>{item.slug}</td>
-                    <td style={{borderWidth:'1px', alignItems:'center'}}>
-                      <EditBt onClick={() => this.openModal(
+          <Label>Produtos</Label>
+          {prodarray.map((item, index) => {
+            const isEmpty = 'rgba(255, 0, 0, 0.2)'
+            const isFull = 'rgba(19, 138, 0, 0.2)'
+            const storageColorCode = item.estoque > 0 ? isFull : isEmpty
+            return (
+              
+              <div style={{backgroundColor:storageColorCode, padding: 10, width:'100%', margin:10}}> 
+              <div
+                style={{
+                  padding: 25,
+                  paddingRight:100,
+                  paddingLeft:50,
+                  width:'100%',
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent:'space-between'
+                }}
+              >
+                    <div
+                      key={item._id}
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingTop: 10,
+                        flexDirection: "column",
+                      }}
+                    >
+                      <label style={{ display: "block", fontFamily:'Helvetica', fontSize:28, padding:10}}>
+                        {item.nome}
+                      </label>
+                      <div style={{display: "flex", flexDirection: "row" }}>
+                      <Img alt="imagem1" src={item.imagem} style={{ borderWidth:1,borderRadius:5, width: 250 }} />
+                      <Img alt="imagem2" src={item.imagem2} style={{ borderWidth:1,borderRadius:5, width: 250 }} />
+                      </div>
+                       </div>
+                    <div style={{display:'flex',flexDirection: "column", paddingTop: 60,}}>
+                      <label style={{display: "block", width: 300, fontSize:16, textAlign:'justify' }}> 
+                        {"Descrição: \n"+item.desc}
+                      </label>
+
+                      <label style={{display: "block", width: 300, fontSize:16, textAlign:'justify', paddingTop:10 }}> 
+                        {"Categoria: \n"+item.categoria}
+                      </label>
+                      <label
+                        style={{paddingTop: 30, fontSize:26 }}
+                      >Preço:
+                        R${item.preco.toFixed(2)}
+                      </label>
+
+                      <div style={{ flexDirection: "row" }}>
+                      <label
+                        style={{paddingTop: 30, display: "block", fontSize:24}}
+                      >
+                        Qtd em estoque: {item.estoque}
+                      </label>
+                    </div>
+                    </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: "row",paddingLeft:50, }}>
+                <div style={{ display: 'flex', flexDirection: "column" }}>
+                    <label style={{}}>
+                      Criado em: {item.createdAt}
+                    </label>
+                    <label style={{}}>
+                      Ultima alteração em: {item.updatedAt}
+                    </label>
+                    </div>
+                  </div>
+                  <div
+                  style={{
+                    paddingBottom:40,
+                    paddingLeft:50,
+                    display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent:'right',
+                  }}
+                >
+                  <div style={{flexDirection: "column"}}>
+                  <EditBt
+                    onClick={() =>
+                      this.openModal(
                         item.nomefantasia,
                         item.razaosocial,
                         item.shopping,
@@ -617,124 +778,131 @@ cadastrausuario = async () => {
                         item.site,
                         item.telefone,
                         item.responsavel,
-                        item.slug)}><Icon name='edit-pencil-simple' />EDITAR</EditBt>
-                      <DeleteBt onClick={() => this.deleteloja(item._id)}><Icon name="x"/>EXCLUIR</DeleteBt>
-                      </td>
-                  </tr>
-                </tbody>
-              );
-            })}
-          </table>
-          </Section> 
-          <div>
+                        item.slug
+                      )
+                    }
+                  >
+                    <Icon name="edit-pencil-simple" />
+                    EDITAR
+                  </EditBt>
+                  </div>
+                  <div style={{flexDirection: "column", display:'block'}}>
+                  <DeleteBt onClick={() => this.deleteloja(item._id)}>
+                    <Icon name="x" />
+                    EXCLUIR
+                  </DeleteBt>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </Section>
+        <div>
           <Modal
-          isOpen={this.state.isModalOpen}
-          onAfterOpen={this.afterOpenModal}
-          onRequestClose={this.closeModal}
-          style={this.state.customStyles}
-        >
- 
-          <div>
+            isOpen={this.state.isModalOpen}
+            onAfterOpen={this.afterOpenModal}
+            onRequestClose={this.closeModal}
+            style={this.state.customStyles}
+          >
+            <div>
+              {this.state.shoppingslugedit}
+              <Input
+                style={{ width: "100%" }}
+                type="text"
+                placeholder="Shopping"
+                required={true}
+                name="nomeedit"
+                value={this.state.nomeedit}
+                onChange={this.handleChange}
+              />
 
-            {this.state.shoppingslugedit}
-          <Input
-            style={{ width: "100%" }}
-            type="text"
-            placeholder="Shopping"
-            required={true}
-            name="nomeedit"
-            value={this.state.nomeedit}
-            onChange={this.handleChange}
-          />
+              <Input
+                value={this.state.enderecoedit}
+                style={{ width: "100%" }}
+                type="text"
+                placeholder="Endereço"
+                name="enderecoedit"
+                required={true}
+                onChange={this.handleChange}
+              />
 
-          <Input
-            value={this.state.enderecoedit}
-            style={{ width: "100%" }}
-            type="text"
-            placeholder="Endereço"
-            name="enderecoedit"
-            required={true}
-            onChange={this.handleChange}
-          />
+              <Input
+                value={this.state.cnpjedit}
+                style={{ width: "25%" }}
+                type="number"
+                placeholder="CNPJ"
+                name="cnpjedit"
+                required={true}
+                onChange={this.handleChange}
+              />
+              <Input
+                value={this.state.telefoneedit}
+                style={{ width: "25%" }}
+                type="tel"
+                placeholder="Telefone"
+                name="telefoneedit"
+                required={true}
+                onChange={this.handleChange}
+              />
 
-          <Input
-            value={this.state.cnpjedit}
-            style={{ width: "25%" }}
-            type="number"
-            placeholder="CNPJ"
-            name="cnpjedit"
-            required={true}
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.telefoneedit}
-            style={{ width: "25%" }}
-            type="tel"
-            placeholder="Telefone"
-            name="telefoneedit"
-            required={true}
-            onChange={this.handleChange}
-          />
+              <Input
+                value={this.state.emailedit}
+                style={{ width: "48.51%" }}
+                type="email"
+                placeholder="Email"
+                name="emailedit"
+                required={true}
+                onChange={this.handleChange}
+              />
+              <Input
+                value={this.state.siteedit}
+                style={{ width: "50%" }}
+                type="url"
+                placeholder="Site"
+                name="siteedit"
+                onChange={this.handleChange}
+              />
 
-          <Input
-            value={this.state.emailedit}
-            style={{ width: "48.51%" }}
-            type="email"
-            placeholder="Email"
-            name="emailedit"
-            required={true}
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.siteedit}
-            style={{ width: "50%" }}
-            type="url"
-            placeholder="Site"
-            name="siteedit"
-            onChange={this.handleChange}
-          />
+              <Input
+                value={this.state.responsaveledit}
+                style={{ width: "24%" }}
+                type="text"
+                placeholder="Responsavel"
+                name="responsaveledit"
+                required={true}
+                onChange={this.handleChange}
+              />
+              <Input
+                value={this.state.shoppingslugedit}
+                style={{ width: "24%" }}
+                type="text"
+                placeholder="Shoppign slug"
+                name="shoppingslugedit"
+                required={true}
+                onChange={this.handleChange}
+              />
 
-          <Input
-            value={this.state.responsaveledit}
-            style={{ width: "24%" }}
-            type="text"
-            placeholder="Responsavel"
-            name="responsaveledit"
-            required={true}
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.shoppingslugedit}
-            style={{ width: "24%" }}
-            type="text"
-            placeholder="Shoppign slug"
-            name="shoppingslugedit"
-            required={true}
-            onChange={this.handleChange}
-          />
+              <hr />
+              <Button value="Submit" onClick={this.updateloja}>
+                Alterar
+              </Button>
+            </div>
+            <button onClick={this.closeModal}>close</button>
+          </Modal>
+          <Modal
+            isOpen={this.state.isModalDelOpen}
+            onAfterOpen={this.afterOpenModal}
+            onRequestClose={this.closeDelModal}
+            style={this.state.customStyles}
+          >
+            <div>
+              {this.state._id}
 
-          <hr />
-          <Button value="Submit" onClick={this.updateloja}>
-            Alterar
-          </Button>
-          </div>
-          <button onClick={this.closeModal}>close</button>
-        </Modal>
-        <Modal
-          isOpen={this.state.isModalDelOpen}
-          onAfterOpen={this.afterOpenModal}
-          onRequestClose={this.closeDelModal}
-          style={this.state.customStyles}
-        ><div>
-            {this.state._id}
-
-         <DeleteBt onclick={() =>this.deleteloja()}>DELETE</DeleteBt>
-
-         </div>
-         <button onClick={this.closeDelModal}>close</button>
+              <DeleteBt onclick={() => this.deleteloja()}>DELETE</DeleteBt>
+            </div>
+            <button onClick={this.closeDelModal}>close</button>
           </Modal>
         </div>
-        
       </DashboardLayout>
     );
   }
