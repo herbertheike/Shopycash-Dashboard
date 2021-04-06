@@ -7,6 +7,7 @@ import ShDashboard from "./dashboard/shopping/index"
 import LjDashboard from "./dashboard/loja/index"
 import LjLogin from "./login/loja/index"
 import MainPage from "./mainpages/index"
+import CadastroCat from "./dashboard/loja/categoria"
 import history from "./history"
 
 const PrivateRouteAdmin = ({ component: Component, ...rest }) => (
@@ -74,6 +75,10 @@ const Routes = () => (
         path={"/store/"+localStorage.getItem("@slug")+"/dashboard" } 
         component={withRouter(LjDashboard)}
       />
+      <PrivateRouteStore 
+      exact
+      path={"/store/"+localStorage.getItem("@slug")+"/categorias"}
+      component={withRouter(CadastroCat)}/>
     </Switch>
   </Router>
 );

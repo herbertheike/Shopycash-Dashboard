@@ -14,6 +14,7 @@ class Login extends Component {
       slug: null,
       slugresp: "",
       ljid: "",
+      shid:"",
       result: "",
       array: [],
     };
@@ -48,6 +49,7 @@ class Login extends Component {
           nome: response.user.nome,
           slugresp: response.user.lojaslug,
           token: response.token,
+          shid:response.user.shoppingid
         })
       )
       .catch((error) => console.log(error));
@@ -65,6 +67,7 @@ class Login extends Component {
       localStorage.setItem("@slug", this.state.slug);
       localStorage.setItem("@email", email);
       localStorage.setItem("@lojaid", this.state.ljid);
+      localStorage.setItem("@shoppingid", this.state.shid)
 
       history.push(
         "/store/" + localStorage.getItem("@slug") + "/dashboard/"

@@ -11,13 +11,13 @@ import {
   InputFile,
   Img,
   TextArea
-} from "./style";
+} from "../../dashboard/loja/style";
 import history from "../../history";
 import { DashboardLoja } from "../../components/Layout";
 import Icon from "awesome-react-icons";
 import noimage from "../../imgsrc/logopad.jpg";
 
-class LjDashboard extends React.Component {
+class CadastroCat extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,18 +31,9 @@ class LjDashboard extends React.Component {
       _id: "",
       lojaid: localStorage.getItem("@lojaid"),
       nome: "",
-      desc: "",
-      preco: "",
-      loja: localStorage.getItem("@loja"),
-      shopping: localStorage.getItem("@shopping"),
-      shoppingid: localStorage.getItem("@shoppingid"),
       categoria: "",
-      ativo: true,
-      estoque: "",
-      imagembase64: null,
-      imagem2base64: null,
+      categorialist: [],
 
-      categoriaslist: [],
       nomefantasiaedit: "",
       razaosocialedit: "",
       shoppingedit: "",
@@ -301,7 +292,7 @@ class LjDashboard extends React.Component {
   listcategorias() {
     fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
       .then((res) => res.json())
-      .then((result) => this.setState({ categoriaslist: result }))
+      .then((result) => this.setState({ categorialist: result }))
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }), []);
   }
@@ -358,27 +349,16 @@ class LjDashboard extends React.Component {
     window.location.reload();
   };
 
-  /**
- * {this.state.ljdata.map((item, index)=>{
-          return(
-          <Title key={item._id}>
-            Cadastro de Produtos - {item.nomefantasia}
-          </Title>
-          )
-        })}
- */
-
   render() {
-    const { prodarray } = this.state;
+
     return (
       <DashboardLoja>
         <Section>
           <Title>
-            Cadastro de Produtos - {localStorage.getItem("@loja")} - {localStorage.getItem("@shopping")}
+            Cadastro de Categorias - {localStorage.getItem("@loja")} - {localStorage.getItem("@shopping")}
           </Title>
           <span>
-            Usuario Logado: {localStorage.getItem("@nome")} -{" "}
-            {localStorage.getItem("@email")}
+            Usuario Logado: {localStorage.getItem("@nome")} - {localStorage.getItem("@email")}
           </span>
           <Input
             style={{ width: "99%" }}
@@ -389,237 +369,34 @@ class LjDashboard extends React.Component {
             value={this.state.nome}
             onChange={this.handleChange}
           />
-          <Input
-            style={{ width: "99%" }}
-            type="text"
-            placeholder="Descrição"
-            required={true}
-            name="desc"
-            value={this.state.desc}
-            onChange={this.handleChange}
-          />
-          <Label>Preço</Label>
-          <Input
-            value={this.state.preco}
-            style={{ width: "10%" }}
-            type="number"
-            placeholder="Preço"
-            name="preco"
-            required={true}
-            onChange={this.handleChange}
-          />
-          <Label>Estoque</Label>
-          <Input
-            value={this.state.estoque}
-            style={{ width: "10%" }}
-            type="number"
-            name="estoque"
-            required={true}
-            onChange={this.handleChange}
-          />
-          <div
-            style={{
-              padding: 0,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "right",
-            }}
-          >
-            <div
-              style={{
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 10,
-              }}
-            >
-              <Label style={{ padding: 10, display: "block" }} htmlFor="logo">
-                Imagem Principal
-              </Label>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexDirection: "column",
-                }}
-              >
-                <InputFile
-                  style={{ width: "100%" }}
-                  Label="Imagem Principal"
-                  type="file"
-                  name="imagem"
-                  id="imagem"
-                  accept=".jpeg, .png, .jpg .gif"
-                  required={true}
-                  onChange={this.onImageChange}
-                />
-                <img
-                  alt="imagem1"
-                  src={
-                    this.state.imagembase64 == null
-                      ? noimage
-                      : this.state.imagembase64
-                  }
-                  style={{
-                    borderWidht: 1,
-                    paddingTop: 10,
-                    width: 250,
-                    height: 250,
-                    overflow: "hidden",
-                    borderRadius: "50%",
-                    justifyContent: "center",
-                  }}
-                />
-              </div>
-            </div>
-            <div style={{ flexDirection: "column", padding: 10 }}>
-              <Label style={{ padding: 10, display: "block" }} htmlFor="capa">
-                Imagem Secundaria
-              </Label>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexDirection: "column",
-                }}
-              >
-                <InputFile
-                  style={{ width: "100%" }}
-                  label="Imagem Secundaria"
-                  type="file"
-                  name="capa"
-                  id="capa"
-                  accept=".jpeg, .png, .jpg"
-                  required={true}
-                  onChange={this.onImage2Change}
-                />
-                <img
-                  alt="imagem2"
-                  src={
-                    this.state.imagem2base64 == null
-                      ? noimage
-                      : this.state.imagem2base64
-                  }
-                  style={{
-                    borderWidht: 1,
-                    height: 250,
-                    overflow: "hidden",
-                    paddingTop: 10,
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-around",
-              padding: 10,
-            }}
-          >
-            <Label>Categorias</Label>
-            <select name="categoria" value={this.state.categoria}
-            onChange={this.handleChange}>
-              {this.state.categoriaslist.map((cat) => {
-                return (
-                  <option value={cat.nome}>{cat.nome}</option>
-                );
-              })}
-            </select>
-            <br />
-          </div>
-         
-          <div>
-            <Button value="Submit" onClick={this.cadastrarproduto}>
+          
+          <Button value="Submit" onClick={this.cadastrarproduto}>
               Cadastrar
             </Button>
-          </div>
+         
         </Section>
         <Section>
-          <Label>Produtos</Label>
-          {prodarray.map((item, index) => {
-            const isEmpty = 'rgba(255, 0, 0, 0.2)'
-            const isFull = 'rgba(19, 138, 0, 0.2)'
-            const storageColorCode = item.estoque > 0 ? isFull : isEmpty
+          <Label>Categorias</Label>
+          <table>
+            <thead>
+              <tr>
+                <th>NOME</th>
+                <th>Produtos</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+          </table>
+          {this.state.categorialist.map((item) => {
             return (
-              
-              <div style={{backgroundColor:storageColorCode, padding: 10, width:'100%', margin:10}}> 
-              <div
-                style={{
-                  padding: 25,
-                  paddingRight:100,
-                  paddingLeft:50,
-                  width:'100%',
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent:'space-between'
-                }}
-              >
-                    <div
-                      key={item._id}
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        paddingTop: 10,
-                        flexDirection: "column",
-                      }}
-                    >
-                      <label style={{ display: "block", fontFamily:'Helvetica', fontSize:28, padding:10}}>
-                        {item.nome}
-                      </label>
-                      <div style={{display: "flex", flexDirection: "row" }}>
-                      <Img alt="imagem1" src={item.imagem} style={{ borderRadius:5, width: 250 }} />
-                      <Img alt="imagem2" src={item.imagem2} style={{ borderRadius:5, width: 250 }} />
-                      </div>
-                       </div>
-                    <div style={{display:'flex',flexDirection: "column", paddingTop: 60,}}>
-                      <label style={{display: "block", width: 300, fontSize:16, textAlign:'justify' }}> 
-                        {"Descrição: \n"+item.desc}
-                      </label>
-
-                      <label style={{display: "block", width: 300, fontSize:16, textAlign:'justify', paddingTop:10 }}> 
-                        {"Categoria: \n"+item.categoria}
-                      </label>
-                      <label
-                        style={{paddingTop: 30, fontSize:26 }}
-                      >Preço:
-                        R${item.preco.toFixed(2)}
-                      </label>
-
-                      <div style={{ flexDirection: "row" }}>
-                      <label
-                        style={{paddingTop: 30, display: "block", fontSize:24}}
-                      >
-                        Qtd em estoque: {item.estoque}
-                      </label>
-                    </div>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', flexDirection: "row",paddingLeft:50, }}>
-                <div style={{ display: 'flex', flexDirection: "column" }}>
-                    <label style={{}}>
-                      Criado em: {item.createdAt}
-                    </label>
-                    <label style={{}}>
-                      Ultima alteração em: {item.updatedAt}
-                    </label>
-                    </div>
-                  </div>
-                  <div
-                  style={{
-                    paddingBottom:40,
-                    paddingLeft:50,
-                    display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent:'right',
-                  }}
-                >
-                  <div style={{flexDirection: "column"}}>
+              <tbody>
+                <tr>
+                  <tb>
+                    {item.nome}
+                  </tb>
+                  <tb>
+                    0
+                  </tb>
+                  <tb>
                   <EditBt
                     onClick={() =>
                       this.openModal(
@@ -638,15 +415,13 @@ class LjDashboard extends React.Component {
                     <Icon name="edit-pencil-simple" />
                     EDITAR
                   </EditBt>
-                  </div>
-                  <div style={{flexDirection: "column", display:'block'}}>
                   <DeleteBt onClick={() => this.deleteloja(item._id)}>
                     <Icon name="x" />
                     EXCLUIR
                   </DeleteBt>
-                  </div>
-                </div>
-              </div>
+                  </tb>
+                </tr>
+              </tbody>
             );
           })}
         </Section>
@@ -761,56 +536,4 @@ class LjDashboard extends React.Component {
   }
 }
 
-export default LjDashboard;
-
-/**
- *  <hr />
-          <Title>Cadastro do usuario da loja: {this.state.nomefantasia}</Title>
-          <Input
-            value={this.state.nomeuser}
-            style={{ width: "99%" }}
-            type="text"
-            placeholder="Nome do usuario"
-            name="nomeuser"
-            required="true"
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.emailuser}
-            style={{ width: "99%" }}
-            type="email"
-            placeholder="Email do usuario"
-            name="emailuser"
-            required="true"
-            onChange={this.handleChange}
-          />
-
-          <Input
-            value={this.state.passuser}
-            style={{ width: "24%" }}
-            type="text"
-            placeholder="Senha do usuario"
-            name="passuser"
-            required="true"
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.userrole}
-            style={{ width: "24%" }}
-            type="text"
-            placeholder="role"
-            name="userrole"
-            required="true"
-            disabled
-          />
-
-          <Input
-            value={this.state.lojaslug}
-            style={{ width: "24%" }}
-            type="text"
-            placeholder="lojaslug"
-            name="lojaslug"
-            required="true"
-            disabled
-          />
- */
+export default CadastroCat;
