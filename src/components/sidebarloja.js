@@ -17,13 +17,7 @@ export const SidebarLoja = () => {
         
       }
   }
-  const onClick = (itemId) =>{
-    try{
-      history.push(itemId);
-    }catch(error){
-      alert("ERRO",error)
-    }
-  }
+  
     return (
 
         <React.Fragment>
@@ -47,7 +41,9 @@ export const SidebarLoja = () => {
 
         <Navigation
             activeItemId={location.pathname}
-            onSelect={(itemId)=> onClick(itemId)}
+            onSelect={({itemId}) => {
+              history.push(itemId)
+            }}
             items={[
               {
                 title: 'Dashboard',
@@ -56,7 +52,7 @@ export const SidebarLoja = () => {
               },
               {
                 title: 'Categorias',
-                itemId: '/store/'+localStorage.getItem("@slug")+'/cadastro',
+                itemId: '/store/'+localStorage.getItem("@slug")+'/categorias',
                 elemBefore: () => <Icon name="book" />,
               }
             ]}

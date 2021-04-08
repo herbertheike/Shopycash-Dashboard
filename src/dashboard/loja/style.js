@@ -105,7 +105,7 @@ export const ButtonLogout = styled.button`
   }
 `;
 
-export const Title = styled.p`
+export const Title = styled.title`
   font-weight: bold;
   color: #9b59b6;
   font-size: 22px;

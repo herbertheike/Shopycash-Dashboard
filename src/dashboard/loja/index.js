@@ -16,6 +16,7 @@ import history from "../../history";
 import { DashboardLoja } from "../../components/Layout";
 import Icon from "awesome-react-icons";
 import noimage from "../../imgsrc/logopad.jpg";
+import moment from 'moment';
 
 class LjDashboard extends React.Component {
   constructor(props) {
@@ -32,26 +33,27 @@ class LjDashboard extends React.Component {
       lojaid: localStorage.getItem("@lojaid"),
       nome: "",
       desc: "",
-      preco: "",
+      preco: 0,
       loja: localStorage.getItem("@loja"),
       shopping: localStorage.getItem("@shopping"),
       shoppingid: localStorage.getItem("@shoppingid"),
       categoria: "",
+      categoriaid:"",
       ativo: true,
-      estoque: "",
+      estoque: 0,
       imagembase64: null,
       imagem2base64: null,
 
       categoriaslist: [],
-      nomefantasiaedit: "",
-      razaosocialedit: "",
-      shoppingedit: "",
-      cnpjedit: "",
-      emailedit: "",
-      siteedit: "",
-      telefoneedit: "",
-      responsaveledit: "",
-      lojaslugedit: "",
+      nomeedit: "",
+      descedit: "",
+      precoedit: 0,
+      categoriaedit: "",
+      categoriaidedit:"",
+      ativoedit:true,
+      estoqueedit:0,
+      imgbs64edt: null,
+      imgbs642edt:null,
 
       lojadata: [],
       prodarray: [],
@@ -73,6 +75,8 @@ class LjDashboard extends React.Component {
     this.closeDelModal = this.closeDelModal.bind(this);
     this.onImageChange = this.onImageChange.bind(this);
     this.onImage2Change = this.onImage2Change.bind(this);
+    this.onImageEdit = this.onImageEdit.bind(this);
+    this.onImage2Edit = this.onImage2Edit.bind(this);
     this.handleChecked = this.handleChecked.bind(this);
 
     // this.fileInput = React.createRef();
@@ -102,25 +106,28 @@ class LjDashboard extends React.Component {
         .finally(() => this.setState({ isLoaded: false }), []);
   }
   openModal = async (
+    id,
     nome,
-    endereco,
-    cnpj,
-    telefone,
-    email,
-    site,
-    responsavel,
-    shoppingslug
+    desc,
+    preco,
+    estoque,
+    imagem,
+    imagem2,
+    categoria,
+    categoriaid
   ) => {
     this.setState({
       isModalOpen: true,
+      _id:id,
       nomeedit: nome,
-      enderecoedit: endereco,
-      cnpjedit: cnpj,
-      telefoneedit: telefone,
-      emailedit: email,
-      siteedit: site,
-      responsaveledit: responsavel,
-      shoppingslugedit: shoppingslug,
+      descedit: desc,
+      precoedit: preco,
+      estoqueedit: estoque,
+      imgbs64edt: imagem,
+      imgbs642edt: imagem2,
+      categoriaedit: categoria,
+      categoriaidedit: categoriaid,
+
     });
   };
   openModalDelete = async (item) => {
@@ -140,10 +147,11 @@ class LjDashboard extends React.Component {
   closeDelModal() {
     this.setState({ isModalDelOpen: false });
   }
-  deleteloja = async (item) => {
+  deleteprod = async (item) => {
     const _id = item;
+    const lojaid = this.state.lojaid
     console.log(_id, "new id");
-    await fetch("https://api-shopycash1.herokuapp.com/deletestore/" + _id, {
+    await fetch("https://api-shopycash1.herokuapp.com/product/delete/" + lojaid+"/"+_id, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -170,6 +178,7 @@ class LjDashboard extends React.Component {
       shopping: this.state.shopping,
       shoppingid: this.state.shoppingid,
       categoria: this.state.categoria,
+      categoriaid:this.state.categoriaid,
       ativo: this.state.ativo,
       imagem: this.state.imagembase64,
       imagem2: this.state.imagem2base64,
@@ -201,29 +210,31 @@ class LjDashboard extends React.Component {
   
   };
 
-  updateloja = async () => {
-    const lojaslugedit = this.state.lojaslugedit;
-    console.log("SHOPPING--> " + lojaslugedit);
+  updateproduto = async () => {
+    const payload = JSON.stringify({
+        loja_id: this.state.lojaid,
+        nome: this.state.nomeedit,
+        desc: this.state.descedit,
+        preco: this.state.precoedit,
+        categoria: this.state.categoriaedit,
+        categoriaid:this.state.categoriaidedit,
+        ativo: this.state.ativoedit,
+        imagem: this.state.imgbs64edt,
+        imagem2: this.state.imgbs642edt,
+        estoque: this.state.estoqueedit
+    })
+    const lojaid = this.state.lojaid;
+    const prodid = this.state._id;
     await fetch(
-      "https://api-shopycash1.herokuapp.com/updatestore/" + lojaslugedit,
+      "https://api-shopycash1.herokuapp.com/product/update/"+lojaid+"/"+prodid ,
       {
         method: "POST",
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json, multipart/form-data",
+          "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("@token"),
         },
-        body: JSON.stringify({
-          nomefantasia: this.state.nomefantasia,
-          razaosocial: this.state.razaosocial,
-          shopping: this.state.shopping,
-          cnpj: this.state.cnpj,
-          email: this.state.email,
-          site: this.state.site,
-          telefone: this.state.telefone,
-          responsavel: this.state.responsavel,
-          lojaslug: this.state.lojaslug,
-        }),
+        body: payload
       }
     )
       .then((res) => res.json(console.log(JSON.stringify(res))))
@@ -250,20 +261,30 @@ class LjDashboard extends React.Component {
     const target = event.target;
     const type = target.type;
     const value = target.value;
+    const title= target.title;
+    const id = target.id;
     const name = target.name;
 
     if (type === "file") {
       this.setState({ [name]: event.target.files });
-    } else {
+    }else if(type === "radio" && id === "normalfield"){
+      this.setState({categoriaid: title, categoria:value});
+    }else if (type === "radio" && id === "editfield" ) {
+      this.setState({categoriaidedit: title, categoriaedit:value});
+    }
+    else {
       this.setState({
         [name]: value,
       });
     }
+
+      console.log(event)
+      console.log(this.state.categoria);
+      console.log(this.state.categoriaid);
   };
 
   onImageChange(event) {
     event.preventDefault();
-    console.log("Imagem1:\n", event.target.files[0]);
     let file = event.target.files[0];
     let baseurl = "";
 
@@ -282,7 +303,6 @@ class LjDashboard extends React.Component {
 
   onImage2Change(event) {
     event.preventDefault();
-    console.log("CAPA:\n", event.target.files[0]);
     let file = event.target.files[0];
     let baseurl = "";
 
@@ -298,12 +318,49 @@ class LjDashboard extends React.Component {
     }
   }
 
-  listcategorias() {
-    fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
+  onImageEdit (event) {
+    event.preventDefault();
+    let file = event.target.files[0];
+    let baseurl = '';
+
+    if(file){
+      const reader = new FileReader();
+     
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        baseurl = reader.result;
+        console.log(baseurl)
+        this.setState({imgbs64edt:baseurl})
+      }
+    }    
+  };
+
+  onImage2Edit (event) {
+    event.preventDefault();
+    let file = event.target.files[0];
+    let baseurl = '';
+
+    if(file){
+      const reader = new FileReader();
+     
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        baseurl = reader.result;
+        console.log(baseurl)
+        this.setState({imgbs642edt:baseurl})
+      }
+    }  
+  };
+
+
+
+  listcategorias= async ()=> {
+    await fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
       .then((res) => res.json())
       .then((result) => this.setState({ categoriaslist: result }))
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }), []);
+      console.log(this.state.categoriaslist)
   }
 
   handleChecked(event) {
@@ -489,8 +546,8 @@ class LjDashboard extends React.Component {
                   style={{ width: "100%" }}
                   label="Imagem Secundaria"
                   type="file"
-                  name="capa"
-                  id="capa"
+                  name="imagem2"
+                  id="imagem2"
                   accept=".jpeg, .png, .jpg"
                   required={true}
                   onChange={this.onImage2Change}
@@ -521,14 +578,23 @@ class LjDashboard extends React.Component {
             }}
           >
             <Label>Categorias</Label>
-            <select name="categoria" value={this.state.categoria}
-            onChange={this.handleChange}>
               {this.state.categoriaslist.map((cat) => {
                 return (
-                  <option value={cat.nome}>{cat.nome}</option>
+                  <div style={{fontFamily:'Helvetica',
+                  justifyContent:'right',
+                  alignItems:'center',
+                  padding: 10, display:'flex', flexDirection: "row"}}>
+                  <Input
+                  id="normalfield"
+                  title={cat._id}
+                  type="radio"
+                  checked={this.state.categoria === cat.nome}
+                  onChange={this.handleChange}
+                  value={cat.nome}/>
+                  <label>{cat.nome}</label>
+                  </div>
                 );
               })}
-            </select>
             <br />
           </div>
          
@@ -568,18 +634,18 @@ class LjDashboard extends React.Component {
                         flexDirection: "column",
                       }}
                     >
-                      <label style={{ display: "block", fontFamily:'Helvetica', fontSize:28, padding:10}}>
+                      <Title style={{ display: "block", fontFamily:'Helvetica', fontSize:28, padding:10}}>
                         {item.nome}
-                      </label>
+                      </Title>
                       <div style={{display: "flex", flexDirection: "row" }}>
                       <Img alt="imagem1" src={item.imagem} style={{ borderRadius:5, width: 250 }} />
                       <Img alt="imagem2" src={item.imagem2} style={{ borderRadius:5, width: 250 }} />
                       </div>
                        </div>
                     <div style={{display:'flex',flexDirection: "column", paddingTop: 60,}}>
-                      <label style={{display: "block", width: 300, fontSize:16, textAlign:'justify' }}> 
+                      <textarea disabled style={{display: "block", width: 300,height:250, fontSize:16, textAlign:'justify' }}> 
                         {"Descrição: \n"+item.desc}
-                      </label>
+                      </textarea>
 
                       <label style={{display: "block", width: 300, fontSize:16, textAlign:'justify', paddingTop:10 }}> 
                         {"Categoria: \n"+item.categoria}
@@ -602,10 +668,10 @@ class LjDashboard extends React.Component {
                 <div style={{ display: 'flex', flexDirection: "row",paddingLeft:50, }}>
                 <div style={{ display: 'flex', flexDirection: "column" }}>
                     <label style={{}}>
-                      Criado em: {item.createdAt}
+                      Criado em: {moment(item.createdAt).utc().format('DD/MM/YYYY HH:MM:SS')}
                     </label>
                     <label style={{}}>
-                      Ultima alteração em: {item.updatedAt}
+                      Ultima alteração em: {moment(item.updatedAt).utc().format('DD/MM/YYYY HH:MM:SS')}
                     </label>
                     </div>
                   </div>
@@ -623,15 +689,15 @@ class LjDashboard extends React.Component {
                   <EditBt
                     onClick={() =>
                       this.openModal(
-                        item.nomefantasia,
-                        item.razaosocial,
-                        item.shopping,
-                        item.cnpj,
-                        item.email,
-                        item.site,
-                        item.telefone,
-                        item.responsavel,
-                        item.slug
+                        item._id,
+                        item.nome,
+                        item.desc,
+                        item.preco,
+                        item.estoque,
+                        item.imagem,
+                        item.imagem2,
+                        item.categoria,
+                        item.categoriaid
                       )
                     }
                   >
@@ -640,7 +706,7 @@ class LjDashboard extends React.Component {
                   </EditBt>
                   </div>
                   <div style={{flexDirection: "column", display:'block'}}>
-                  <DeleteBt onClick={() => this.deleteloja(item._id)}>
+                  <DeleteBt onClick={() => this.deleteprod(item._id)}>
                     <Icon name="x" />
                     EXCLUIR
                   </DeleteBt>
@@ -658,102 +724,175 @@ class LjDashboard extends React.Component {
             style={this.state.customStyles}
           >
             <div>
-              {this.state.shoppingslugedit}
-              <Input
-                style={{ width: "100%" }}
-                type="text"
-                placeholder="Shopping"
-                required={true}
-                name="nomeedit"
-                value={this.state.nomeedit}
-                onChange={this.handleChange}
-              />
+              
+            <Input
+            style={{ width: "99%" }}
+            type="text"
+            placeholder="Nome"
+            required={true}
+            name="nomeedit"
+            value={this.state.nomeedit}
+            onChange={this.handleChange}
+          />
+          <Input
+            style={{ width: "99%" }}
+            type="text"
+            placeholder="Descrição"
+            required={true}
+            name="descedit"
+            value={this.state.descedit}
+            onChange={this.handleChange}
+          />
+          <Label>Preço</Label>
+          <Input
+            value={this.state.precoedit}
+            style={{ width: "10%" }}
+            type="number"
+            placeholder="Preço"
+            name="precoedit"
+            required={true}
+            onChange={this.handleChange}
+          />
+          <Label>Estoque</Label>
+          <Input
+            value={this.state.estoqueedit}
+            style={{ width: "10%" }}
+            type="number"
+            name="estoqueedit"
+            required={true}
+            onChange={this.handleChange}
+          />
+          <div
+            style={{
+              padding: 0,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "right",
+            }}
+          >
+            <div
+              style={{
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 10,
+              }}
+            >
+              <Label style={{ padding: 10, display: "block" }} htmlFor="logo">
+                Imagem Principal
+              </Label>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <InputFile
+                  style={{ width: "100%" }}
+                  Label="Imagem Principal"
+                  type="file"
+                  name="imgbs64edt"
+                  id="imgbs64edt"
+                  accept=".jpeg, .png, .jpg .gif"
+                  required={true}
+                  onChange={this.onImageEdit}
+                />
+                <img
+                  alt="imagem1"
+                  src={
+                    this.state.imgbs64edt == null
+                      ? noimage
+                      : this.state.imgbs64edt
+                  }
+                  style={{
+                    borderWidht: 1,
+                    paddingTop: 10,
+                    width: 250,
+                    height: 250,
+                    overflow: "hidden",
+                    borderRadius: "50%",
+                    justifyContent: "center",
+                  }}
+                />
+              </div>
+            </div>
+            <div style={{ flexDirection: "column", padding: 10 }}>
+              <Label style={{ padding: 10, display: "block" }} htmlFor="capa">
+                Imagem Secundaria
+              </Label>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <InputFile
+                  style={{ width: "100%" }}
+                  label="Imagem Secundaria"
+                  type="file"
+                  name="imgbs642edt"
+                  id="imgbs642edt"
+                  accept=".jpeg, .png, .jpg"
+                  required={true}
+                  onChange={this.onImage2Edit}
+                />
+                <img
+                  alt="imagem2"
+                  src={
+                    this.state.imgbs642edt == null
+                      ? noimage
+                      : this.state.imgbs642edt
+                  }
+                  style={{
+                    borderWidht: 1,
+                    height: 250,
+                    overflow: "hidden",
+                    paddingTop: 10,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-around",
+              padding: 10,
+            }}
+          >
+            <Label>Categorias</Label>
+              {this.state.categoriaslist.map((cat) => {
+                return (
+                  <div style={{fontFamily:'Helvetica',
+                  justifyContent:'right',
+                  alignItems:'center',
+                  padding: 10, display:'flex', flexDirection: "row"}}>
+                  <Input
+                  id="editfield"
+                  title={cat._id}
+                  type="radio"
+                  checked={cat._id === this.state.categoriaidedit}
+                  onChange={this.handleChange}
+                  value={cat.nome}/>
+                  <label>{cat.nome}
+                  {console.log(this.state.categoriaedit)}</label>
+                  </div>
+                );
+              })}
+            <br />
+          </div>
 
-              <Input
-                value={this.state.enderecoedit}
-                style={{ width: "100%" }}
-                type="text"
-                placeholder="Endereço"
-                name="enderecoedit"
-                required={true}
-                onChange={this.handleChange}
-              />
-
-              <Input
-                value={this.state.cnpjedit}
-                style={{ width: "25%" }}
-                type="number"
-                placeholder="CNPJ"
-                name="cnpjedit"
-                required={true}
-                onChange={this.handleChange}
-              />
-              <Input
-                value={this.state.telefoneedit}
-                style={{ width: "25%" }}
-                type="tel"
-                placeholder="Telefone"
-                name="telefoneedit"
-                required={true}
-                onChange={this.handleChange}
-              />
-
-              <Input
-                value={this.state.emailedit}
-                style={{ width: "48.51%" }}
-                type="email"
-                placeholder="Email"
-                name="emailedit"
-                required={true}
-                onChange={this.handleChange}
-              />
-              <Input
-                value={this.state.siteedit}
-                style={{ width: "50%" }}
-                type="url"
-                placeholder="Site"
-                name="siteedit"
-                onChange={this.handleChange}
-              />
-
-              <Input
-                value={this.state.responsaveledit}
-                style={{ width: "24%" }}
-                type="text"
-                placeholder="Responsavel"
-                name="responsaveledit"
-                required={true}
-                onChange={this.handleChange}
-              />
-              <Input
-                value={this.state.shoppingslugedit}
-                style={{ width: "24%" }}
-                type="text"
-                placeholder="Shoppign slug"
-                name="shoppingslugedit"
-                required={true}
-                onChange={this.handleChange}
-              />
-
-              <hr />
-              <Button value="Submit" onClick={this.updateloja}>
+              
+              <Button value="Submit" onClick={this.updateproduto}>
                 Alterar
               </Button>
             </div>
             <button onClick={this.closeModal}>close</button>
-          </Modal>
-          <Modal
-            isOpen={this.state.isModalDelOpen}
-            onAfterOpen={this.afterOpenModal}
-            onRequestClose={this.closeDelModal}
-            style={this.state.customStyles}
-          >
-            <div>
-              {this.state._id}
-
-              <DeleteBt onclick={() => this.deleteloja()}>DELETE</DeleteBt>
-            </div>
-            <button onClick={this.closeDelModal}>close</button>
           </Modal>
         </div>
       </DashboardLoja>
