@@ -10,6 +10,9 @@ import {
   DeleteBt,
   InputFile,
   Img,
+  Tr,
+  Td,
+  Tdr,
   TextArea
 } from "./style";
 import history from "../../history";
@@ -425,6 +428,7 @@ class LjDashboard extends React.Component {
         })}
  */
 
+
   render() {
     const { prodarray } = this.state;
     return (
@@ -446,6 +450,7 @@ class LjDashboard extends React.Component {
             value={this.state.nome}
             onChange={this.handleChange}
           />
+          
           <Input
             style={{ width: "99%" }}
             type="text"
@@ -606,87 +611,35 @@ class LjDashboard extends React.Component {
         </Section>
         <Section>
           <Label>Produtos</Label>
-          {prodarray.map((item, index) => {
-            const isEmpty = 'rgba(255, 0, 0, 0.2)'
-            const isFull = 'rgba(19, 138, 0, 0.2)'
-            const storageColorCode = item.estoque > 0 ? isFull : isEmpty
-            return (
-              
-              <div style={{backgroundColor:storageColorCode, padding: 10, width:'100%', margin:10}}> 
-              <div
-                style={{
-                  padding: 25,
-                  paddingRight:100,
-                  paddingLeft:50,
-                  width:'100%',
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent:'space-between'
-                }}
-              >
-                    <div
-                      key={item._id}
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        paddingTop: 10,
-                        flexDirection: "column",
-                      }}
-                    >
-                      <Title style={{ display: "block", fontFamily:'Helvetica', fontSize:28, padding:10}}>
-                        {item.nome}
-                      </Title>
-                      <div style={{display: "flex", flexDirection: "row" }}>
-                      <Img alt="imagem1" src={item.imagem} style={{ borderRadius:5, width: 250 }} />
-                      <Img alt="imagem2" src={item.imagem2} style={{ borderRadius:5, width: 250 }} />
-                      </div>
-                       </div>
-                    <div style={{display:'flex',flexDirection: "column", paddingTop: 60,}}>
-                      <textarea disabled style={{display: "block", width: 300,height:250, fontSize:16, textAlign:'justify' }}> 
-                        {"Descrição: \n"+item.desc}
-                      </textarea>
-
-                      <label style={{display: "block", width: 300, fontSize:16, textAlign:'justify', paddingTop:10 }}> 
-                        {"Categoria: \n"+item.categoria}
-                      </label>
-                      <label
-                        style={{paddingTop: 30, fontSize:26 }}
-                      >Preço:
-                        R${item.preco.toFixed(2)}
-                      </label>
-
-                      <div style={{ flexDirection: "row" }}>
-                      <label
-                        style={{paddingTop: 30, display: "block", fontSize:24}}
-                      >
-                        Qtd em estoque: {item.estoque}
-                      </label>
-                    </div>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', flexDirection: "row",paddingLeft:50, }}>
-                <div style={{ display: 'flex', flexDirection: "column" }}>
-                    <label style={{}}>
-                      Criado em: {moment(item.createdAt).utc().format('DD/MM/YYYY HH:MM:SS')}
-                    </label>
-                    <label style={{}}>
-                      Ultima alteração em: {moment(item.updatedAt).utc().format('DD/MM/YYYY HH:MM:SS')}
-                    </label>
-                    </div>
-                  </div>
-                  <div
-                  style={{
-                    paddingBottom:40,
-                    paddingLeft:50,
-                    display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent:'right',
-                  }}
-                >
-                  <div style={{flexDirection: "column"}}>
-                  <EditBt
+              <table style={{alignItems:'center', justifyContent:'center', width:'100%'}} > 
+                <thead style={{alignItems:'center', justifyContent:'center'}}>
+                  <tr>
+                    <th><input type="checkbox" /></th>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                    <th>SKU</th>
+                    <th>Categoria</th>
+                  </tr>
+                </thead>
+                {prodarray.map((item) => {
+                     const isEmpty = 'rgba(255, 0, 0, 0.2)'
+                     const isFull = 'rgba(19, 138, 0, 0.2)'
+                     const storageColorCode = item.estoque > 0 ? isFull : isEmpty
+                      return (
+                <tbody style={{backgroundColor:storageColorCode, height:100, overflowY: 'auto', padding: 5}}>
+                  <Tr>
+                    <Td style={{padding: 15}}><input type="checkbox"/></Td>
+                    <Tdr>
+                      {item.nome.slice(0,10)}...
+                      </Tdr>
+                    <Tdr style={{height:40, maxHeight:40}}>{item.desc.slice(0,60)}...</Tdr>
+                    <Td style={{alignItems:'center', justifyContent:'center'}}>R${item.preco.toFixed(2)}</Td>
+                    <Td style={{ alignItems:'center', justifyContent:'center'}}>{item.estoque}</Td>
+                    <Td>{item._id}</Td>
+                    <Td>{item.categoria}</Td>
+                    <Td style={{display:'flex', justifyContent:'space-between'}}><EditBt
                     onClick={() =>
                       this.openModal(
                         item._id,
@@ -704,17 +657,16 @@ class LjDashboard extends React.Component {
                     <Icon name="edit-pencil-simple" />
                     EDITAR
                   </EditBt>
-                  </div>
-                  <div style={{flexDirection: "column", display:'block'}}>
                   <DeleteBt onClick={() => this.deleteprod(item._id)}>
                     <Icon name="x" />
                     EXCLUIR
                   </DeleteBt>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                  </Td>
+                  </Tr>
+                </tbody>
+                     )})}
+                </table> 
+                
         </Section>
         <div>
           <Modal
@@ -724,7 +676,7 @@ class LjDashboard extends React.Component {
             style={this.state.customStyles}
           >
             <div>
-              
+              Editando: 
             <Input
             style={{ width: "99%" }}
             type="text"

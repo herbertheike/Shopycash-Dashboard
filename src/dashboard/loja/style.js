@@ -109,22 +109,22 @@ export const Title = styled.title`
   font-weight: bold;
   color: #9b59b6;
   font-size: 22px;
-  margin: 5px;
-  padding-left: 10px;
+  margin:5px;
   padding-top: 5px;
-  font-family: Arial;
+  font-family: Helvetica;
+  display: flex;
 `;
 export const Label = styled.label`
   font-weight: 100;
   padding: 5px;
   color: #888888;
   font-size: 16px;
-  font-family: Arial;
+  font-family: Helvetica;
 `;
 export const EditBt = styled.button`
 display:flex;
-  padding: 5px;
-  width: 200px;
+  padding: 10px;
+  width: auto;
   height: 40px;
   background-color: rgb(40, 167, 69);
   border: none;
@@ -132,13 +132,13 @@ display:flex;
   color: #fff;
   align-items: center;
   justify-content:center;
-  margin: 10px;
+  margin: 5px;
   font-weight: bold;
 `;
 export const DeleteBt = styled.button`
 display:flex;
-  padding: 5px;
-  width: 200px;
+  padding: 10px;
+  width: auto;
   height: 40px;
   background-color: rgb(220, 53, 69);
   border: none;
@@ -146,7 +146,7 @@ display:flex;
   color: #fff;
   align-items: center;
   justify-content:center;
-  margin: 10px;
+  margin: 5px;
   font-weight: bold;
 `;
 export const Img =  styled.img`
@@ -160,4 +160,21 @@ export const Img =  styled.img`
       transition: all .3s ease-in;
       opacity: 1;
       transform: scale(1.6);
+`;
+export const Tr = styled.tr`
+border-bottom-width:1px;
+border-color:#000;
+text-align: center;
+`;
+export const Td = styled.td`
+text-align: center;
+width:auto;
+height:60px;
+padding:10px;
+`;
+export const Tdr = styled.td`
+text-align: left;
+width:auto;
+height:60px;
+padding:10px;
 `;
