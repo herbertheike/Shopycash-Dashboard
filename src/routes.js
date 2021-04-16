@@ -79,6 +79,21 @@ const Routes = () => (
       exact
       path={"/store/"+localStorage.getItem("@slug")+"/categorias"}
       component={withRouter(CadastroCat)}/>
+      <PrivateRouteStore 
+      exact
+      path={"/store/"+localStorage.getItem("@slug")+"/pedidos"}
+      component={withRouter(CadastroCat)}/>
+
+      <PrivateRouteStore 
+      exact
+      path={"/store/"+localStorage.getItem("@slug")+"/pedidos/"+localStorage.getItem("@pedidonumero")}
+      component={withRouter(CadastroCat)}/>
+
+      <PrivateRouteStore 
+      exact
+      path={"/store/"+localStorage.getItem("@slug")+"/checkout"}
+      component={withRouter(CadastroCat)}/>
+      
     </Switch>
   </Router>
 );

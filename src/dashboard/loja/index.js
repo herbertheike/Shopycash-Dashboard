@@ -631,10 +631,10 @@ class LjDashboard extends React.Component {
                 <tbody style={{backgroundColor:storageColorCode, height:100, overflowY: 'auto', padding: 5}}>
                   <Tr>
                     <Td style={{padding: 15}}><input type="checkbox"/></Td>
-                    <Tdr>
+                    <Tdr style={{ width:50}}>
                       {item.nome.slice(0,10)}...
                       </Tdr>
-                    <Tdr style={{height:40, maxHeight:40}}>{item.desc.slice(0,60)}...</Tdr>
+                    <Tdr>{item.desc.slice(0,60)}...</Tdr>
                     <Td style={{alignItems:'center', justifyContent:'center'}}>R${item.preco.toFixed(2)}</Td>
                     <Td style={{ alignItems:'center', justifyContent:'center'}}>{item.estoque}</Td>
                     <Td>{item._id}</Td>
