@@ -59,7 +59,7 @@ export const SidebarLoja = () => {
                 title: 'Pedidos',
                 itemId: '/store/'+localStorage.getItem("@slug")+'/pedidos',
                 elemBefore: () => <Icon name="book" />,
-              }
+              },                                                                                                                                                             
             ]}
           />
 

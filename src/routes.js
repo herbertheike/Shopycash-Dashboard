@@ -8,6 +8,7 @@ import LjDashboard from "./dashboard/loja/index"
 import LjLogin from "./login/loja/index"
 import MainPage from "./mainpages/index"
 import CadastroCat from "./dashboard/loja/categoria"
+import OrderPage from "./dashboard/loja/orders"
 import history from "./history"
 
 const PrivateRouteAdmin = ({ component: Component, ...rest }) => (
@@ -82,7 +83,7 @@ const Routes = () => (
       <PrivateRouteStore 
       exact
       path={"/store/"+localStorage.getItem("@slug")+"/pedidos"}
-      component={withRouter(CadastroCat)}/>
+      component={withRouter(OrderPage)}/>
 
       <PrivateRouteStore 
       exact

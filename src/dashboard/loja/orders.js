@@ -25,9 +25,12 @@ class CadastroCat extends React.Component {
       ischecked: false,
 
       _id: "",
+      cartid:'',
+      userid:'',
       lojaid: localStorage.getItem("@lojaid"),
       nome: "",
-      categorialist: [],
+      orderstoprocess: [],
+      cartitens: [],
 
       nomeedit: "",
 
@@ -53,8 +56,8 @@ class CadastroCat extends React.Component {
     //this.handleUploadImage = this.handleUploadImage.bind(this);
   }
 
-  componentDidMount () {
-     fetch("https://api-shopycash1.herokuapp.com/indexstoreby/"
+  componentDidMount = async()=> {
+     await fetch("https://api-shopycash1.herokuapp.com/indexstoreby/"
       +localStorage.getItem("@lojaid"),{                                                                          
       })
         .then((res) => res.json())
@@ -65,45 +68,48 @@ class CadastroCat extends React.Component {
         .catch((error) => console.log(error))
         .finally(() => this.setState({ isLoaded: false }), []);
 
-        fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
+        await fetch("https://api-shopycash1.herokuapp.com/store/viewdelivery/"+localStorage.getItem("@lojaid"))
           .then((res) => res.json())
-          .then((result) => this.setState({ categorialist: result }))
+          .then((result) => this.setState({ orderstoprocess: result }))
           .catch((error) => console.log(error))
-          .finally(() => this.setState({ isLoaded: false }), []);
-  }
-  openModal = async (
-    id,
-    nome,
-  ) => {
-    this.setState({
-      isModalOpen: true,
-      _id: id,
-      nomeedit: nome,
 
+          console.warn(this.state.orderstoprocess)
+  }
+  openModal = async (cartid,userid) => {
+    await this.setState({
+      isModalOpen: true,
+      cartid: cartid,
+      userid: userid
     });
+    console.log(cartid, userid)
+
+    this.cartDetail()
   };
   closeModal() {
     this.setState({ isModalOpen: false });
   }
 
-  deletecategoria = async (item) => {
-    const _id = item;
-    console.log(_id, "new id");
-    await fetch("https://api-shopycash1.herokuapp.com/store/deletecat/" + _id, {
+  cartDetail = async () => {
+    const id = this.state.cartid;
+    const userId = this.state.userid
+    console.log(id, "new id");
+    console.log(userId, "new id");
+    await fetch("https://api-shopycash1.herokuapp.com/cart/" +userId+"/"+ id, {
       method: "GET",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("@token"),
       },
-    })
-      .then((res) =>
-        res.json(localStorage.setItem("@delmessage", JSON.stringify(res)))
-      )
+    }).then((res) =>res.json())
+      .then((res) => this.setState({cartitens: res[0].cartitens}))
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }));
 
-    window.location.reload();
+    //window.location.reload();
+    console.log(this.state.cartitens)
+
+    this.openModal()
   };
 
   cadastrarcategoria = async () => {
@@ -188,76 +194,79 @@ class CadastroCat extends React.Component {
   };
 
   render() {
-
+const order1 = this.state.orderstoprocess;
     return (
       <DashboardLoja>
         <Section>
-          <Label>Categorias</Label>
-          <table>
-            <thead>
-              <tr>
-                <th>NOME</th>
-                <th>Produtos</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-          </table>
-          {this.state.categorialist.map((item) => {
-            return (
-              <tbody>
-                <tr>
-                  <tb>
-                    {item.nome}
-                  </tb>
-                  <tb>
-                  <EditBt
-                    onClick={() =>
-                      this.openModal(
-                        item._id,
-                        item.nome
-                      )
-                    }
-                  >
-                    <Icon name="edit-pencil-simple" />
-                    EDITAR
-                  </EditBt>
-
-                  <DeleteBt onClick={() => this.deletecategoria(item._id)}>
-                    <Icon name="x" />
-                    EXCLUIR
-                  </DeleteBt>
-
-                  </tb>
-                </tr>
-              </tbody>
-            );
-          })}
+        <Title>Total de pedidos: </Title><Label>35</Label>
         </Section>
-        <div>
-          <Modal
+        <table style={{alignItems:'center', justifyContent:'center', width:'100%'}} > 
+                <thead style={{alignItems:'center', justifyContent:'center'}}>
+                  <tr>
+                    <th style={{alignItems:'center', textAlign:'center', justifyContent:'center', width:120, padding:5}}>Nome</th>
+                    <th style={{alignItems:'center', textAlign:'center', justifyContent:'center', width:120, padding:5}}>CPF</th>
+                    <th style={{alignItems:'center', textAlign:'center', justifyContent:'center', width:120, padding:5}}>Endereço</th>
+                    <th style={{alignItems:'center', textAlign:'center', justifyContent:'center', width:120, padding:5}}>Forma de pagamento</th>
+                    <th style={{alignItems:'center', textAlign:'center', justifyContent:'center', width:120, padding:5}}>Forma de entrega</th>
+                    <th style={{alignItems:'center', textAlign:'center', justifyContent:'center', width:120, padding:5}}>Taxa de entrega</th>
+                    <th style={{alignItems:'center', textAlign:'center', justifyContent:'center', width:120, padding:5}}>Valor total com entrega</th>
+                    <th style={{alignItems:'center', textAlign:'center', justifyContent:'center', width:120, padding:5}}>Troco</th>
+                    <th style={{alignItems:'center', textAlign:'center', justifyContent:'center', width:120, padding:5}}>Ações</th>
+                  </tr>
+                </thead>
+                {this.state.orderstoprocess.map((item) => {
+                  return (
+                <tbody style={{backgroundColor:'white', height:100, overflowY: 'auto', padding: 5}}>
+                  <tr>
+                  <td style={{alignItems:'center', textAlign:'center', justifyContent:'center'}}>{item.nome}</td>
+                  <td style={{alignItems:'center', textAlign:'center', justifyContent:'center'}}>{item.cpf}</td>
+                  <td style={{alignItems:'center', textAlign:'center', justifyContent:'center'}}>{item.address}</td>
+                  <td style={{alignItems:'center', textAlign:'center', justifyContent:'center'}}>{item.paymentmethod}</td>
+                  <td style={{alignItems:'center', textAlign:'center', justifyContent:'center'}}>{item.shippingmethod}</td>
+                  <td style={{alignItems:'center', textAlign:'center', justifyContent:'center'}}>{item.shippingprice}</td>
+                  <td style={{alignItems:'center', textAlign:'center', justifyContent:'center'}}>{item.total}</td>
+                  <td style={{alignItems:'center', textAlign:'center', justifyContent:'center'}}>{item.troco}</td>
+                    <td>
+                  <Button onClick={() => this.openModal(item.cartid, item.userid)}>
+                    <Icon name="x" />
+                    Despachar pedido
+                  </Button>
+                  </td>
+                  </tr>
+                </tbody> 
+                  );
+              })}                    
+                </table> 
+                <div>
+                <Modal
             isOpen={this.state.isModalOpen}
             onRequestClose={this.closeModal}
             style={this.state.customStyles}
           >
             <div>
-              {this.state.nome}
-              <Input
-                style={{ width: "100%" }}
-                type="text"
-                placeholder="Nome da categoria"
-                required={true}
-                name="nomeedit"
-                value={this.state.nomeedit}
-                onChange={this.handleChange}
-              />
-              <hr />
-              <Button value="Submit" onClick={this.updatecategoria}>
-                Alterar
-              </Button>
+              {this.state.cartitens.map((item)=>{
+                return (
+                    <div>
+                      <label>
+                        {item._id}
+                      </label>
+                      <label>
+                        {item.produto}
+                      </label>
+
+                    <label>
+                      x{item.qty}
+                    </label>
+                    <label>
+                      R$'{item.unitPrice}
+                    </label>
+                  </div>                 
+                );
+              })}
             </div>
             <button onClick={this.closeModal}>close</button>
           </Modal>
-        </div>
+                </div>
       </DashboardLoja>
     );
   }

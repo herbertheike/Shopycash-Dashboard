@@ -631,7 +631,7 @@ class LjDashboard extends React.Component {
                 <tbody style={{backgroundColor:storageColorCode, height:100, overflowY: 'auto', padding: 5}}>
                   <Tr>
                     <Td style={{padding: 15}}><input type="checkbox"/></Td>
-                    <Tdr style={{ width:50}}>
+                    <Tdr>
                       {item.nome.slice(0,10)}...
                       </Tdr>
                     <Tdr>{item.desc.slice(0,60)}...</Tdr>
@@ -844,7 +844,7 @@ class LjDashboard extends React.Component {
                 Alterar
               </Button>
             </div>
-            <button onClick={this.closeModal}>close</button>
+            <button onClick={this.closeModal}>Fechar</button>
           </Modal>
         </div>
       </DashboardLoja>
