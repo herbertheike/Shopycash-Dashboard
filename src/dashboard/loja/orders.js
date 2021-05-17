@@ -12,6 +12,7 @@ import {
 import history from "../../history";
 import { DashboardLoja } from "../../components/Layout";
 import Icon from "awesome-react-icons";
+import TextField from '@material-ui/core/TextField'
 
 class CadastroCat extends React.Component {
   constructor(props) {
@@ -253,23 +254,124 @@ const order1 = this.state.orderstoprocess;
                     PEDIDO Nº: {item._id}
                     </Title>
                     <Label>Dados do Cliente</Label>
-                    <div style={{display:'flex',flexDirection:'column' ,alignItems:'flex-start',
-                     justifyContent:'space-between'}}>
+                    <div style={{borderWidth:'1px' ,display:'flex',flexDirection:'column' ,alignItems:'stretch'}}>
                        
-                       <div style={{display:'flex',flexDirection:'row', padding:10}}>
-                        <span style={{ padding:10}}>Nome:</span> <h6 style={{ padding:10}}>{item.nome}</h6> 
-                        <span style={{ padding:10}}>CPF:</span> <h6 style={{ padding:10}}>{item.cpf}</h6>
-                        <span style={{ padding:10}}>Telefone:</span> <h6 style={{ padding:10}}>{item.cpf}</h6>
-                        <span style={{ padding:10}}>Email:</span> <h6 style={{ padding:10}}>{item.cpf}</h6>
+                       <div style={{padding:5}}>
+                        <TextField id="outlined-basic"
+                         style={{ width:'70%', fontSize:12, padding:5}}
+                         size="small"
+                        label="Nome"
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={item.nome}/>
+                        <TextField id="outlined-basic"
+                         style={{ width:'30%', fontSize:12, padding:5}}
+                         size="small"
+                        label="CPF"
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={item.cpf}/>
+                            </div>
+                      <div style={{padding:5}}>
+                      <TextField id="outlined-basic"
+                         style={{ width:'50%', fontSize:12, padding:5}}
+                         size="small"
+                        label="Telefone"
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={item.cpf}/>
+                        <TextField id="outlined-basic"
+                         style={{ width:'50%', fontSize:12, padding:5}}
+                         size="small"
+                        label="Email"
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={item.cpf}/>
                      </div>
+                     <Label>Endereço: </Label>
+                     <div style={{padding:5}}> 
+                       <TextField id="outlined-basic"
+                         style={{ width:'60%', fontSize:12, padding:5}}
+                         size="small"
+                        label="Logradouro"
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={item.deliveryadress.logradouro}/>
 
-                    <div style={{display:'flex',flexDirection:'row' ,
-                     justifyContent:'space-between'}}>
-                       <span>Endereço</span>
-                       <h6>{item.deliveryadress.logradouro}, {item.deliveryadress.numero}, 
-                    {item.deliveryadress.bairro}, {item.deliveryadress.cidade}/
-                    {item.deliveryadress.estado} - {item.deliveryadress.referencia}</h6>
+                      <TextField id="outlined-basic"
+                         style={{ width:'20%', fontSize:12, padding:5}}
+                         size="small"
+                        label="Numero"
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={item.deliveryadress.numero}/>
+
+                        <TextField id="outlined-basic"
+                         style={{ width:'20%', fontSize:12, padding:5}}
+                         size="small"
+                        label="Bairro"
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={item.deliveryadress.bairro}/> 
                     </div>
+                    <div style={{padding:5}}>
+
+                      <TextField id="outlined-basic"
+                         style={{ width:'40%', fontSize:12, padding:5}}
+                         size="small"
+                        label="Cidade"
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={item.deliveryadress.cidade}/>
+
+                      <TextField id="outlined-basic"
+                         style={{ width:'30%', fontSize:12, padding:5}}
+                         size="small"
+                        label="Estado"
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={item.deliveryadress.estado}/>
+
+                        <TextField id="outlined-basic"
+                         style={{ width:'30%', fontSize:12, padding:5}}
+                         size="small"
+                        label="cep"
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={item.deliveryadress.cep}/>
+                        </div>
+                      <div style={{padding:5}}>
+                        <TextField id="outlined-basic"
+                         style={{ width:'100%', fontSize:12, padding:5}}
+                         size="small"
+                        label="Referencia"
+                        variant="outlined"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={item.deliveryadress.referencia}/>
+                        </div>
+                    
                     </div>
                   <table style={{alignItems:'center', justifyContent:'center', width:'100%'}} > 
                   <thead style={{alignItems:'center', justifyContent:'center'}}>
@@ -299,21 +401,21 @@ const order1 = this.state.orderstoprocess;
                     <div style={{display:'flex',flexDirection:'row' ,alignItems:'flex-start',
                      justifyContent:'flex-start'}}>
                       
-                      <div style={{display:'flex',flexDirection:'column',padding: 10,alignItems:'flex-start',
+                      <div style={{display:'flex',flexDirection:'column',padding: 5,alignItems:'flex-start',
                      justifyContent:'space-between'}}>
-                      <span style={{fontSize: 18, fontStyle: 'italic'}}>Forma de pagamento: </span><h6 style={{fontSize: 20, fontStyle: 'normal'}}>{item.paymentmethod}</h6>
+                      <span style={{fontSize: 15, fontStyle: 'italic'}}>Forma de pagamento: </span><h6 style={{fontSize: 16, fontStyle: 'normal'}}>{item.paymentmethod}</h6>
                       <br />
                       </div>
                       
-                    <div style={{display:'flex',flexDirection:'column',padding: 10,alignItems:'flex-start',
+                    <div style={{display:'flex',flexDirection:'column',padding: 5,alignItems:'flex-start',
                      justifyContent:'space-between'}}>
-                    <span style={{fontSize: 18, fontStyle: 'italic'}}>Subtotal: </span> <h6 style={{fontSize: 20, fontStyle: 'normal'}}>R${item.subTotal}</h6><br />
-                    <span style={{fontSize: 18, fontStyle: 'italic'}}>Taxa de entrega: </span> <h6 style={{fontSize: 20, fontStyle: 'normal'}}>R${item.shippingprice}</h6><br />
-                    <span style={{fontSize: 18, fontStyle: 'italic'}}>Valor total: </span> <h6 style={{fontSize: 20, fontStyle: 'normal'}}>R${item.total}</h6><br />
+                    <span style={{fontSize: 15, fontStyle: 'italic'}}>Subtotal: </span> <h6 style={{fontSize: 16, fontStyle: 'normal'}}>R${item.subTotal}</h6><br />
+                    <span style={{fontSize: 15, fontStyle: 'italic'}}>Taxa de entrega: </span> <h6 style={{fontSize: 16, fontStyle: 'normal'}}>R${item.shippingprice}</h6><br />
+                    <span style={{fontSize: 15, fontStyle: 'italic'}}>Valor total: </span> <h6 style={{fontSize: 16, fontStyle: 'normal'}}>R${item.total}</h6><br />
                     </div>
-                    <div style={{display:'flex',flexDirection:'column',padding: 10,alignItems:'flex-start',
+                    <div style={{display:'flex',flexDirection:'column',padding: 5,alignItems:'flex-start',
                      justifyContent:'space-between'}}>
-                      <span style={{fontSize: 18, fontStyle: 'italic'}}>Troco: </span> <h6 style={{fontSize: 20, fontStyle: 'normal'}}>R${item.change}</h6>
+                      <span style={{fontSize: 15, fontStyle: 'italic'}}>Troco: </span> <h6 style={{fontSize: 16, fontStyle: 'normal'}}>R${item.change}</h6>
                       <br />
                       </div>
                     </div>
