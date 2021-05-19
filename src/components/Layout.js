@@ -30,7 +30,7 @@ export const DashboardLayout = ({ children }) => {
 export const DashboardLoja = ({ children }) => {
   return (
     <BodyWrapper>
-      <div className="flex h-screen bg-gray-200">
+      <div className="flex bg-gray-200">
         <SidebarLoja />
 
         <div className="flex flex-col flex-1 overflow-hidden">

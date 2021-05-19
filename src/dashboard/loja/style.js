@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+
 export const Section = styled.section`
   padding: 25px;
   width: 90%;
@@ -9,9 +10,9 @@ export const Section = styled.section`
   flex-direction: column;
 `;
 export const Container = styled.div`
-  display: inline-block;
-  float: center;
-  flex: 1;
+  display: inline;
+  width: 600px;
+  align-items: stretch;
   flex-wrap: wrap;
   flex-direction: column;
 `;
