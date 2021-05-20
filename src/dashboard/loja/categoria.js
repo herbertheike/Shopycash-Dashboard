@@ -28,6 +28,7 @@ class CadastroCat extends React.Component {
       lojaid: localStorage.getItem("@lojaid"),
       nome: "",
       categorialist: [],
+      
 
       nomeedit: "",
 
