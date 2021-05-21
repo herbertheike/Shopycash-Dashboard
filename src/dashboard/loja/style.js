@@ -7,7 +7,7 @@ export const Section = styled.section`
   display: block;
   flex: 1;
   flex-wrap: wrap;
-  flex-direction: column;
+  flex-direction: row;
 `;
 export const Container = styled.div`
   display: inline;

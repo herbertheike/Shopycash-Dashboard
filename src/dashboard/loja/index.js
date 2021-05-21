@@ -360,7 +360,7 @@ class LjDashboard extends React.Component {
   listcategorias= async ()=> {
     await fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
       .then((res) => res.json())
-      .then((result) => this.setState({ categoriaslist: result }))
+      .then((result) => this.setState({ categoriaslist: result.data }))
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }), []);
       console.log(this.state.categoriaslist)

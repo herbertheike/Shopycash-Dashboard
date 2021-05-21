@@ -48,9 +48,13 @@ class CadastroCat extends React.Component {
       lojaid: localStorage.getItem("@lojaid"),
       nome: "",
       orderstoprocess: [],
-      cartitens: [],
+      cartdetail: [],
       cartstatus: "",
       rows:[],
+      count:0,
+      countdeliv:0,
+      countawait:0,
+      countroute:0,
 
       nomeedit: "",
 
@@ -105,6 +109,14 @@ class CadastroCat extends React.Component {
             total: "R$" + this.state.orderstoprocess[i].total,
             change: "R$" + this.state.orderstoprocess[i].change
           }
+          this.setState({count:this.state.orderstoprocess.length})
+          if(this.state.orderstoprocess[i].cartstatus === 'await'){
+            this.setState({countawait:this.state.countawait+1})
+          }if(this.state.orderstoprocess[i].cartstatus === 'delivered'){
+            this.setState({countdeliv:this.state.countdeliv+1})
+          }if(this.state.orderstoprocess[i].cartstatus === 'onroute'){
+            this.setState({countroute:this.state.countroute+1})
+          }
           this.state.rows.push(newrow)
       }
 
@@ -130,18 +142,17 @@ console.log(this.state.rows)
       _id: _id,
       userid: userid,
     });
-    console.log(_id, userid);
 
-    this.cartDetail();
+    this.cartDetail(_id);
   };
 
   closeModal() {
+    
     this.setState({ isModalOpen: false });
   }
 
   cartDetail = async () => {
-    const id = this.state.cartid;
-    console.log(id, "new id");
+    const id = this.state._id
     await fetch(
       "https://api-shopycash1.herokuapp.com/store/viewdelivery/" +
         localStorage.getItem("@lojaid") +
@@ -157,12 +168,12 @@ console.log(this.state.rows)
       }
     )
       .then((res) => res.json())
-      .then((res) => this.setState({ cartitens: res.data.produtos }))
+      .then((res) => this.setState({ cartdetail: res }))
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }));
 
     //window.location.reload();
-    console.log(this.state.cartitens);
+    console.log(this.state.cartdetail);
   };
 
   handleStatus = (event) => {
@@ -242,36 +253,49 @@ console.log(this.state.rows)
         disableClickEventBubbling: true,
         renderCell: (params) => {
           return (
-            <Button variant="contained" color="primary" onClick={this.openModal}>
+            <Button variant="contained" color="primary" onClick={() => this.openModal(params.id)}>
               Enviar
             </Button>
           );
         },
       }];
-
+   
       
 
     return (
       <DashboardLoja>
         <Section>
-          <Title>Total de pedidos: </Title>
-          <Label>aNa</Label>
+          <Title>Pedidos</Title>
         </Section>
-
-          <div style={{display: "flex",padding: 5,width: "85%",position: "absolute",}}>
-           
-            <div style={{ width: "100%", height: 600 }}>
+      <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'row'}}>
+          <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'column'}}>
+              <Title>Total de pedidos: </Title>
+              <Label>{this.state.count}</Label>
+          </div>
+          <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'column'}}>
+              <Title>Total de pedidos em espera: </Title>
+              <Label>{this.state.countawait}</Label>
+          </div>
+          <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'column'}}>
+              <Title>Total de pedidos concluidos: </Title>
+              <Label>{this.state.countdeliv}</Label>
+          </div>
+          <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'column'}}>
+              <Title>Total de em rota: </Title>
+              <Label>{this.state.countroute}</Label>
+          </div>
+      </div>
+          <div style={{display: "flex",padding: 5,width: "86%",position: "absolute",}}>           
+           <div style={{ width: "100%", height: 600 }}>
               <DataGrid
                 rows={rows}
-                
                 columns={columns}
-                
-                rowHeight={38}
-                pageSize={5}
+                rowHeight={40}
+                disableColumnMenu
+                pageSize={10}
                 checkboxSelection
               />
             </div>
-
           </div>
         <div>
           <Dialog
@@ -281,19 +305,18 @@ console.log(this.state.rows)
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {"Use Google's location service?"}
+              {"PEDIDO Nº: "+this.state._id}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 {/**inicio */}
-                {this.state.orderstoprocess.map((item) => {
+                {this.state.cartdetail.map((item) => {
                   const prodarray = []
                   for(var i=0; i<item.produtos.length;i++){
                     prodarray.push(item.produtos[i])
                   }
                   return (
                     <div>
-                      <Title>PEDIDO Nº: {item._id}</Title>
                       <Label>Dados do Cliente</Label>
                       <div
                         style={{

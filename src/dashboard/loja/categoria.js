@@ -12,6 +12,13 @@ import {
 import history from "../../history";
 import { DashboardLoja } from "../../components/Layout";
 import Icon from "awesome-react-icons";
+import {
+  DataGrid,
+  GridColDef,
+  GridApi,
+  GridCellValue,
+  getThemePaletteMode,
+} from "@material-ui/data-grid";
 
 class CadastroCat extends React.Component {
   constructor(props) {
@@ -28,6 +35,7 @@ class CadastroCat extends React.Component {
       lojaid: localStorage.getItem("@lojaid"),
       nome: "",
       categorialist: [],
+      rows:[],
       
 
       nomeedit: "",
@@ -54,8 +62,8 @@ class CadastroCat extends React.Component {
     //this.handleUploadImage = this.handleUploadImage.bind(this);
   }
 
-  componentDidMount () {
-     fetch("https://api-shopycash1.herokuapp.com/indexstoreby/"
+  componentDidMount = async() =>{
+     await  fetch("https://api-shopycash1.herokuapp.com/indexstoreby/"
       +localStorage.getItem("@lojaid"),{                                                                          
       })
         .then((res) => res.json())
@@ -66,11 +74,12 @@ class CadastroCat extends React.Component {
         .catch((error) => console.log(error))
         .finally(() => this.setState({ isLoaded: false }), []);
 
-        fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
+        await fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
           .then((res) => res.json())
-          .then((result) => this.setState({ categorialist: result }))
+          .then((result) => this.setState({ categorialist: result.data }))
           .catch((error) => console.log(error))
           .finally(() => this.setState({ isLoaded: false }), []);
+
   }
   openModal = async (
     id,
@@ -189,7 +198,6 @@ class CadastroCat extends React.Component {
   };
 
   render() {
-
     return (
       <DashboardLoja>
         <Section>
@@ -216,24 +224,20 @@ class CadastroCat extends React.Component {
         </Section>
         <Section>
           <Label>Categorias</Label>
-          <table>
-            <thead>
+          <table style={{ width:'100%'}} > 
+                <thead style={{}}>
               <tr>
                 <th>NOME</th>
-                <th>Produtos</th>
                 <th>Ações</th>
               </tr>
             </thead>
           </table>
           {this.state.categorialist.map((item) => {
             return (
-              <tbody>
-                <tr>
+              <tbody style={{height:100, overflowY: 'auto', padding: 5,flexDirection:'row'}}>
+                <tr style={{height:100, overflowY: 'auto', padding: 5}}>
                   <tb>
                     {item.nome}
-                  </tb>
-                  <tb>
-                    0
                   </tb>
                   <tb>
                   <EditBt
