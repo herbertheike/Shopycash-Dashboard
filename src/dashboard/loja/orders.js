@@ -30,7 +30,9 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { createMuiTheme, darken, lighten } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/styles";
-
+import Chart from 'chart.js/auto';
+import moment from 'moment';
+import 'moment/locale/pt-br';
 class CadastroCat extends React.Component {
   constructor(props) {
     super(props);
@@ -55,7 +57,14 @@ class CadastroCat extends React.Component {
       countdeliv:0,
       countawait:0,
       countroute:0,
-
+      faturado:0,
+      label:['Janeiro', 'Feveiro', 'Março', 'Abril', 'Maio', 'Junho'],
+      chartdata: [{id: 'Janeiro', vendas: {value:0}},
+      {id: 'Feveiro', vendas: {value:0}},
+      {id: 'Março', vendas: {value:0}},
+      {id: 'Abril', vendas: {value:0}},
+      {id: 'Maio', vendas: {value:0}},
+      {id: 'Junho', vendas: {value:0}}],
       nomeedit: "",
 
       lojadata: [],
@@ -76,12 +85,14 @@ class CadastroCat extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
+    
 
     // this.fileInput = React.createRef();
     //this.handleUploadImage = this.handleUploadImage.bind(this);
   }
 
   componentDidMount = async () => {
+    moment.locale('pt-br');
     await fetch(
       "https://api-shopycash1.herokuapp.com/store/viewdelivery/" +
         localStorage.getItem("@lojaid")
@@ -89,9 +100,8 @@ class CadastroCat extends React.Component {
       .then((res) => res.json())
       .then((result) => this.setState({orderstoprocess: result.data}))
       .catch((error) => console.log(error))
-
       for(var i=0; i<this.state.orderstoprocess.length; i++){
-        console.log(this.state.orderstoprocess[i]._id)
+        //console.log(this.state.orderstoprocess[i]._id)
           const newrow = {
             id: this.state.orderstoprocess[i]._id,
             nome: this.state.orderstoprocess[i].nome,
@@ -109,19 +119,42 @@ class CadastroCat extends React.Component {
             total: "R$" + this.state.orderstoprocess[i].total,
             change: "R$" + this.state.orderstoprocess[i].change
           }
+         
           this.setState({count:this.state.orderstoprocess.length})
           if(this.state.orderstoprocess[i].cartstatus === 'await'){
+            this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
             this.setState({countawait:this.state.countawait+1})
           }if(this.state.orderstoprocess[i].cartstatus === 'delivered'){
+            this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
             this.setState({countdeliv:this.state.countdeliv+1})
           }if(this.state.orderstoprocess[i].cartstatus === 'onroute'){
+            this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
             this.setState({countroute:this.state.countroute+1})
           }
           this.state.rows.push(newrow)
       }
-
-
-console.log(this.state.rows)
+      for(var i=0; i<this.state.orderstoprocess.length; i++){
+        const month = moment(this.state.orderstoprocess[i].datacompra).format("MMMM");
+        console.log(month)
+        for(var x=0; x<this.state.label.length; x++){
+          
+          const label = this.state.label[x];   
+          console.log(label)      
+          if(month === label){
+            console.log('beef')
+            for(var y=0; y<this.state.chartdata.length; y++){
+              const chartmonth = this.state.chartdata[y].id;
+              if(month === chartmonth){
+                console.log('flif')
+                this.state.chartdata[y].vendas.value = this.state.chartdata[y].vendas.value +1;
+              }
+              }
+            }
+          }
+        }
+      
+      
+                                                                              console.log(this.state.chartdata)
       
     await fetch(
       "https://api-shopycash1.herokuapp.com/indexstoreby/" +
@@ -133,7 +166,32 @@ console.log(this.state.rows)
         localStorage.setItem("@shopping", result.shopping);
       })
       .catch((error) => console.log(error))
-      .finally(() => this.setState({ isLoaded: false }), []);     
+      .finally(() => this.setState({ isLoaded: false }), []);  
+      
+      
+      var ctx = 'myChart';
+      
+      this.state.myChart = new Chart(ctx, {
+        type: 'line',
+
+        data: {
+            datasets: [{
+              label:"Total de vendas/mês realizadas no APP Shopycash",
+                data: this.state.chartdata
+            }]
+        },
+        options: {
+          scales: {
+            y: {
+                beginAtZero: true
+            }
+          },
+            parsing: {
+                xAxisKey: 'id',
+                yAxisKey: 'vendas.value'
+            }
+        }
+        });
   };
 
   openModal = async (_id, userid) => {
@@ -259,8 +317,6 @@ console.log(this.state.rows)
           );
         },
       }];
-   
-      
 
     return (
       <DashboardLoja>
@@ -284,7 +340,14 @@ console.log(this.state.rows)
               <Title>Total de em rota: </Title>
               <Label>{this.state.countroute}</Label>
           </div>
+          <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'column'}}>
+          <Title>Total faturado até o momento: </Title>
+              <Label>R${this.state.faturado.toFixed(2)}</Label>
+          </div>
       </div>
+          <div style={{position: 'relative',height:'fit-content', width:300}}>
+          <canvas id="myChart" width="100" height="100"></canvas>
+          </div>
           <div style={{display: "flex",padding: 5,width: "86%",position: "absolute",}}>           
            <div style={{ width: "100%", height: 600 }}>
               <DataGrid
@@ -314,6 +377,10 @@ console.log(this.state.rows)
                   const prodarray = []
                   for(var i=0; i<item.produtos.length;i++){
                     prodarray.push(item.produtos[i])
+                  }
+                  let disabledvar = false
+                  if(item.cartstatus === 'delivered'){
+                    disabledvar = true;
                   }
                   return (
                     <div>
@@ -681,11 +748,15 @@ console.log(this.state.rows)
                           <br />
                         </div>
                       </div>
+                      <div>
+                        <h4>Status atual: </h4> <h6>{item.cartstatus}</h6>
+                      </div>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={this.state.cartstatus}
                         onChange={this.handleStatus}
+                        disabled={disabledvar}
                       >
                         <MenuItem value={"await"}>Em separação</MenuItem>
                         <MenuItem value={"onroute"}>Enviado</MenuItem>
