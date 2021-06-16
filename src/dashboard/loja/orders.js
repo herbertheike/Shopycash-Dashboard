@@ -58,14 +58,19 @@ class CadastroCat extends React.Component {
       countawait:0,
       countroute:0,
       faturado:0,
-      label:['Janeiro', 'Feveiro', 'Março', 'Abril', 'Maio', 'Junho'],
+      label:['Janeiro', 'Feveiro', 'Março', 'Abril', 'Maio', 'Junho','Julho'],
       chartdata: [{id: 'Janeiro', vendas: {value:0}},
       {id: 'Feveiro', vendas: {value:0}},
       {id: 'Março', vendas: {value:0}},
       {id: 'Abril', vendas: {value:0}},
       {id: 'Maio', vendas: {value:0}},
-      {id: 'Junho', vendas: {value:0}}],
+      {id: 'Junho', vendas: {value:0}},
+      {id: 'Julho', vendas: {value:0}}],
+      radarlabel:[],
+      radardata:[0,0,0,0,0],
       nomeedit: "",
+      hide: 'none',
+      iconbt:'arrow-right',
 
       lojadata: [],
       prodarray: [],
@@ -152,10 +157,7 @@ class CadastroCat extends React.Component {
             }
           }
         }
-      
-      
-                                                                              console.log(this.state.chartdata)
-      
+ 
     await fetch(
       "https://api-shopycash1.herokuapp.com/indexstoreby/" +
         localStorage.getItem("@lojaid"),
@@ -173,11 +175,14 @@ class CadastroCat extends React.Component {
       
       this.state.myChart = new Chart(ctx, {
         type: 'line',
-
         data: {
             datasets: [{
-              label:"Total de vendas/mês realizadas no APP Shopycash",
-                data: this.state.chartdata
+              label:"Vendas/Mês no APP",
+                data: this.state.chartdata,
+                borderColor: 'rgb(94, 170, 168)',
+                tension: 0.1,
+                fill:true,
+                backgroundColor:'rgba(94, 170, 168, 0.2)'
             }]
         },
         options: {
@@ -192,7 +197,76 @@ class CadastroCat extends React.Component {
             }
         }
         });
+
+        await fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
+          .then((res) => res.json())
+          .then((result) => this.setState({ categorialist: result.data }))
+          .catch((error) => console.log(error))
+          .finally(() => this.setState({ isLoaded: false }), []);
+
+          //this.setState({radarlabel:[this.state.categorialist]})
+          //console.log("negoça",this.state.radarlabel)
+
+          for(var z=0; z<this.state.categorialist.length; z++){
+            this.state.radarlabel.push(this.state.categorialist[z].nome)
+            for(var v=0; v<this.state.orderstoprocess.length; v++){
+              for(var f=0; f<this.state.orderstoprocess[v].produtos.length; f++){
+                if(this.state.orderstoprocess[v].produtos[f].categoria === this.state.categorialist[z].nome){
+                  this.state.radardata[z] = this.state.radardata[z]+1;
+                }  
+            }
+          }
+        }
+          
+          console.log("negoça",this.state.radarlabel)
+          console.log("doublenegoça", this.state.radardata)
+
+        var rdx = 'myRadar';
+
+        this.state.myRadar = new Chart(rdx, {
+          type:'radar',
+
+          data:{
+            labels:this.state.radarlabel,
+          datasets: [{
+            label:"Vendas por categoria",
+            data: this.state.radardata,
+              fill: true,
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              borderColor: 'rgb(255, 99, 132)',
+              pointBackgroundColor: 'rgb(255, 99, 132)',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgb(255, 99, 132)'
+          }]
+      },
+      options: {
+        scales: {
+          r: {
+              angleLines: {
+                  display: true
+              },
+              suggestedMin: 0,
+          }
+      },
+        elements: {
+          line: {
+            borderWidth: 3
+          }
+        }
+      },
+        });
   };
+
+  expande =()=>{
+    if(this.state.hide === 'none'){
+      this.setState({hide:'flex'})
+      this.setState({iconbt:'arrow-down'})
+    }else{
+      this.setState({hide:'none'})
+      this.setState({iconbt:'arrow-right'})
+    }
+  }
 
   openModal = async (_id, userid) => {
     await this.setState({
@@ -345,8 +419,13 @@ class CadastroCat extends React.Component {
               <Label>R${this.state.faturado.toFixed(2)}</Label>
           </div>
       </div>
-          <div style={{position: 'relative',height:'fit-content', width:300}}>
-          <canvas id="myChart" width="100" height="100"></canvas>
+          <Button style={{display: "flex",padding: 5}}
+          onClick={this.expande} color="secondary" variant="outlined">
+                Relatorios <Icon name={this.state.iconbt} />
+              </Button>
+          <div style={{ display: this.state.hide,padding: 5,position: 'relative', flexDirection:'row',height:'fit-content', width:300}}>
+          <canvas id="myChart" width="150" height="150"></canvas>
+          <canvas id="myRadar" width="150" height="150"></canvas>
           </div>
           <div style={{display: "flex",padding: 5,width: "86%",position: "absolute",}}>           
            <div style={{ width: "100%", height: 600 }}>
