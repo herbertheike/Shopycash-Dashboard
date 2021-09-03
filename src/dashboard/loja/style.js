@@ -3,8 +3,8 @@ import styled from "styled-components";
 
 export const Section = styled.section`
   padding: 25px;
-  width: 90%;
-  display: block;
+  width: 100%;
+  display: flex;
   flex: 1;
   flex-wrap: wrap;
   flex-direction: row;
@@ -110,17 +110,15 @@ export const Title = styled.title`
   font-weight: bold;
   color: #9b59b6;
   font-size: 22px;
-  margin:5px;
+  margin:3px;
   padding-top: 5px;
-  font-family: Helvetica;
   display: flex;
 `;
 export const Label = styled.label`
-  font-weight: 100;
+  font-weight: bold;
   padding: 5px;
-  color: #888888;
-  font-size: 16px;
-  font-family: Helvetica;
+  color: black;
+  font-size: 18px;
 `;
 export const EditBt = styled.button`
 display:flex;

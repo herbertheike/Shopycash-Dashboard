@@ -15,23 +15,11 @@ import {
   Tdr,
   TextArea
 } from "./style";
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import { BiMenu } from "react-icons/bi";
 import history from "../../history";
 import { DashboardLoja } from "../../components/Layout";
 import Icon from "awesome-react-icons";
 import noimage from "../../imgsrc/logopad.jpg";
-import Chart from 'chart.js/auto';
 import moment from 'moment';
-import 'moment/locale/pt-br';
 
 class LjDashboard extends React.Component {
   constructor(props) {
@@ -70,32 +58,6 @@ class LjDashboard extends React.Component {
       imgbs64edt: null,
       imgbs642edt:null,
 
-      orderstoprocess: [],
-      rows:[],
-      count:0,
-      countdeliv:0,
-      countawait:0,
-      countroute:0,
-      faturado:0,
-      label:['Janeiro', 'Feveiro', 'Março', 'Abril', 'Maio', 'Junho','Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-      chartdata: [{id: 'Janeiro', vendas: {value:0}},
-      {id: 'Feveiro', vendas: {value:0}},
-      {id: 'Março', vendas: {value:0}},
-      {id: 'Abril', vendas: {value:0}},
-      {id: 'Maio', vendas: {value:0}},
-      {id: 'Junho', vendas: {value:0}},
-      {id: 'Julho', vendas: {value:0}},
-      {id: 'Agosto', vendas: {value:0}},
-      {id: 'Setembro', vendas: {value:0}},
-      {id: 'Outubro', vendas: {value:0}},
-      {id: 'Novembro', vendas: {value:0}},
-      {id: 'Dezembro', vendas: {value:0}},],
-      radarlabel:[],
-      radardata:[],
-      nomeedit: "",
-      hide: 'none',
-      iconbt:'arrow-right',
-
       lojadata: [],
       prodarray: [],
       isModalOpen: false,
@@ -124,183 +86,28 @@ class LjDashboard extends React.Component {
     //this.handleUploadImage = this.handleUploadImage.bind(this);
   }
 
-  componentDidMount = async () => {
-
-        moment.locale('pt-br');
-    await fetch(
-      "https://api-shopycash1.herokuapp.com/store/viewdelivery/" +
-        localStorage.getItem("@lojaid")
+  componentDidMount () {
+    this.listcategorias();
+    fetch(
+      "https://api-shopycash1.herokuapp.com/indexproductby/"
+      +localStorage.getItem("@lojaid")
     )
       .then((res) => res.json())
-      .then((result) => this.setState({orderstoprocess: result.data}))
+      .then((result) => this.setState({ prodarray: result }))
       .catch((error) => console.log(error))
-      for(var i=0; i<this.state.orderstoprocess.length; i++){
-        console.log(this.state.orderstoprocess[i])
-          const newrow = {
-            id: this.state.orderstoprocess[i]._id,
-            nome: this.state.orderstoprocess[i].dadoscliente.nome,
-            cpf: this.state.orderstoprocess[i].dadoscliente.cpf,
-            endereco:
-              this.state.orderstoprocess[i].deliveryadress.logradouro +"," +
-              this.state.orderstoprocess[i].deliveryadress.numero +"," +
-              this.state.orderstoprocess[i].deliveryadress.bairro +", " +
-              this.state.orderstoprocess[i].deliveryadress.cidade +"/" +
-              this.state.orderstoprocess[i].deliveryadress.estado +" \n" +
-              this.state.orderstoprocess[i].deliveryadress.referencia,
-            paymentmethod: this.state.orderstoprocess[i].paymentmethod,
-            shippingmethod: this.state.orderstoprocess[i].shippingmethod,
-            shippingtax: "R$" + this.state.orderstoprocess[i].shippingprice,
-            total: "R$" + this.state.orderstoprocess[i].total,
-            change: "R$" + this.state.orderstoprocess[i].change
-          }
-         
-          this.setState({count:this.state.orderstoprocess.length})
-          if(this.state.orderstoprocess[i].cartstatus === 'await'){
-            this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
-            this.setState({countawait:this.state.countawait+1})
-          }if(this.state.orderstoprocess[i].cartstatus === 'delivered'){
-            this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
-            this.setState({countdeliv:this.state.countdeliv+1})
-          }if(this.state.orderstoprocess[i].cartstatus === 'onroute'){
-            this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
-            this.setState({countroute:this.state.countroute+1})
-          }
-          this.state.rows.push(newrow)
-      }
-      for(var i=0; i<this.state.orderstoprocess.length; i++){
-        const month = moment(this.state.orderstoprocess[i].datacompra).format("MMMM").toLocaleLowerCase();
-        for(var x=0; x<this.state.label.length; x++){
-          
-          const label = this.state.chartdata[x].id.toLocaleLowerCase();   
-          console.log(month+label)      
-          if(label === month){
-            console.log("entrei aqui",month)
-           // console.log('beef')
-            for(var y=0; y<this.state.chartdata.length; y++){
-              const chartmonth = this.state.chartdata[y].id.toLocaleLowerCase();
-              if(month === chartmonth){
-               // console.log('flif')
-                this.state.chartdata[y].vendas.value = this.state.chartdata[y].vendas.value +1;
-              }
-              }
-            }
-          }
-        }
- 
-    await fetch(
-      "https://api-shopycash1.herokuapp.com/indexstoreby/" +
-        localStorage.getItem("@lojaid"),
-    )
-      .then((res) => res.json())
-      .then(function (result) {
-        localStorage.setItem("@loja", result.nomefantasia);
-        localStorage.setItem("@shopping", result.shopping);
+      .finally(() => this.setState({ isLoaded: false }), []);
+      
+      fetch("https://api-shopycash1.herokuapp.com/indexstoreby/"
+      +localStorage.getItem("@lojaid"),{                                                                          
       })
-      .catch((error) => console.log(error))
-      .finally(() => this.setState({ isLoaded: false }), []);  
-      
-      
-      var ctx = 'myChart';
-      
-      this.state.myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            datasets: [{
-              label:"Vendas/Mês no APP",
-                data: this.state.chartdata,
-                borderColor: 'rgb(94, 170, 168)',
-                tension: 0.1,
-                fill:true,
-                backgroundColor:'rgba(94, 170, 168, 0.2)'
-            }]
-        },
-        options: {
-          scales: {
-            y: {
-                beginAtZero: true
-            }
-          },
-            parsing: {
-                xAxisKey: 'id',
-                yAxisKey: 'vendas.value'
-            }
-        }
-        });
-
-        await fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
-          .then((res) => res.json())
-          .then((result) => this.setState({ categorialist: result.data }))
-          .catch((error) => console.log(error))
-          .finally(() => this.setState({ isLoaded: false }), []);
-
-          //console.log("size of array: \n"+this.state.categorialist.length)
-
-          for(var j=0; j<this.state.categorialist.length; j++){
-            this.state.radardata.push(0)
-          }
-          console.log("pre-dataradar value: "+ this.state.radardata)
-
-          for(var z=0; z<this.state.categorialist.length; z++){
-            this.state.radarlabel.push(this.state.categorialist[z].nome)
-            for(var v=0; v<this.state.orderstoprocess.length; v++){
-              for(var f=0; f<this.state.orderstoprocess[v].produtos.length; f++){
-                if(this.state.orderstoprocess[v].produtos[f].categoria === this.state.categorialist[z].nome){
-                  this.state.radardata[z] = this.state.radardata[z]+1;
-                }  
-            }
-          }
-        }
-          
-          console.log("negoça",this.state.radarlabel)
-          console.log("doublenegoça", this.state.radardata)
-
-        var rdx = 'myRadar';
-
-        this.state.myRadar = new Chart(rdx, {
-          type:'radar',
-
-          data:{
-            labels:this.state.radarlabel,
-          datasets: [{
-            label:"Vendas por categoria",
-            data: this.state.radardata,
-              fill: true,
-              backgroundColor: 'rgba(255, 99, 132, 0.2)',
-              borderColor: 'rgb(255, 99, 132)',
-              pointBackgroundColor: 'rgb(255, 99, 132)',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: 'rgb(255, 99, 132)'
-          }]
-      },
-      options: {
-        scales: {
-          r: {
-              angleLines: {
-                  display: true
-              },
-              suggestedMin: 0,
-          }
-      },
-        elements: {
-          line: {
-            borderWidth: 3
-          }
-        }
-      },
-        });
+        .then((res) => res.json())
+        .then(function(result){
+          localStorage.setItem("@loja", result.nomefantasia)
+          localStorage.setItem("@shopping", result.shopping)
+        })
+        .catch((error) => console.log(error))
+        .finally(() => this.setState({ isLoaded: false }), []);
   }
-
-  expande =()=>{
-    if(this.state.hide === 'none'){
-      this.setState({hide:'flex'})
-      this.setState({iconbt:'arrow-down'})
-    }else{
-      this.setState({hide:'none'})
-      this.setState({iconbt:'arrow-right'})
-    }
-  }
-  
   openModal = async (
     id,
     nome,
@@ -626,62 +433,13 @@ class LjDashboard extends React.Component {
     const { prodarray } = this.state;
     return (
       <DashboardLoja>
-        
         <Section>
-        <Grid container spacing={3}>
-        <Grid item xs>
-          <Paper variant="outlined" elevation={3} style={{textAlign:'center', padding:10, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
-          <Label>{this.state.count}</Label>
-          <Title>Pedidos</Title>
-          </Paper>
-        </Grid>
-
-        <Grid item xs>
-          <Paper variant="outlined" elevation={3} style={{textAlign:'center', padding:10, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
-          <Label>{this.state.countawait}</Label>
-          <Title>Em espera</Title>
-          </Paper>
-          </Grid>
-          <Grid item xs>
-          <Paper variant="outlined" elevation={3} style={{textAlign:'center', padding:10, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
-          <Label>{this.state.countroute}</Label>
-          <Title>Em rota</Title>
-          </Paper>
-        </Grid>
-        <Grid item xs>
-          <Paper variant="outlined" elevation={3} style={{textAlign:'center', padding:10, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
-          <Label>{this.state.countdeliv}</Label>
-          <Title>Concluidos</Title>
-          </Paper>
-        </Grid>
-        </Grid>
-                  
-        <Grid container spacing={3} style={{paddingTop:10}}>
-        <Grid item xs={3}>
-        <Paper variant="outlined" elevation={3}>
-        <canvas id="myChart" width="150" height="150" ></canvas>
-        </Paper>
-          
-          </Grid>
-          <Grid item xs={3}>
-            <Paper variant="outlined" elevation={3} > <canvas id="myRadar" width="150" height="150"></canvas></Paper>
-         
-          </Grid>
-          </Grid>
-          
-          <div style={{ display: 'flex',padding: 5,position: 'relative', flexDirection:'row',height:'fit-content', width:600}}>
-          {this.state.countawait >= 1 ?
-              <Alert variant="filled" severity="warning">
-                <AlertTitle>Pedidos aguardando</AlertTitle>
-                Existem um total de {this.state.countawait} pedidos <strong>aguardando envio!</strong>
-              </Alert> : 
-            <Alert variant="filled" severity="success">
-                <AlertTitle>Tudo certo</AlertTitle>
-                No Momento não existem pedidos para serem <strong>enviados!</strong>
-            </Alert>}
-            </div>
-          
-        
+          <Title>
+            <a href={"/store/"+localStorage.getItem("@slug")+"/produtos"}>Cadastro de Produtos</a>
+          </Title>
+          <Title>
+          <a href={"/store/"+localStorage.getItem("@slug")+"/categoria"}>Cadastro de Categorias</a>
+           </Title>
           
           </Section>
       </DashboardLoja>

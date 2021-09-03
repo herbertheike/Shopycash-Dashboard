@@ -22,6 +22,8 @@ import {
   GridCellValue,
   getThemePaletteMode,
 } from "@material-ui/data-grid";
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -58,16 +60,21 @@ class CadastroCat extends React.Component {
       countawait:0,
       countroute:0,
       faturado:0,
-      label:['Janeiro', 'Feveiro', 'Março', 'Abril', 'Maio', 'Junho','Julho'],
+      label:['Janeiro', 'Feveiro', 'Março', 'Abril', 'Maio', 'Junho','Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
       chartdata: [{id: 'Janeiro', vendas: {value:0}},
       {id: 'Feveiro', vendas: {value:0}},
       {id: 'Março', vendas: {value:0}},
       {id: 'Abril', vendas: {value:0}},
       {id: 'Maio', vendas: {value:0}},
       {id: 'Junho', vendas: {value:0}},
-      {id: 'Julho', vendas: {value:0}}],
+      {id: 'Julho', vendas: {value:0}},
+      {id: 'agosto', vendas: {value:0}},
+      {id: 'Setembro', vendas: {value:0}},
+      {id: 'Outubro', vendas: {value:0}},
+      {id: 'Novembro', vendas: {value:0}},
+      {id: 'Dezembro', vendas: {value:0}},],
       radarlabel:[],
-      radardata:[0,0,0,0,0],
+      radardata:[],
       nomeedit: "",
       hide: 'none',
       iconbt:'arrow-right',
@@ -109,8 +116,8 @@ class CadastroCat extends React.Component {
         //console.log(this.state.orderstoprocess[i]._id)
           const newrow = {
             id: this.state.orderstoprocess[i]._id,
-            nome: this.state.orderstoprocess[i].nome,
-            cpf: this.state.orderstoprocess[i].cpf,
+            nome: this.state.orderstoprocess[i].dadoscliente.nome,
+            cpf: this.state.orderstoprocess[i].dadoscliente.cpf,
             endereco:
               this.state.orderstoprocess[i].deliveryadress.logradouro +"," +
               this.state.orderstoprocess[i].deliveryadress.numero +"," +
@@ -129,6 +136,7 @@ class CadastroCat extends React.Component {
           if(this.state.orderstoprocess[i].cartstatus === 'await'){
             this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
             this.setState({countawait:this.state.countawait+1})
+            
           }if(this.state.orderstoprocess[i].cartstatus === 'delivered'){
             this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
             this.setState({countdeliv:this.state.countdeliv+1})
@@ -136,8 +144,10 @@ class CadastroCat extends React.Component {
             this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
             this.setState({countroute:this.state.countroute+1})
           }
+          
           this.state.rows.push(newrow)
       }
+      console.log("count",this.state.countawait)
       for(var i=0; i<this.state.orderstoprocess.length; i++){
         const month = moment(this.state.orderstoprocess[i].datacompra).format("MMMM");
         console.log(month)
@@ -145,7 +155,7 @@ class CadastroCat extends React.Component {
           
           const label = this.state.label[x];   
           console.log(label)      
-          if(month === label){
+          if(month == label){
             console.log('beef')
             for(var y=0; y<this.state.chartdata.length; y++){
               const chartmonth = this.state.chartdata[y].id;
@@ -171,32 +181,7 @@ class CadastroCat extends React.Component {
       .finally(() => this.setState({ isLoaded: false }), []);  
       
       
-      var ctx = 'myChart';
-      
-      this.state.myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            datasets: [{
-              label:"Vendas/Mês no APP",
-                data: this.state.chartdata,
-                borderColor: 'rgb(94, 170, 168)',
-                tension: 0.1,
-                fill:true,
-                backgroundColor:'rgba(94, 170, 168, 0.2)'
-            }]
-        },
-        options: {
-          scales: {
-            y: {
-                beginAtZero: true
-            }
-          },
-            parsing: {
-                xAxisKey: 'id',
-                yAxisKey: 'vendas.value'
-            }
-        }
-        });
+    
 
         await fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
           .then((res) => res.json())
@@ -204,8 +189,12 @@ class CadastroCat extends React.Component {
           .catch((error) => console.log(error))
           .finally(() => this.setState({ isLoaded: false }), []);
 
-          //this.setState({radarlabel:[this.state.categorialist]})
-          //console.log("negoça",this.state.radarlabel)
+          //console.log("size of array: \n"+this.state.categorialist.length)
+
+          for(var j=0; j<this.state.categorialist.length; j++){
+            this.state.radardata.push(0)
+          }
+          console.log("pre-dataradar value: "+ this.state.radardata)
 
           for(var z=0; z<this.state.categorialist.length; z++){
             this.state.radarlabel.push(this.state.categorialist[z].nome)
@@ -221,41 +210,6 @@ class CadastroCat extends React.Component {
           console.log("negoça",this.state.radarlabel)
           console.log("doublenegoça", this.state.radardata)
 
-        var rdx = 'myRadar';
-
-        this.state.myRadar = new Chart(rdx, {
-          type:'radar',
-
-          data:{
-            labels:this.state.radarlabel,
-          datasets: [{
-            label:"Vendas por categoria",
-            data: this.state.radardata,
-              fill: true,
-              backgroundColor: 'rgba(255, 99, 132, 0.2)',
-              borderColor: 'rgb(255, 99, 132)',
-              pointBackgroundColor: 'rgb(255, 99, 132)',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: 'rgb(255, 99, 132)'
-          }]
-      },
-      options: {
-        scales: {
-          r: {
-              angleLines: {
-                  display: true
-              },
-              suggestedMin: 0,
-          }
-      },
-        elements: {
-          line: {
-            borderWidth: 3
-          }
-        }
-      },
-        });
   };
 
   expande =()=>{
@@ -397,38 +351,9 @@ class CadastroCat extends React.Component {
         <Section>
           <Title>Pedidos</Title>
         </Section>
-      <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'row'}}>
-          <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'column'}}>
-              <Title>Total de pedidos: </Title>
-              <Label>{this.state.count}</Label>
-          </div>
-          <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'column'}}>
-              <Title>Total de pedidos em espera: </Title>
-              <Label>{this.state.countawait}</Label>
-          </div>
-          <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'column'}}>
-              <Title>Total de pedidos concluidos: </Title>
-              <Label>{this.state.countdeliv}</Label>
-          </div>
-          <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'column'}}>
-              <Title>Total de em rota: </Title>
-              <Label>{this.state.countroute}</Label>
-          </div>
-          <div style={{display: "flex",padding: 5,width: "100%",position: "relative", flexDirection:'column'}}>
-          <Title>Total faturado até o momento: </Title>
-              <Label>R${this.state.faturado.toFixed(2)}</Label>
-          </div>
-      </div>
-          <Button style={{display: "flex",padding: 5}}
-          onClick={this.expande} color="secondary" variant="outlined">
-                Relatorios <Icon name={this.state.iconbt} />
-              </Button>
-          <div style={{ display: this.state.hide,padding: 5,position: 'relative', flexDirection:'row',height:'fit-content', width:300}}>
-          <canvas id="myChart" width="150" height="150"></canvas>
-          <canvas id="myRadar" width="150" height="150"></canvas>
-          </div>
-          <div style={{display: "flex",padding: 5,width: "86%",position: "absolute",}}>           
-           <div style={{ width: "100%", height: 600 }}>
+          <div style={{display: "flex",padding: 5,width: "86%",position: "absolute", flexDirection:'column'}}>    
+               
+           <div style={{ width: "100%", height: 600}}>
               <DataGrid
                 rows={rows}
                 columns={columns}
@@ -438,6 +363,17 @@ class CadastroCat extends React.Component {
                 checkboxSelection
               />
             </div>
+              {this.state.countawait >= 1 ?
+              <Alert variant="filled" severity="warning">
+                <AlertTitle>Pedidos aguardando</AlertTitle>
+                Existem um total de {this.state.countawait} pedidos <strong>aguardando envio!</strong>
+              </Alert> : 
+            <Alert variant="filled" severity="success">
+                <AlertTitle>Tudo certo</AlertTitle>
+                No Momento não existem pedidos para serem <strong>enviados!</strong>
+            </Alert>
+        }
+              
           </div>
         <div>
           <Dialog
@@ -482,7 +418,7 @@ class CadastroCat extends React.Component {
                             InputProps={{
                               readOnly: true,
                             }}
-                            value={item.nome}
+                            value={item.dadoscliente.nome}
                           />
                           <TextField
                             id="outlined-basic"
@@ -493,7 +429,7 @@ class CadastroCat extends React.Component {
                             InputProps={{
                               readOnly: true,
                             }}
-                            value={item.cpf}
+                            value={item.dadoscliente.cpf}
                           />
                         </div>
                         <div style={{ padding: 5 }}>
@@ -506,7 +442,7 @@ class CadastroCat extends React.Component {
                             InputProps={{
                               readOnly: true,
                             }}
-                            value={item.cpf}
+                            value={item.dadoscliente.telefone}
                           />
                           <TextField
                             id="outlined-basic"
@@ -517,7 +453,7 @@ class CadastroCat extends React.Component {
                             InputProps={{
                               readOnly: true,
                             }}
-                            value={item.cpf}
+                            value={item.dadoscliente.email}
                           />
                         </div>
                         <Label>Endereço: </Label>
@@ -684,7 +620,6 @@ class CadastroCat extends React.Component {
                           return (
                             <tbody
                               style={{
-                                backgroundColor: "#53aaa8",
                                 height: 100,
                                 overflowY: "auto",
                                 padding: 5,
@@ -707,7 +642,7 @@ class CadastroCat extends React.Component {
                                     alignItems: "center",
                                     textAlign: "center",
                                     justifyContent: "center",
-                                    fontSize: 10,
+                                    fontSize: 15,
                                     borderWidth: 1,
                                   }}
                                 >
@@ -718,7 +653,7 @@ class CadastroCat extends React.Component {
                                     alignItems: "center",
                                     textAlign: "center",
                                     justifyContent: "center",
-                                    fontSize: 10,
+                                    fontSize: 15,
                                     borderWidth: 1,
                                   }}
                                 >
@@ -729,7 +664,7 @@ class CadastroCat extends React.Component {
                                     alignItems: "center",
                                     textAlign: "center",
                                     justifyContent: "center",
-                                    fontSize: 10,
+                                    fontSize: 15,
                                     borderWidth: 1,
                                   }}
                                 >
@@ -740,7 +675,7 @@ class CadastroCat extends React.Component {
                                     alignItems: "center",
                                     textAlign: "center",
                                     justifyContent: "center",
-                                    fontSize: 10,
+                                    fontSize: 15,
                                     borderWidth: 1,
                                   }}
                                 >

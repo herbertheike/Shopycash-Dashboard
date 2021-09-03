@@ -7,7 +7,9 @@ import ShDashboard from "./dashboard/shopping/index"
 import LjDashboard from "./dashboard/loja/index"
 import LjLogin from "./login/loja/index"
 import MainPage from "./mainpages/index"
-import CadastroCat from "./dashboard/loja/categoria"
+import Cadastros from "./dashboard/loja/cadastros"
+import Produtos from "./dashboard/loja/produtos"
+import Categorias from "./dashboard/loja/categoria"
 import OrderPage from "./dashboard/loja/orders"
 import history from "./history"
 
@@ -78,8 +80,16 @@ const Routes = () => (
       />
       <PrivateRouteStore 
       exact
-      path={"/store/"+localStorage.getItem("@slug")+"/categorias"}
-      component={withRouter(CadastroCat)}/>
+      path={"/store/"+localStorage.getItem("@slug")+"/cadastros"}
+      component={withRouter(Cadastros)}/>
+      <PrivateRouteStore 
+      exact
+      path={"/store/"+localStorage.getItem("@slug")+"/produtos"}
+      component={withRouter(Produtos)}/>
+      <PrivateRouteStore 
+      exact
+      path={"/store/"+localStorage.getItem("@slug")+"/categoria"}
+      component={withRouter(Categorias)}/>
       <PrivateRouteStore 
       exact
       path={"/store/"+localStorage.getItem("@slug")+"/pedidos"}
@@ -88,12 +98,12 @@ const Routes = () => (
       <PrivateRouteStore 
       exact
       path={"/store/"+localStorage.getItem("@slug")+"/pedidos/"+localStorage.getItem("@pedidonumero")}
-      component={withRouter(CadastroCat)}/>
+      component={withRouter(OrderPage)}/>
 
       <PrivateRouteStore 
       exact
       path={"/store/"+localStorage.getItem("@slug")+"/checkout"}
-      component={withRouter(CadastroCat)}/>
+      component={withRouter(OrderPage)}/>
       
     </Switch>
   </Router>

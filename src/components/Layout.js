@@ -10,12 +10,12 @@ export const DashboardLayout = ({ children }) => {
       <div className="flex h-screen bg-gray-200">
         <Sidebar />
 
-        <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="flex flex-col flex-1 overflow-hidden h-screen pt-10">
           <main className="content">
             <section className="sm:flex-row flex flex-col flex-1">
               <div
                 className="content-box"
-                style={{ flexGrow: 1, flexBasis: "0%" }}
+                style={{ flexGrow: 2, flexBasis: "0%" }}
               >
                 {children}
               </div>
@@ -33,7 +33,7 @@ export const DashboardLoja = ({ children }) => {
       <div className="flex bg-gray-200">
         <SidebarLoja />
 
-        <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="flex flex-col flex-1 overflow-hidden h-full pt-16">
           <main className="content">
             <section className="sm:flex-row flex flex-col flex-1">
               <div

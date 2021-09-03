@@ -8,7 +8,7 @@ import {
   Label,
   EditBt,
   DeleteBt,
-} from "../../dashboard/loja/style";
+} from "./style";
 import history from "../../history";
 import { DashboardLoja } from "../../components/Layout";
 import Icon from "awesome-react-icons";
@@ -79,6 +79,8 @@ class CadastroCat extends React.Component {
           .then((result) => this.setState({ categorialist: result.data }))
           .catch((error) => console.log(error))
           .finally(() => this.setState({ isLoaded: false }), []);
+
+          console.log(this.state.categorialist.length)
 
   }
   openModal = async (
