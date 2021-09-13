@@ -33,9 +33,9 @@ export const DashboardLoja = ({ children }) => {
       <div className="flex bg-gray-200">
         <SidebarLoja />
 
-        <div className="flex flex-col flex-1 overflow-hidden h-full pt-16">
+        <div className="flex flex-col flex-1 overflow-hidden pt-16">
           <main className="content">
-            <section className="sm:flex-row flex flex-col flex-1">
+            <section className="flex-row flex flex-col flex-1">
               <div
                 className="content-box"
                 style={{ flexGrow: 1, flexBasis: "0%" }}

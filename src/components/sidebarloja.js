@@ -3,8 +3,8 @@ import {Navigation} from 'react-minimal-side-navigation';
 import 'react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css';
 import { useHistory, useLocation } from "react-router-dom";
 import Icon from "awesome-react-icons";
-import { MdDashboard, MdSettings } from 'react-icons/md';
-import { BsPencilSquare } from "react-icons/bs";
+import { MdDashboard, MdSettings,MdFolder } from 'react-icons/md';
+import { BsPencilSquare,BsTagFill } from "react-icons/bs";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import AppBar from '@material-ui/core/AppBar';
@@ -37,7 +37,7 @@ export const SidebarLoja = () => {
       <div
         onClick={() => setIsSidebarOpen(false)}
         className={`fixed inset-0 z-20 block transition-opacity bg-black opacity-50 lg:hidden ${
-          isSidebarOpen ? "block" : "hidden"
+          isSidebarOpen ? "ease-out translate-x-0 block" : "ease-in -translate-x-full hidden"
         }`}
       />
     
@@ -65,7 +65,7 @@ export const SidebarLoja = () => {
         }`}
       >
         <div className="flex items-center justify-center mt-10 text-center py-6">
-          <span className="mx-2 text-2xl font-semibold text-black">
+          <span className="text-lg font-semibold text-black pt-12">
             Shopycash Loja - {localStorage.getItem("@loja")}
           </span>
         </div>
@@ -85,6 +85,19 @@ export const SidebarLoja = () => {
                 title: 'Cadastros',
                 itemId: '/store/'+localStorage.getItem("@slug")+'/cadastros',
                 elemBefore: () => <BsPencilSquare />,
+                subNav: [
+                  {
+                    title: "Produtos",
+                    itemId: '/store/'+localStorage.getItem("@slug")+'/produtos',
+                    
+                    elemBefore: () => <BsTagFill />
+                  },
+                  {
+                    title: "Categorias",
+                    itemId: '/store/'+localStorage.getItem("@slug")+'/categoria',
+                    elemBefore: () => <MdFolder />
+                  }
+                ]
               },
               {
                 title: 'Pedidos',

@@ -658,7 +658,7 @@
       justify-content: center;
       margin-top: 2.5rem;
     }
-      span {
+      /*span {
         margin-left: 0.5rem;
         margin-right: 0.5rem;
         font-size: 1.5rem;
@@ -666,7 +666,7 @@
         --text-opacity: 1;
         color: #000;
         color: rgba(0, 0, 0, var(--text-opacity));
-      }
+      }*/
     nav {
       margin-top: 2.5rem;
     }

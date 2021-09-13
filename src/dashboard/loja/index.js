@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
+import Rating from '@material-ui/lab/Rating';
 import {
   Section,
   Input,
@@ -13,7 +14,9 @@ import {
   Tr,
   Td,
   Tdr,
-  TextArea
+  TextArea,
+  Title2,
+  Span
 } from "./style";
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
@@ -43,6 +46,7 @@ class LjDashboard extends React.Component {
       message: "",
       messageloja: "",
       ischecked: false,
+      value:0,
 
       _id: "",
       lojaid: localStorage.getItem("@lojaid"),
@@ -90,6 +94,19 @@ class LjDashboard extends React.Component {
       {id: 'Outubro', vendas: {value:0}},
       {id: 'Novembro', vendas: {value:0}},
       {id: 'Dezembro', vendas: {value:0}},],
+      bardata: [{id: 'Janeiro', fatur: {value:0}},
+      {id: 'Feveiro', fatur: {value:0}},
+      {id: 'Março', fatur: {value:0}},
+      {id: 'Abril', fatur: {value:0}},
+      {id: 'Maio', fatur: {value:0}},
+      {id: 'Junho', fatur: {value:0}},
+      {id: 'Julho', fatur: {value:0}},
+      {id: 'agosto', fatur: {value:0}},
+      {id: 'Setembro', fatur: {value:0}},
+      {id: 'Outubro', fatur: {value:0}},
+      {id: 'Novembro', fatur: {value:0}},
+      {id: 'Dezembro', fatur: {value:0}},],
+      dougdata:[0,0],
       radarlabel:[],
       radardata:[],
       nomeedit: "",
@@ -186,6 +203,24 @@ class LjDashboard extends React.Component {
             }
           }
         }
+
+        for(var i=0; i<this.state.orderstoprocess.length; i++){
+          const month = moment(this.state.orderstoprocess[i].datacompra).format("MMMM").toLocaleLowerCase();
+          for(var x=0; x<this.state.label.length; x++){
+            const label = this.state.bardata[x].id.toLocaleLowerCase();   
+            console.log(month+label)      
+            if(label === month){
+              console.log("entrei aqui",month)
+              for(var y=0; y<this.state.bardata.length; y++){
+                const chartmonth = this.state.chartdata[y].id.toLocaleLowerCase();
+                if(month === chartmonth){
+                  this.state.bardata[y].fatur.value = this.state.bardata[y].fatur.value + this.state.orderstoprocess[i].total;
+                  console.log(this.state.bardata[y].fatur.value)
+                }
+                }
+              }
+            }
+          }
  
     await fetch(
       "https://api-shopycash1.herokuapp.com/indexstoreby/" +
@@ -195,6 +230,8 @@ class LjDashboard extends React.Component {
       .then(function (result) {
         localStorage.setItem("@loja", result.nomefantasia);
         localStorage.setItem("@shopping", result.shopping);
+        localStorage.setItem("@rating", result.rating);
+        localStorage.setItem("@count",result.countco)
       })
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }), []);  
@@ -250,9 +287,6 @@ class LjDashboard extends React.Component {
             }
           }
         }
-          
-          console.log("negoça",this.state.radarlabel)
-          console.log("doublenegoça", this.state.radardata)
 
         var rdx = 'myRadar';
 
@@ -279,6 +313,9 @@ class LjDashboard extends React.Component {
               angleLines: {
                   display: true
               },
+              ticks:{
+                stepSize:1
+              },
               suggestedMin: 0,
           }
       },
@@ -289,6 +326,72 @@ class LjDashboard extends React.Component {
         }
       },
         });
+
+        var bdx = "mynewchart"
+
+        this.state.mynewchart = new Chart(bdx, {
+          type: 'bar',
+          data: {
+              datasets: [{
+                label:"Faturament0/Mês no APP",
+                  data: this.state.bardata,
+                  borderColor: 'rgb(94, 170, 168)',
+                  barPercentage: 1,
+                  fill:true,
+                  backgroundColor:'rgba(153, 102, 255, 0.2)',
+                  borderWidth: 1,
+                  borderColor: 'rgb(153, 102, 255)'
+              }]
+          },
+          options: {
+            scales: {
+              y: {
+                  beginAtZero: true,
+                  ticks:{
+                    display: true,                                   
+                  }
+              },
+              x: {
+                grid: {
+                  offset: true
+                }
+            }
+            },
+              parsing: {
+                  xAxisKey: 'id',
+                  yAxisKey: 'fatur.value'
+              }
+          }
+          });
+
+          for(var i=0; i<this.state.orderstoprocess.length; i++){
+              if(this.state.orderstoprocess[i].paymentmethod ==='Cartão'){
+                console.log("here")
+                this.state.dougdata[0] = this.state.dougdata[0]+1
+              }else{
+                this.state.dougdata[1] = this.state.dougdata[1]+1
+              }
+              console.log(this.state.dougdata)
+            }
+
+          var dbx = "mydougchart"
+
+        this.state.mydougchart = new Chart(dbx, {
+          type: 'doughnut',
+          data: {
+              labels: [
+                "Cartão",
+                "Dinheiro"
+              ], 
+              datasets: [{
+                  data: this.state.dougdata,
+                  backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                  ]
+              }]
+          },
+          });
   }
 
   expande =()=>{
@@ -629,60 +732,110 @@ class LjDashboard extends React.Component {
         
         <Section>
         <Grid container spacing={3}>
-        <Grid item xs>
+        <Grid item xs={2}>
           <Paper variant="outlined" elevation={3} style={{textAlign:'center', padding:10, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
           <Label>{this.state.count}</Label>
           <Title>Pedidos</Title>
           </Paper>
         </Grid>
 
-        <Grid item xs>
+        <Grid item xs={2}>
           <Paper variant="outlined" elevation={3} style={{textAlign:'center', padding:10, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
           <Label>{this.state.countawait}</Label>
           <Title>Em espera</Title>
           </Paper>
           </Grid>
-          <Grid item xs>
+          <Grid item xs={2}>
           <Paper variant="outlined" elevation={3} style={{textAlign:'center', padding:10, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
           <Label>{this.state.countroute}</Label>
           <Title>Em rota</Title>
           </Paper>
         </Grid>
-        <Grid item xs>
+        <Grid item xs={2}>
           <Paper variant="outlined" elevation={3} style={{textAlign:'center', padding:10, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
           <Label>{this.state.countdeliv}</Label>
           <Title>Concluidos</Title>
+          </Paper>         
+        </Grid>
+        <Grid item xs={4}>
+          <Paper variant="outlined" elevation={3} style={{padding:10}}>
+          <div className={"text-center"}><Label>Media das notas</Label></div>
+          <div className={"flex-row items-center justify-between"}>
+          <Title2>{localStorage.getItem("@rating")}
+          <Rating
+            name="hover-feedback"
+            value={this.state.value}
+            precision={0.5}
+          />
+          </Title2>
+          </div>
+          
+           
+          
+          <Span>Media baseada em <strong>{localStorage.getItem("@count")}</strong> comentarios.</Span>
           </Paper>
         </Grid>
         </Grid>
                   
         <Grid container spacing={3} style={{paddingTop:10}}>
-        <Grid item xs={3}>
-        <Paper variant="outlined" elevation={3}>
-        <canvas id="myChart" width="150" height="150" ></canvas>
-        </Paper>
+            <Grid item xs={3}>
+              <Paper className={"p-4"}variant="outlined" elevation={3}>
+                <canvas id="myChart" width="150" height="150" ></canvas>
+              </Paper>
+            </Grid>
+            <Grid item xs={3}>
+              <Paper className={"p-4"} variant="outlined" elevation={3} >
+                <canvas id="myRadar" width="150" height="150"></canvas></Paper>
+              </Grid>
+            <Grid item xs={3}>
+              <Paper className={"p-4"} variant="outlined" elevation={3} >
+                <canvas id="mynewchart" width="150" height="150"></canvas></Paper>
+              </Grid>
+              <Grid item xs={3}>
+              <Paper className={"p-4"} variant="outlined" elevation={3} >
+                <canvas id="mydougchart" width="150" height="150"></canvas></Paper>
+              </Grid>
+          </Grid>
           
-          </Grid>
-          <Grid item xs={3}>
-            <Paper variant="outlined" elevation={3} > <canvas id="myRadar" width="150" height="150"></canvas></Paper>
-         
-          </Grid>
-          </Grid>
-          
-          <div style={{ display: 'flex',padding: 5,position: 'relative', flexDirection:'row',height:'fit-content', width:600}}>
-          {this.state.countawait >= 1 ?
-              <Alert variant="filled" severity="warning">
-                <AlertTitle>Pedidos aguardando</AlertTitle>
-                Existem um total de {this.state.countawait} pedidos <strong>aguardando envio!</strong>
+          <Grid container spacing={3} style={{paddingTop:10}}>
+            <Grid item xs={6}>
+              <Paper className={"p-4"} variant="outlined" elevation={3} >
+                
+              <Alert style={{margin: 5}}  variant="filled" severity="info">
+                <AlertTitle>Nome - Nº pedido</AlertTitle>
+                <i><strong>(nota)</strong></i>
+                <br/>
+                (Comentario)
+              </Alert>
+                </Paper>
+              </Grid>
+            <Grid item xs={3}>
+              <Paper className={"p-4"} variant="outlined" elevation={3} >
+              {this.state.countroute >= 1 ?
+              <Alert style={{margin: 5}}  variant="filled" severity="warning">
+                <AlertTitle>Pedidos em rota de Entrega</AlertTitle>
+                Existem um total de {this.state.countroute} pedidos <strong>em rota de Entrega!</strong>
               </Alert> : 
-            <Alert variant="filled" severity="success">
+            <Alert style={{margin: 5}}  variant="filled" severity="success">
                 <AlertTitle>Tudo certo</AlertTitle>
                 No Momento não existem pedidos para serem <strong>enviados!</strong>
             </Alert>}
-            </div>
-          
-        
-          
+                </Paper>
+              </Grid>
+              <Grid item xs={3}>
+              <Paper className={"p-4"} variant="outlined" elevation={3} >
+              {this.state.countawait >= 1 ?
+              <Alert style={{margin: 5}} variant="filled" severity="error">
+                <AlertTitle>Pedidos aguardando</AlertTitle>
+                Existem um total de {this.state.countawait} pedidos <strong>aguardando envio!</strong>
+              </Alert> : 
+            <Alert style={{margin: 5}}  variant="filled" severity="success">
+                <AlertTitle>Tudo certo</AlertTitle>
+                No Momento não existem pedidos para serem <strong>enviados!</strong>
+            </Alert>}
+                </Paper>
+              </Grid>
+          </Grid>
           </Section>
       </DashboardLoja>
     );

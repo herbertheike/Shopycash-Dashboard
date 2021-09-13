@@ -62,17 +62,17 @@ class CadastroCat extends React.Component {
       faturado:0,
       label:['Janeiro', 'Feveiro', 'Março', 'Abril', 'Maio', 'Junho','Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
       chartdata: [{id: 'Janeiro', vendas: {value:0}},
-      {id: 'Feveiro', vendas: {value:0}},
-      {id: 'Março', vendas: {value:0}},
-      {id: 'Abril', vendas: {value:0}},
-      {id: 'Maio', vendas: {value:0}},
-      {id: 'Junho', vendas: {value:0}},
-      {id: 'Julho', vendas: {value:0}},
-      {id: 'agosto', vendas: {value:0}},
-      {id: 'Setembro', vendas: {value:0}},
-      {id: 'Outubro', vendas: {value:0}},
-      {id: 'Novembro', vendas: {value:0}},
-      {id: 'Dezembro', vendas: {value:0}},],
+        {id: 'Feveiro', vendas: {value:0}},
+        {id: 'Março', vendas: {value:0}},
+        {id: 'Abril', vendas: {value:0}},
+        {id: 'Maio', vendas: {value:0}},
+        {id: 'Junho', vendas: {value:0}},
+        {id: 'Julho', vendas: {value:0}},
+        {id: 'agosto', vendas: {value:0}},
+        {id: 'Setembro', vendas: {value:0}},
+        {id: 'Outubro', vendas: {value:0}},
+        {id: 'Novembro', vendas: {value:0}},
+        {id: 'Dezembro', vendas: {value:0}},],
       radarlabel:[],
       radardata:[],
       nomeedit: "",
@@ -114,6 +114,9 @@ class CadastroCat extends React.Component {
       .catch((error) => console.log(error))
       for(var i=0; i<this.state.orderstoprocess.length; i++){
         //console.log(this.state.orderstoprocess[i]._id)
+        var suprow = []
+
+        
           const newrow = {
             id: this.state.orderstoprocess[i]._id,
             nome: this.state.orderstoprocess[i].dadoscliente.nome,
@@ -127,12 +130,13 @@ class CadastroCat extends React.Component {
               this.state.orderstoprocess[i].deliveryadress.referencia,
             paymentmethod: this.state.orderstoprocess[i].paymentmethod,
             shippingmethod: this.state.orderstoprocess[i].shippingmethod,
-            shippingtax: "R$" + this.state.orderstoprocess[i].shippingprice,
-            total: "R$" + this.state.orderstoprocess[i].total,
-            change: "R$" + this.state.orderstoprocess[i].change
+            shippingtax: "R$" + this.state.orderstoprocess[i].shippingprice.toFixed(2),
+            total: "R$" + this.state.orderstoprocess[i].total.toFixed(2),
+            cartstatus:this.state.orderstoprocess[i].cartstatus == 'await' ? 'Em espera' : this.state.orderstoprocess[i].cartstatus == 'delivered' ? 'Entregue' : this.state.orderstoprocess[i].cartstatus == 'onroute' ? "Em rota" : ''
           }
-         
+
           this.setState({count:this.state.orderstoprocess.length})
+
           if(this.state.orderstoprocess[i].cartstatus === 'await'){
             this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
             this.setState({countawait:this.state.countawait+1})
@@ -144,7 +148,8 @@ class CadastroCat extends React.Component {
             this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
             this.setState({countroute:this.state.countroute+1})
           }
-          
+
+      
           this.state.rows.push(newrow)
       }
       console.log("count",this.state.countawait)
@@ -155,7 +160,7 @@ class CadastroCat extends React.Component {
           
           const label = this.state.label[x];   
           console.log(label)      
-          if(month == label){
+          if(month === label){
             console.log('beef')
             for(var y=0; y<this.state.chartdata.length; y++){
               const chartmonth = this.state.chartdata[y].id;
@@ -330,7 +335,7 @@ class CadastroCat extends React.Component {
       { field: "shippingmethod", headerName: "Entrega", width: 120 },
       { field: "shippingtax", headerName: "Taxa" },
       { field: "total", headerName: "Total" },
-      { field: "change", headerName: "Troco" },
+      { field: "cartstatus", headerName: "Status" },
       {
         field: "",
         headerName: "Ação",
@@ -339,7 +344,7 @@ class CadastroCat extends React.Component {
         disableClickEventBubbling: true,
         renderCell: (params) => {
           return (
-            <Button variant="contained" color="primary" onClick={() => this.openModal(params.id)}>
+            <Button className={"text-sm"} variant="contained" color="primary" onClick={() => this.openModal(params.id)}>
               Enviar
             </Button>
           );
@@ -348,23 +353,22 @@ class CadastroCat extends React.Component {
 
     return (
       <DashboardLoja>
-        <Section>
-          <Title>Pedidos</Title>
-        </Section>
-          <div style={{display: "flex",padding: 5,width: "86%",position: "absolute", flexDirection:'column'}}>    
+          <span className={"font-sans text-2xl font-bold p-6"}>Pedidos</span>
+          <div className={"flex pt-7 flex-col w-11/12 p-1"}>    
                
-           <div style={{ width: "100%", height: 600}}>
+           <div style={{ width: "100%", height: 460}}>
               <DataGrid
                 rows={rows}
                 columns={columns}
-                rowHeight={40}
+                rowHeight={30}
                 disableColumnMenu
                 pageSize={10}
                 checkboxSelection
               />
             </div>
+            <div className={"mt-5 z20"}>
               {this.state.countawait >= 1 ?
-              <Alert variant="filled" severity="warning">
+              <Alert variant="filled" severity="error">
                 <AlertTitle>Pedidos aguardando</AlertTitle>
                 Existem um total de {this.state.countawait} pedidos <strong>aguardando envio!</strong>
               </Alert> : 
@@ -373,6 +377,19 @@ class CadastroCat extends React.Component {
                 No Momento não existem pedidos para serem <strong>enviados!</strong>
             </Alert>
         }
+        </div>
+        <div className={"mt-5 z20"}>
+         {this.state.countroute >= 1 ?
+              <Alert variant="filled" severity="warning">
+                <AlertTitle>Pedidos aguardando</AlertTitle>
+                Existem um total de {this.state.countroute} pedidos <strong>em rota de Entrega!</strong>
+              </Alert> : 
+            <Alert variant="filled" severity="success">
+                <AlertTitle>Tudo certo</AlertTitle>
+                No Momento não existem pedidos para sendo <strong>enviados!</strong>
+            </Alert>
+        }
+        </div>
               
           </div>
         <div>

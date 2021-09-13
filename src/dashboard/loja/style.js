@@ -111,14 +111,31 @@ export const Title = styled.title`
   color: #9b59b6;
   font-size: 22px;
   margin:3px;
+  text-align: center;
   padding-top: 5px;
+  display: block;
+`;
+export const Title2 = styled.title`
+  font-weight: bold;
+  font-style:italic;
+  color: #53aaa8;
+  font-size: 35px;
   display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+`;
+export const Span = styled.span`
+  color: black;
+  font-size: 10px;
+  text-align: center;
+  display: block;
 `;
 export const Label = styled.label`
   font-weight: bold;
   padding: 5px;
   color: black;
   font-size: 18px;
+  text-align: center;
 `;
 export const EditBt = styled.button`
 display:flex;
