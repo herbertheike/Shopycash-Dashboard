@@ -650,9 +650,7 @@ class LjDashboard extends React.Component {
       }
     }  
   };
-
-
-
+  
   listcategorias= async ()=> {
     await fetch("https://api-shopycash1.herokuapp.com/indexcategory/"+localStorage.getItem("@lojaid"))
       .then((res) => res.json())
@@ -679,7 +677,6 @@ class LjDashboard extends React.Component {
       this.setState({categoria:array})
     }
   }
-
   /*-----------------------usuario loja-------------------*/
   cadastrausuario = async () => {
     const payload = JSON.stringify({
@@ -692,6 +689,7 @@ class LjDashboard extends React.Component {
       shoppingid: this.state.shoppingid,
       lojaid: this.state.lojaid,
     });
+
 
     console.log(payload);
 
@@ -713,17 +711,6 @@ class LjDashboard extends React.Component {
 
     window.location.reload();
   };
-
-  /**
- * {this.state.ljdata.map((item, index)=>{
-          return(
-          <Title key={item._id}>
-            Cadastro de Produtos - {item.nomefantasia}
-          </Title>
-          )
-        })}
- */
-
 
   render() {
     const { prodarray } = this.state;
@@ -769,9 +756,6 @@ class LjDashboard extends React.Component {
           />
           </Title2>
           </div>
-          
-           
-          
           <Span>Media baseada em <strong>{localStorage.getItem("@count")}</strong> comentarios.</Span>
           </Paper>
         </Grid>
