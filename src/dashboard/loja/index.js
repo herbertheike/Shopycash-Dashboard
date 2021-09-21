@@ -74,6 +74,8 @@ class LjDashboard extends React.Component {
       imgbs64edt: null,
       imgbs642edt:null,
 
+      comentarioresult: [],
+
       orderstoprocess: [],
       rows:[],
       count:0,
@@ -392,6 +394,20 @@ class LjDashboard extends React.Component {
               }]
           },
           });
+
+
+          this.comentconsult();
+  }
+
+  comentconsult= async ()=>{
+    const lojaid = localStorage.getItem("@lojaid")
+      await fetch("https://api-shopycash1.herokuapp.com/comentarios/"+lojaid)
+          .then((res) => res.json())
+          .then((result) => this.setState({ comentarioresult: result }))
+          .catch((error) => console.log(error))
+          .finally(() => this.setState({ isLoaded: false }), []);
+
+            console.log(this.state.comentarioresult)
   }
 
   expande =()=>{
@@ -751,7 +767,8 @@ class LjDashboard extends React.Component {
           <Title2>{localStorage.getItem("@rating")}
           <Rating
             name="hover-feedback"
-            value={this.state.value}
+            readOnly
+            defaultValue={localStorage.getItem("@rating")}
             precision={0.5}
           />
           </Title2>
@@ -784,13 +801,15 @@ class LjDashboard extends React.Component {
           <Grid container spacing={3} style={{paddingTop:10}}>
             <Grid item xs={6}>
               <Paper className={"p-4"} variant="outlined" elevation={3} >
-                
-              <Alert style={{margin: 5}}  variant="filled" severity="info">
-                <AlertTitle>Nome - Nº pedido</AlertTitle>
-                <i><strong>(nota)</strong></i>
+                {this.state.comentarioresult.map((item)=>{
+                  return(
+                  <Alert style={{margin: 5}}  variant="filled" severity="info">
+                <AlertTitle>{item.username} - Pedido nº{item.order}</AlertTitle>
+                <i>Nota: <strong>{item.nota}</strong></i>
                 <br/>
-                (Comentario)
+                {item.comentario}
               </Alert>
+                  )})}
                 </Paper>
               </Grid>
             <Grid item xs={3}>
