@@ -17,22 +17,15 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
   DataGrid,
-  GridColDef,
-  GridApi,
-  GridCellValue,
-  getThemePaletteMode,
 } from "@material-ui/data-grid";
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
+import Alert from '@material-ui/core/Alert';
+import AlertTitle from '@material-ui/core/AlertTitle';
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { createMuiTheme, darken, lighten } from "@material-ui/core/styles";
-import { makeStyles } from "@material-ui/styles";
-import Chart from 'chart.js/auto';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 class CadastroCat extends React.Component {

@@ -1,37 +1,19 @@
 import React from "react";
 import Modal from "react-modal";
-import Rating from '@material-ui/lab/Rating';
+import Rating from '@material-ui/core/Rating';
 import {
   Section,
-  Input,
-  Button,
   Title,
   Label,
-  EditBt,
-  DeleteBt,
-  InputFile,
-  Img,
-  Tr,
-  Td,
-  Tdr,
-  TextArea,
   Title2,
   Span
 } from "./style";
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
-import { makeStyles } from '@material-ui/core/styles';
+import Alert from '@material-ui/core/Alert';
+import AlertTitle from '@material-ui/core/AlertTitle';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import { BiMenu } from "react-icons/bi";
 import history from "../../history";
 import { DashboardLoja } from "../../components/Layout";
-import Icon from "awesome-react-icons";
-import noimage from "../../imgsrc/logopad.jpg";
 import Chart from 'chart.js/auto';
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -801,6 +783,7 @@ class LjDashboard extends React.Component {
           <Grid container spacing={3} style={{paddingTop:10}}>
             <Grid item xs={6}>
               <Paper className={"p-4"} variant="outlined" elevation={3} >
+              <span>Comentarios</span>
                 {this.state.comentarioresult.map((item)=>{
                   return(
                   <Alert style={{margin: 5}}  variant="filled" severity="info">
