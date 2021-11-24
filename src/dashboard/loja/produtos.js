@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
+import { Checkbox } from '@mui/material';
 import {
   Section,
   Input,
@@ -272,6 +273,7 @@ class LjDashboard extends React.Component {
       this.setState({ [name]: event.target.files });
     }else if(type === "radio" && id === "normalfield"){
       this.setState({categoriaid: title, categoria:value});
+      console.log(title)
     }else if (type === "radio" && id === "editfield" ) {
       this.setState({categoriaidedit: title, categoriaedit:value});
     }
@@ -280,8 +282,6 @@ class LjDashboard extends React.Component {
         [name]: value,
       });
     }
-
-      console.log(event)
       console.log(this.state.categoria);
       console.log(this.state.categoriaid);
   };
@@ -589,14 +589,13 @@ class LjDashboard extends React.Component {
                   justifyContent:'right',
                   alignItems:'center',
                   padding: 10, display:'flex', flexDirection: "row"}}>
-                  <Input
-                  id="normalfield"
-                  title={cat._id}
-                  type="radio"
-                  checked={this.state.categoria === cat.nome}
-                  onChange={this.handleChange}
-                  value={cat.nome}/>
-                  <label>{cat.nome}</label>
+                    <input
+                    type="radio"
+                    id="normalfield"
+                    title={cat._id}
+                    onChange={this.handleChange}
+                    value={cat.nome}/>
+                    <label>{cat.nome}</label>
                   </div>
                 );
               })}

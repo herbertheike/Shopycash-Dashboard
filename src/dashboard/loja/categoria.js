@@ -12,11 +12,7 @@ import history from "../../history";
 import { DashboardLoja } from "../../components/Layout";
 import Icon from "awesome-react-icons";
 import {
-  DataGrid,
-  GridColDef,
-  GridApi,
-  GridCellValue,
-  getThemePaletteMode,
+  DataGrid
 } from "@material-ui/data-grid";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -87,8 +83,19 @@ class CadastroCat extends React.Component {
       .then((result) => this.setState({ categorialist: result.data }))
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }), []);
+     // console.log(this.state.categorialist)
+      for (let index = 0; index <this.state.categorialist.length; index++) {
+        console.log("here")
+        const newrow = {
+          id: this.state.categorialist[index]._id,
+          nome: this.state.categorialist[index].nome
+        }
+        console.log(newrow)
 
-    console.log(this.state.categorialist.length);
+       this.state.rows.push(newrow)
+       console.log(this.state.rows)
+      }
+
   };
   openModal = async (id, nome) => {
     this.setState({
@@ -101,8 +108,8 @@ class CadastroCat extends React.Component {
     this.setState({ isModalOpen: false });
   }
 
-  deletecategoria = async (item) => {
-    const _id = item;
+  deletecategoria = async (id) => {
+    const _id = id;
     console.log(_id, "new id");
     await fetch("https://api-shopycash1.herokuapp.com/store/deletecat/" + _id, {
       method: "GET",
@@ -201,7 +208,33 @@ class CadastroCat extends React.Component {
     }
   };
 
+  
+
   render() {
+    const rows = [...this.state.rows];
+    console.log(rows)
+    const columns = [
+      { field: "id", headerName: "Id", width: 200 },
+      { field: "nome", headerName: "Nome", width: 130 },
+      {
+        field: "",
+        headerName: "",
+        sortable: false,
+        width: 160,
+        disableClickEventBubbling: true,
+        renderCell: (params) => {
+          return (
+            <Paper>
+            <Button className={"text-sm"} variant="contained" color="primary" onClick={() => this.openModal(params.id, params.nome)}>
+              Editar
+            </Button>
+            <Button className={"text-sm"} variant="contained" color="primary" onClick={() => this.deletecategoria(params.id)}>
+            Excluir
+          </Button>
+          </Paper>
+          );
+        },
+      }];
     return (
       <DashboardLoja>
         <Section>
@@ -215,15 +248,10 @@ class CadastroCat extends React.Component {
               <Paper
                 variant="outlined"
                 elevation={3}
-                style={{
-                  padding: 10,
-                  flexDirection: "row",
-                  alignItems: "flex-start",
-                  justifyContent: "space-around"
-                }}
+                className={"p-3"}
               >
                 <TextField
-                  style={{ width: "50%" }}
+                  style={{ width: "100%", paddingRight:10 }}
                   type="text"
                   placeholder="Nome"
                   required={true}
@@ -233,7 +261,7 @@ class CadastroCat extends React.Component {
                   value={this.state.nome}
                   onChange={this.handleChange}
                 />
-                <Button className={"m-2"} variant="contained" value="Submit" onClick={this.cadastrarcategoria}>
+                <Button className={"m-2"} style={{marginTop: 10}} variant="contained" value="Submit" onClick={this.cadastrarcategoria}>
                   Cadastrar
                 </Button>
               </Paper>
@@ -242,41 +270,16 @@ class CadastroCat extends React.Component {
         </Section>
         <Section>
           <Label>Categorias</Label>
-          <table style={{ width: "100%" }}>
-            <thead style={{}}>
-              <tr>
-                <th>NOME</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-          </table>
-          {this.state.categorialist.map((item) => {
-            return (
-              <tbody
-                style={{
-                  height: 100,
-                  overflowY: "auto",
-                  padding: 5,
-                  flexDirection: "row",
-                }}
-              >
-                <tr style={{ height: 100, overflowY: "auto", padding: 5 }}>
-                  <tb>{item.nome}</tb>
-                  <tb>
-                    <EditBt onClick={() => this.openModal(item._id, item.nome)}>
-                      <Icon name="edit-pencil-simple" />
-                      EDITAR
-                    </EditBt>
-
-                    <DeleteBt onClick={() => this.deletecategoria(item._id)}>
-                      <Icon name="x" />
-                      EXCLUIR
-                    </DeleteBt>
-                  </tb>
-                </tr>
-              </tbody>
-            );
-          })}
+          <div style={{ width: "100%", height: 460}}>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                rowHeight={30}
+                disableColumnMenu
+                pageSize={10}
+                
+              />
+            </div>
         </Section>
         <div>
           <Modal

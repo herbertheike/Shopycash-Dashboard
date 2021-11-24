@@ -17,14 +17,21 @@ export const Container = styled.div`
   flex-direction: column;
 `;
 export const Input = styled.input`
-  padding: 10px;
-  height: 40px;
-  margin: 3px;
-  color: #000;
-  align-items: flex-start;
-  justify-content: center;
-  background: rgba(94, 170, 168, 0.2);
-  border-radius: 5px;
+  font: inherit;
+    letter-spacing: inherit;
+    color: currentcolor;
+    border: 0px;
+    box-sizing: content-box;
+    background: rgba(94, 170, 168, 0.2);
+    height: 1.4375em;
+    margin: 0px;
+    -webkit-tap-highlight-color: transparent;
+    display: block;
+    min-width: 0px;
+    width: 100%;
+    animation-duration: 10ms;
+    padding: 16.5px 14px;
+
   &:hover {
     background: rgba(94, 170, 168, 0.5);
     color: #000;
@@ -59,6 +66,7 @@ border-radius: 5px;
 &::placeholder {
   textOverflow: 'ellipsis !important',
   color: 'blue'
+}
 `;
 
 export const InputFile = styled.input`

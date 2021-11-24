@@ -3,6 +3,11 @@ import {Navigation} from 'react-minimal-side-navigation';
 import 'react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css';
 import { useHistory, useLocation } from "react-router-dom";
 import Icon from "awesome-react-icons";
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import { BiMenu } from "react-icons/bi";
 
 
 export const Sidebar = () => {
@@ -27,13 +32,33 @@ export const Sidebar = () => {
           isSidebarOpen ? "block" : "hidden"
         }`}
       />
-      <div
+      
+      <div className="absolute top-0 w-full z-50">
+      <AppBar position="static" >
+        <Toolbar >
+          <IconButton edge="start"  color="inherit" aria-label="menu">
+            <BiMenu  onClick={() => {if(isSidebarOpen=== false){
+            setIsSidebarOpen(true)
+          }else{
+            setIsSidebarOpen(false)
+          }}} />
+          </IconButton>
+          <span variant="h6" >
+            Shopy Cash - Usuario Logado: {localStorage.getItem("@nome")} - {localStorage.getItem("@email")}
+          </span>
+        </Toolbar>
+      </AppBar>
+
+        </div>
+
+        {/* Sidebar */}
+        <div
         className={`fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 ease-out transform translate-x-0 bg-white border-r-2 lg:translate-x-0 lg:static lg:inset-0 ${
-          isSidebarOpen ? "ease-out translate-x-0" : "ease-in -translate-x-full"
+          isSidebarOpen ? "ease-out translate-x-0 block" : "ease-in -translate-x-full hidden"
         }`}
       >
         <div className="flex items-center justify-center mt-10 text-center py-6">
-          <span className="mx-2 text-2xl font-semibold text-black">
+        <span className="mx-2 text-2xl font-semibold text-black">
             Shopycash Administrativo
           </span>
         </div>

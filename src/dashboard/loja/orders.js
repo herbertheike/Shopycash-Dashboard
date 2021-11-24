@@ -108,8 +108,6 @@ class CadastroCat extends React.Component {
       for(var i=0; i<this.state.orderstoprocess.length; i++){
         //console.log(this.state.orderstoprocess[i]._id)
         var suprow = []
-
-        
           const newrow = {
             id: this.state.orderstoprocess[i]._id,
             nome: this.state.orderstoprocess[i].dadoscliente.nome,
@@ -125,26 +123,23 @@ class CadastroCat extends React.Component {
             shippingmethod: this.state.orderstoprocess[i].shippingmethod,
             shippingtax: "R$" + this.state.orderstoprocess[i].shippingprice.toFixed(2),
             total: "R$" + this.state.orderstoprocess[i].total.toFixed(2),
-            cartstatus:this.state.orderstoprocess[i].cartstatus == 'await' ? 'Em espera' : this.state.orderstoprocess[i].cartstatus == 'delivered' ? 'Entregue' : this.state.orderstoprocess[i].cartstatus == 'onroute' ? "Em rota" : ''
+            cartstatus:this.state.orderstoprocess[i].cartstatus === 'await' ? 'Em espera' : this.state.orderstoprocess[i].cartstatus === 'delivered' ? 'Entregue' : this.state.orderstoprocess[i].cartstatus === 'onroute' ? "Em rota" : ''
           }
-
           this.setState({count:this.state.orderstoprocess.length})
-
-          if(this.state.orderstoprocess[i].cartstatus === 'await'){
-            this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
-            this.setState({countawait:this.state.countawait+1})
-            
-          }if(this.state.orderstoprocess[i].cartstatus === 'delivered'){
-            this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
-            this.setState({countdeliv:this.state.countdeliv+1})
-          }if(this.state.orderstoprocess[i].cartstatus === 'onroute'){
-            this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
-            this.setState({countroute:this.state.countroute+1})
-          }
-
-      
+            if(this.state.orderstoprocess[i].cartstatus === 'await'){
+              this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
+              this.setState({countawait:this.state.countawait+1})           
+            }if(this.state.orderstoprocess[i].cartstatus === 'delivered'){
+              this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
+              this.setState({countdeliv:this.state.countdeliv+1})
+            }if(this.state.orderstoprocess[i].cartstatus === 'onroute'){
+              this.setState({faturado:this.state.faturado+this.state.orderstoprocess[i].total})
+              this.setState({countroute:this.state.countroute+1})
+            }      
           this.state.rows.push(newrow)
+          console.log(this.state.rows)
       }
+
       console.log("count",this.state.countawait)
       for(var i=0; i<this.state.orderstoprocess.length; i++){
         const month = moment(this.state.orderstoprocess[i].datacompra).format("MMMM");
@@ -379,7 +374,7 @@ class CadastroCat extends React.Component {
               </Alert> : 
             <Alert variant="filled" severity="success">
                 <AlertTitle>Tudo certo</AlertTitle>
-                No Momento não existem pedidos para sendo <strong>enviados!</strong>
+                No Momento não existem pedidos sendo <strong>enviados!</strong>
             </Alert>
         }
         </div>
@@ -786,18 +781,6 @@ class CadastroCat extends React.Component {
                         <MenuItem value={"onroute"}>Enviado</MenuItem>
                         <MenuItem value={"delivered"}>Recebido</MenuItem>
                       </Select>
-                      <button
-                        style={{
-                          alignItems: "center",
-                          textAlign: "center",
-                          justifyContent: "center",
-                          fontSize: 10,
-                        }}
-                        onClick={this.updatestatus}
-                      >
-                        <Icon name="x" />
-                        Despachar pedido
-                      </button>
                     </div>
                   );
                 })}
@@ -805,11 +788,8 @@ class CadastroCat extends React.Component {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={this.closeModal} color="primary">
-                Disagree
-              </Button>
-              <Button onClick={this.closeModal} color="primary" autoFocus>
-                Agree
+              <Button onClick={this.closeModal} color="primary" onClick={this.updatestatus}>
+              Confirmar 
               </Button>
             </DialogActions>
           </Dialog>

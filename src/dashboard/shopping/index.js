@@ -14,6 +14,7 @@ import history from "../../history";
 import { DashboardLayout } from "../../components/Layout";
 import Icon from "awesome-react-icons";
 import noimage from "../../imgsrc/logopad.jpg"
+import { Checkbox } from '@mui/material';
 
 
 class SbDashboard extends React.Component {
@@ -64,12 +65,10 @@ class SbDashboard extends React.Component {
       isModalDelOpen:false,
       customStyles:{
         content : {
-          top                   : '50%',
-          left                  : '50%',
-          right                 : 'auto',
-          bottom                : 'auto',
-          marginRight           : '-50%',
-          transform             : 'translate(-50%, -50%)'
+          top                   : '20%',
+          left                  : '20%',
+          right                 : '20%',
+          bottom                : '20%',
         }
       }
     };
@@ -531,7 +530,7 @@ cadastrausuario = async () => {
                 {this.state.segmentolist.slice(0,7).map((seg, index) => {
                       return (
                         <div>
-                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
+                              <Checkbox value={seg.nome} name="segmento" onChange={this.handleChecked}
                               style={{padding:10}}/>
                               <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
                         </div>
@@ -542,7 +541,7 @@ cadastrausuario = async () => {
                 {this.state.segmentolist.slice(7,14).map((seg, index) => {
                       return (
                         <div>
-                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
+                              <Checkbox value={seg.nome} name="segmento" onChange={this.handleChecked}
                               style={{padding:10}}/>
                               <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
                         </div>
@@ -553,7 +552,7 @@ cadastrausuario = async () => {
                 {this.state.segmentolist.slice(14,21).map((seg, index) => {
                       return (
                         <div>
-                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
+                              <Checkbox value={seg.nome} name="segmento" onChange={this.handleChecked}
                               style={{padding:10}}/>
                               <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
                         </div>
@@ -564,7 +563,7 @@ cadastrausuario = async () => {
                 {this.state.segmentolist.slice(21,28).map((seg, index) => {
                       return (
                         <div>
-                              <input type="checkbox" value={seg.nome} name="segmento" onChange={this.handleChecked}
+                              <Checkbox value={seg.nome} name="segmento" onChange={this.handleChecked}
                               style={{padding:10}}/>
                               <span key={seg._id} style={{display:'inline-block', paddingLeft:10}}>{seg.nome}</span>
                         </div>

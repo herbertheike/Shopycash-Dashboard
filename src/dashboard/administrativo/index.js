@@ -74,15 +74,14 @@ class Dashboard extends React.Component {
     this.closeDelModal = this.closeDelModal.bind(this);
   }
 
-  componentDidMount() {
-    Geocode.setApiKey('AIzaSyBSKF5Edf4EO1jFwQNR6y4YTWO3kvZ3afg')
-    fetch("https://api-shopycash1.herokuapp.com/indexsh")
+  componentDidMount = async() =>{
+    await fetch("https://api-shopycash1.herokuapp.com/indexsh")
       .then((res) => res.json())
       .then((result) => this.setState({ shoppingarray: result }))
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }), []);
   }
-  openModal= async (nome, endereco, cnpj, telefone,email, site, responsavel, shoppingslug)=> {
+  openModal= (nome, endereco, cnpj, telefone,email, site, responsavel, shoppingslug)=> {
     this.setState({isModalOpen:true,
       nomeedit: nome,
       enderecoedit:endereco,
@@ -93,7 +92,7 @@ class Dashboard extends React.Component {
       responsaveledit:responsavel,
       shoppingslugedit: shoppingslug});
   }
-  openModalDelete = async (item)=> {
+  openModalDelete = (item)=> {
     this.setState({
       isModalDelOpen:true})
       const id = item;
@@ -131,17 +130,6 @@ class Dashboard extends React.Component {
 
 
   cadastrarShopping = async () => {
-   await Geocode.fromAddress(this.state.endereco)
-        .then((response)=>{
-          const {lat, long} = response.results[0].geometry.location;
-          console.log(lat, long);
-          localStorage.setItem("lat",lat)
-          this.setState({latitude:lat, longitude:long})
-        },
-        (error)=>{
-          console.log(error);
-        }
-    );
       await fetch("https://api-shopycash1.herokuapp.com/insert/"+this.state.shoppingslug, {
       method: "POST",
       headers: {
@@ -157,8 +145,8 @@ class Dashboard extends React.Component {
         email: this.state.email,
         site: this.state.site,
         responsavel: this.state.responsavel,
-        lat: this.state.latitude,
-        long: this.state.longitude,
+        latitude: this.state.latitude,
+        longitude: this.state.longitude,
         shoppingslug: this.state.shoppingslug,
       }),
     })
@@ -168,7 +156,8 @@ class Dashboard extends React.Component {
         localStorage.setItem("@message", error);
         console.log(error);
       });
-      this.cadastrausuario();
+      
+      window.location.reload();
 
   };
 
@@ -335,60 +324,84 @@ cadastrausuario = async () => {
             onChange={this.handleChange}
           />
           </Section>
-          <hr />
-          <Title>Cadastro do usuario do shopping: {this.state.nome}</Title>
-          
+        <Section>
           <Input
-            value={this.state.nomeuser}
-            style={{ width: "99%" }}
-            type="text"
-            placeholder="Nome do usuario"
-            name="nomeuser"
-            required="true"
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.emailuser}
-            style={{ width: "49.5%" }}
-            type="email"
-            placeholder="Email do usuario"
-            name="emailuser"
-            required="true"
-            onChange={this.handleChange}
-          />
-
-          <Input
-            value={this.state.passuser}
-            style={{ width: "49%" }}
-            type="text"
-            placeholder="Senha do usuario"
-            name="passuser"
-            required="true"
-            onChange={this.handleChange}
-          />
-          <Input
-            value={this.state.userrole}
+            value={this.state.latitude}
             style={{ width: "24.5%" }}
             type="text"
-            placeholder="role"
-            name="userrole"
+            placeholder="Latitude"
+            name="latitude"
             required="true"
-            disabled
+            onChange={this.handleChange}
           />
           <Input
-            value={this.state.shoppingslug}
-            style={{ width: "24.5%" }}
+            value={this.state.longitude}
+            style={{ width: "25 %" }}
             type="text"
-            placeholder="shoppingslug"
-            name="shoppingslug"
+            placeholder="longitude"
+            name="longitude"
             required="true"
-            disabled
+            onChange={this.handleChange}
           />
-          <Section>
-          <Button value="Submit" onClick={this.cadastrarShopping}>
+        </Section>
+        <Button value="Submit" onClick={this.cadastrarShopping}>
             Cadastrar
           </Button>
-          </Section>
+          <hr />
+                <Title>Cadastro de usuario</Title>
+                
+                <Input
+                  value={this.state.nomeuser}
+                  style={{ width: "99%" }}
+                  type="text"
+                  placeholder="Nome do usuario"
+                  name="nomeuser"
+                  required="true"
+                  onChange={this.handleChange}
+                />
+                <Input
+                  value={this.state.emailuser}
+                  style={{ width: "49.5%" }}
+                  type="email"
+                  placeholder="Email do usuario"
+                  name="emailuser"
+                  required="true"
+                  onChange={this.handleChange}
+                />
+
+                <Input
+                  value={this.state.passuser}
+                  style={{ width: "49%" }}
+                  type="text"
+                  placeholder="Senha do usuario"
+                  name="passuser"
+                  required="true"
+                  onChange={this.handleChange}
+                />
+                <Input
+                  value={this.state.userrole}
+                  style={{ width: "24.5%" }}
+                  type="text"
+                  placeholder="role"
+                  name="userrole"
+                  required="true"
+                  disabled
+                />
+                <Input
+                  value={this.state.shoppingslug}
+                  style={{ width: "24.5%" }}
+                  type="text"
+                  placeholder="shoppingslug"
+                  name="shoppingslug"
+                  required="true"
+                  onChange={this.handleChange}
+                  
+                />
+                <Section>
+                <Button value="Submit" onClick={this.cadastrausuario}>
+                  Cadastrar
+                </Button>
+                </Section>
 
         </Section>
         <Section>
