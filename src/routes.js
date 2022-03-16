@@ -11,6 +11,7 @@ import Cadastros from "./dashboard/loja/cadastros"
 import Produtos from "./dashboard/loja/produtos"
 import Categorias from "./dashboard/loja/categoria"
 import OrderPage from "./dashboard/loja/orders"
+import PaymentPage from "./dashboard/loja/pagamento"
 import history from "./history"
 
 const PrivateRouteAdmin = ({ component: Component, ...rest }) => (
@@ -94,6 +95,10 @@ const Routes = () => (
       exact
       path={"/store/"+localStorage.getItem("@slug")+"/pedidos"}
       component={withRouter(OrderPage)}/>
+      <PrivateRouteStore 
+      exact
+      path={"/store/"+localStorage.getItem("@slug")+"/pagamentos"}
+      component={withRouter(PaymentPage)}/>
 
       <PrivateRouteStore 
       exact

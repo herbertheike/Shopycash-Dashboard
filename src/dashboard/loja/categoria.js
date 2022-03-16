@@ -64,8 +64,7 @@ class CadastroCat extends React.Component {
   componentDidMount = async () => {
     await fetch(
       "https://api-shopycash1.herokuapp.com/indexstoreby/" +
-        localStorage.getItem("@lojaid"),
-      {}
+        localStorage.getItem("@lojaid")
     )
       .then((res) => res.json())
       .then(function (result) {
@@ -83,7 +82,6 @@ class CadastroCat extends React.Component {
       .then((result) => this.setState({ categorialist: result.data }))
       .catch((error) => console.log(error))
       .finally(() => this.setState({ isLoaded: false }), []);
-     // console.log(this.state.categorialist)
       for (let index = 0; index <this.state.categorialist.length; index++) {
         console.log("here")
         const newrow = {

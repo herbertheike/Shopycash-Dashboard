@@ -5,7 +5,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import Icon from "awesome-react-icons";
 import { MdDashboard, MdSettings,MdFolder } from 'react-icons/md';
 import { BsPencilSquare,BsTagFill } from "react-icons/bs";
-import { FaFileInvoiceDollar } from "react-icons/fa";
+import { FaFileInvoiceDollar,FaCashRegister } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -103,6 +103,11 @@ export const SidebarLoja = () => {
                 title: 'Pedidos',
                 itemId: '/store/'+localStorage.getItem("@slug")+'/pedidos',
                 elemBefore: () => <FaFileInvoiceDollar />,
+              }, 
+              {
+                title: 'Pagamentos',
+                itemId: '/store/'+localStorage.getItem("@slug")+'/pagamentos',
+                elemBefore: () => <FaCashRegister />,
               }, 
               {
                 title: 'Configurações',
